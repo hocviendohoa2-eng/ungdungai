@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang Quản Trị Website | Chỉnh Sửa Thông Tin, Hình Ảnh, Mục Đăng Ký & SEO</title>
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1HRW4vE9oSS_FnoU5rU1dsLcqL5Z9gnUc" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #070b14;
+      --bg-panel: #0d1527;
+      --bg-card: rgba(17, 25, 45, 0.92);
+      --border-color: rgba(148, 163, 184, 0.18);
+      --primary: #38bdf8;
+      --primary-dark: #0284c7;
+      --secondary: #818cf8;
+      --accent: #f43f5e;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --text-main: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --radius-lg: 12px;
+      --radius-md: 8px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Màn hình khóa PIN */
+    #lockScreen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #111a33 0%, #070b14 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lock-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+    .lock-icon {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .lock-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+    .lock-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .lock-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.8);
+      color: #fff;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 4px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    .lock-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Header Admin */
+    .admin-header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .admin-logo span {
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      border-radius: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(14, 165, 233, 0.5);
+    }
+    .btn-outline {
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+    .btn-outline:hover {
+      background: rgba(148, 163, 184, 0.2);
+    }
+    .btn-danger {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+    .btn-danger:hover {
+      background: #f43f5e;
+      color: #fff;
+    }
+    .btn-success {
+      background: #10b981;
+      color: #fff;
+    }
+
+    /* Layout chính */
+    .admin-container {
+      display: flex;
+      flex: 1;
+    }
+    .admin-sidebar {
+      width: 260px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover {
+      background: rgba(148, 163, 184, 0.1);
+      color: #fff;
+    }
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border-left: 3px solid var(--primary);
+    }
+
+    .admin-content {
+      flex: 1;
+      padding: 28px;
+      max-width: 1100px;
+      overflow-y: auto;
+    }
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    /* Form controls */
+    .card-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+    .card-box-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #e2e8f0;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+    .form-help {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.7);
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--primary);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Bảng dữ liệu */
+    .data-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+    .data-table th {
+      background: rgba(15, 23, 42, 0.85);
+      color: #94a3b8;
+      padding: 10px 14px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      color: #e2e8f0;
+      vertical-align: middle;
+    }
+    .data-table tr:hover {
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    /* Keyword Tags Manager */
+    .kw-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .kw-tag-badge {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #bae6fd;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kw-tag-del {
+      cursor: pointer;
+      color: #fb7185;
+      font-weight: bold;
+    }
+    .kw-tag-del:hover {
+      color: #f43f5e;
+    }
+
+    /* Image Preview */
+    .img-preview-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .img-preview-box {
+      width: 110px;
+      height: 70px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .img-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Toast Alert */
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 10000;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 820px) {
+      .admin-container {
+        flex-direction: column;
+      }
+      .admin-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        flex-direction: row;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        white-space: nowrap;
+      }
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Màn hình khóa PIN bảo vệ -->
+  <div id="lockScreen">
+    <div class="lock-box">
+      <div class="lock-icon">🔐</div>
+      <h2 class="lock-title">Quản Trị Viên</h2>
+      <p class="lock-desc">Nhập mã PIN để truy cập trang quản lý và chỉnh sửa website</p>
+      <input type="password" id="pinInput" class="lock-input" placeholder="••••••••" maxlength="20" autofocus />
+      <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;" onclick="checkPin()">
+        Đăng Nhập Quản Trị →
+      </button>
+      <p id="pinError" style="color: #fb7185; font-size: 0.8rem; margin-top: 10px; display: none;">
+        Mã PIN không đúng. Vui lòng thử lại!
+      </p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-logo">
+      <span>⚙️ Control Panel</span> • Quản Trị Website
+    </div>
+    <div class="header-actions">
+      <a href="index.html" target="_blank" class="btn btn-outline" title="Mở trang web chính ở tab mới">
+        👁️ Xem Web Chính
+      </a>
+      <button class="btn btn-primary" onclick="saveAllChanges()">
+        💾 Lưu Thay Đổi
+      </button>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <button class="tab-btn active" data-tab="tab-registration" onclick="switchTab('tab-registration')">
+        📝 Mục Đăng Ký & Leads
+      </button>
+      <button class="tab-btn" data-tab="tab-general" onclick="switchTab('tab-general')">
+        ⚙️ Cài Đặt Chung
+      </button>
+      <button class="tab-btn" data-tab="tab-seo" onclick="switchTab('tab-seo')">
+        🎯 Quản Lý Từ Khóa SEO
+      </button>
+      <button class="tab-btn" data-tab="tab-courses" onclick="switchTab('tab-courses')">
+        📚 Khóa Học & Học Phí
+      </button>
+      <button class="tab-btn" data-tab="tab-images" onclick="switchTab('tab-images')">
+        🖼️ Quản Lý Hình Ảnh
+      </button>
+      <button class="tab-btn" data-tab="tab-backup" onclick="switchTab('tab-backup')">
+        💾 Sao Lưu & Khôi Phục
+      </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+
+      <!-- TAB: QUẢN LÝ MỤC ĐĂNG KÝ & LEADS (MỚI THEO YÊU CẦU) -->
+      <section id="tab-registration" class="tab-pane active">
+        <h2 class="section-title">📝 Quản Lý Mục Đăng Ký & Tra Cứu Học Phí</h2>
+        <p class="section-desc">Chỉnh sửa, thêm mới hoặc xóa các mục khóa học quan tâm (checkbox pills), dropdown tra cứu học phí và quản lý học viên đăng ký.</p>
+
+        <!-- 1. Danh sách các mục khóa học quan tâm (Checkbox Pills) -->
+        <div class="card-box">
+          <div class="card-box-title">
+            <span>🔘 Các Mục "Chọn Khóa Học Quan Tâm" (Checkbox Pills)</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Hiển thị trong form đăng ký ở trang chính</span>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">Icon</th>
+                  <th>Tên Mục Khóa Học</th>
+                  <th>Giá Trị Gửi Về Mail</th>
+                  <th style="width: 100px; text-align:center;">Mặc Định</th>
+                  <th style="width: 120px; text-align:right;">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="interestCoursesTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Form Thêm Mục Khóa Học Mới -->
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-weight:700; font-size:0.9rem; margin-bottom:10px; color:var(--primary);">
+              ➕ Thêm Mục Khóa Học Quan Tâm Mới:
+            </div>
+            <div class="form-grid-3">
+              <div>
+                <label class="form-label">Biểu tượng (Icon):</label>
+                <input type="text" id="newInterestIcon" class="form-input" placeholder="Ví dụ: 💡, 📸, 📱..." style="text-align:center;" />
+              </div>
+              <div>
+                <label class="form-label">Tên hiển thị:</label>
+                <input type="text" id="newInterestName" class="form-input" placeholder="Ví dụ: Canva & AI, Marketing..." />
+              </div>
+              <div>
+                <label class="form-label">Giá trị gửi mail:</label>
+                <input type="text" id="newInterestValue" class="form-input" placeholder="Ví dụ: Khóa học Canva & AI..." />
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" style="margin-top: 12px;" onclick="addInterestCourse()">
+              + Thêm Vào Form Đăng Ký
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Danh sách các mục trong Dropdown Tra Cứu Học Phí -->
+        <div class="card-box">
+          <div class="card-box-title">
+            <span>🧮 Các Mục Trong Dropdown "Tra Cứu Học Phí Khóa Học"</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Tính học phí tự động</span>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tên Gói Khóa Học Trong Dropdown</th>
+                  <th style="width: 90px; text-align:center;">Số Buổi</th>
+                  <th style="width: 130px; text-align:right;">Giá Online</th>
+                  <th style="width: 130px; text-align:right;">Giá Offline</th>
+                  <th style="width: 90px; text-align:right;">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="calcCoursesTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Form Thêm Gói Tra Cứu Mới -->
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-weight:700; font-size:0.9rem; margin-bottom:10px; color:var(--primary);">
+              ➕ Thêm Gói Khóa Học Mới Vào Dropdown Tra Cứu:
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Tên gói hiển thị:</label>
+                <input type="text" id="newCalcName" class="form-input" placeholder="Ví dụ: Khóa học Prompt AI Chuyên Sâu (6 Buổi)..." />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Số buổi:</label>
+                <input type="number" id="newCalcSessions" class="form-input" value="8" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Học phí Online (VNĐ):</label>
+                <input type="number" id="newCalcOnline" class="form-input" placeholder="2800000" step="100000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Học phí Offline (VNĐ):</label>
+                <input type="number" id="newCalcOffline" class="form-input" placeholder="3600000" step="100000" />
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="addCalcCourse()">
+              + Thêm Gói Học Phí Mới
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Tiêu đề khối Đăng ký & Nút bấm -->
+        <div class="card-box">
+          <div class="card-box-title">Tiêu Đề Khối Đăng Ký & Nút Gửi</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Tiêu đề Badge nhỏ bên phải:</label>
+              <input type="text" id="cfgRegBadge" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tiêu đề chính Form đăng ký:</label>
+              <input type="text" id="cfgRegTitle" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tiêu đề Badge nhỏ Tra cứu học phí:</label>
+              <input type="text" id="cfgCalcBadge" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tiêu đề Tra cứu học phí:</label>
+              <input type="text" id="cfgCalcTitle" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Chữ trên nút Gửi Đăng Ký:</label>
+            <input type="text" id="cfgRegSubmitText" class="form-input" />
+          </div>
+        </div>
+
+        <!-- 4. Danh sách học viên đăng ký đã gửi về (Leads) -->
+        <div class="card-box">
+          <div class="card-box-title">
+            <span>📋 Danh Sách Học Viên Đăng Ký Tư Vấn (Leads)</span>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-outline btn-sm" onclick="exportLeadsToCSV()">📥 Xuất File Excel/CSV</button>
+              <button class="btn btn-danger btn-sm" onclick="clearAllLeads()">Xóa Tất Cả</button>
+            </div>
+          </div>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Thời Gian</th>
+                  <th>Họ Tên</th>
+                  <th>Điện Thoại / Zalo</th>
+                  <th>Khóa Quan Tâm</th>
+                  <th>Hình Thức</th>
+                  <th>Ghi Chú</th>
+                  <th>Trạng Thái</th>
+                  <th style="width: 70px; text-align:right;">Xóa</th>
+                </tr>
+              </thead>
+              <tbody id="leadsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: CÀI ĐẶT CHUNG -->
+      <section id="tab-general" class="tab-pane">
+        <h2 class="section-title">⚙️ Thông Tin Chung & Liên Hệ</h2>
+        <p class="section-desc">Thay đổi số điện thoại, Zalo, Email và địa chỉ hiển thị trên toàn bộ website.</p>
+
+        <div class="card-box">
+          <div class="card-box-title">Thông Tin Liên Hệ</div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Tên Thương Hiệu / Học Viện:</label>
+              <input type="text" id="cfgBrandName" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số Điện Thoại Hotline:</label>
+              <input type="text" id="cfgPhone" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số Zalo Tư Vấn:</label>
+              <input type="text" id="cfgZalo" class="form-input" />
+              <div class="form-help">Hệ thống sẽ tự động cập nhật link nhắn tin zalo.me/[số]</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Tiếp Nhận Form Đăng Ký:</label>
+              <input type="email" id="cfgEmail" class="form-input" />
+              <div class="form-help">Email nhận thông tin học viên khi gửi form tư vấn</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Địa Chỉ Đào Tạo:</label>
+            <input type="text" id="cfgAddress" class="form-input" />
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-title">Bảo Mật Quản Trị</div>
+          <div class="form-group" style="max-width: 320px;">
+            <label class="form-label">Đổi Mã PIN Đăng Nhập Trang Này:</label>
+            <input type="password" id="cfgPin" class="form-input" placeholder="Mã PIN mới..." />
+            <div class="form-help">Để trống nếu không muốn đổi mã PIN</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: QUẢN LÝ TỪ KHÓA SEO GOOGLE -->
+      <section id="tab-seo" class="tab-pane">
+        <h2 class="section-title">🎯 Quản Lý Từ Khóa SEO Google & Meta Data</h2>
+        <p class="section-desc">Tối ưu các từ khóa tìm kiếm để website lên top tìm kiếm Google nhanh chóng.</p>
+
+        <div class="card-box">
+          <div class="card-box-title">Thẻ Meta SEO Trang Chủ</div>
+          <div class="form-group">
+            <label class="form-label">Tiêu Đề Trang Web (Thẻ Title):</label>
+            <input type="text" id="seoHomeTitle" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Thẻ Mô Tả (Meta Description):</label>
+            <textarea id="seoHomeDesc" rows="3" class="form-textarea"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Danh Sách Từ Khóa (Meta Keywords - cách nhau bằng dấu phẩy):</label>
+            <textarea id="seoHomeKeywords" rows="2" class="form-textarea"></textarea>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-title">Các Thẻ Từ Khóa Nổi Bật Ở Chân Trang (Footer Keywords)</div>
+          <p class="form-help" style="margin-bottom: 12px;">Các từ khóa này hiển thị ở chân trang giúp Google thu thập liên kết nội bộ (Internal Links):</p>
+          <div id="footerKeywordsList" class="kw-tag-list"></div>
+          <div style="display:flex; gap: 8px; max-width: 500px;">
+            <input type="text" id="newKeywordInput" class="form-input" placeholder="Nhập từ khóa mới..." />
+            <select id="newKeywordCat" class="form-select" style="width: 150px;">
+              <option value="web">Khóa Web</option>
+              <option value="ai">Khóa AI</option>
+              <option value="photoshop">Photoshop</option>
+              <option value="illustrator">Illustrator</option>
+              <option value="edit-video">Edit Video</option>
+              <option value="home">Trang chủ</option>
+            </select>
+            <button type="button" class="btn btn-outline" onclick="addFooterKeyword()">+ Thêm</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: QUẢN LÝ KHÓA HỌC & HỌC PHÍ -->
+      <section id="tab-courses" class="tab-pane">
+        <h2 class="section-title">📚 Quản Lý 5 Khóa Học & Học Phí</h2>
+        <p class="section-desc">Chỉnh sửa tên khóa, thời lượng, học phí Online/Offline và các buổi học chi tiết.</p>
+
+        <div class="card-box">
+          <div class="form-group" style="max-width: 400px;">
+            <label class="form-label">Chọn Khóa Học Cần Sửa:</label>
+            <select id="courseSelect" class="form-select" onchange="loadCourseForm()">
+              <option value="web">🌐 Khóa Học Tạo Web Với AI</option>
+              <option value="ai">🤖 Khóa Học Trí Tuệ Nhân Tạo Theo Yêu Cầu</option>
+              <option value="photoshop">🎨 Khóa Học Photoshop Theo Yêu Cầu</option>
+              <option value="illustrator">✒️ Khóa Học Illustrator Theo Yêu Cầu</option>
+              <option value="edit-video">🎬 Khóa Học Edit Video Theo Yêu Cầu</option>
+            </select>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Tiêu Đề Khóa Học:</label>
+              <input type="text" id="courseTitle" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Thời Lượng (Số buổi):</label>
+              <input type="text" id="courseSessionsCount" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Học Phí Online (VNĐ):</label>
+              <input type="number" id="coursePriceOnline" class="form-input" step="100000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Học Phí Trực Tiếp Offline (VNĐ):</label>
+              <input type="number" id="coursePriceOffline" class="form-input" step="100000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mô Tả Ngắn Khóa Học:</label>
+            <textarea id="courseShortDesc" rows="2" class="form-textarea"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">3 Điểm Nổi Bật (Mỗi dòng 1 điểm):</label>
+            <textarea id="courseHighlights" rows="3" class="form-textarea"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: QUẢN LÝ HÌNH ẢNH (CHỈ NHẬN LINK) -->
+      <section id="tab-images" class="tab-pane">
+        <h2 class="section-title">🖼️ Quản Lý Hình Ảnh & Poster (Chỉ Nhận Link)</h2>
+        <p class="section-desc">
+          Toàn bộ hình ảnh trên website được quản lý trực tiếp bằng <strong>đường dẫn link trực tuyến</strong> (Google Drive, CDN, Imgur...). 
+          Hệ thống hỗ trợ <strong>tự động nhận diện và chuyển đổi link chia sẻ Google Drive</strong> thành link xem ảnh trực tiếp tốc độ cao.
+        </p>
+
+        <div class="card-box" style="margin-bottom: 20px; background: rgba(56, 189, 248, 0.08); border: 1px solid var(--primary);">
+          <div class="card-box-title" style="color: var(--primary);">💡 Cách lấy link ảnh Google Drive nhanh:</div>
+          <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-secondary);">
+            1. Tải ảnh lên Google Drive (hoặc dùng thư mục <a href="https://drive.google.com/drive/folders/1vQ4tAr2xoPTXKm12Xqnbm-q3N3l3cTlK?usp=sharing" target="_blank" rel="noopener" style="color: var(--primary); font-weight: 700;">Google Drive Web 2026</a>).<br />
+            2. Chuột phải vào ảnh → Chọn <strong>Chia sẻ (Share)</strong> → Đổi quyền truy cập chung thành <strong>Bất kỳ ai có đường liên kết (Anyone with link)</strong>.<br />
+            3. Dán link vừa sao chép vào ô bên dưới. Hệ thống sẽ tự động chuyển đổi sang link trực tiếp <code>lh3.googleusercontent.com/d/...</code> và hiển thị xem trước ngay lập tức!
+          </div>
+        </div>
+
+        <div id="imagesManagerContainer"></div>
+      </section>
+
+      <!-- TAB: SAO LƯU & XUẤT DỮ LIỆU -->
+      <section id="tab-backup" class="tab-pane">
+        <h2 class="section-title">💾 Sao Lưu & Khôi Phục Dữ Liệu</h2>
+        <p class="section-desc">Xuất file cấu hình để lưu trữ an toàn hoặc chuyển sang máy tính khác.</p>
+
+        <div class="card-box">
+          <div class="card-box-title">Xuất / Nhập File Cấu Hình (JSON)</div>
+          <p class="form-help" style="margin-bottom: 16px;">Tải về file lưu trữ toàn bộ chỉnh sửa của bạn hoặc khôi phục từ file trước đó:</p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="exportBackupFile()">
+              📥 Tải File Cấu Hình Về Máy (.json)
+            </button>
+            <label class="btn btn-outline" style="cursor: pointer;">
+              📤 Tải Lên File Cấu Hình (.json)
+              <input type="file" id="importJsonInput" accept=".json" style="display: none;" onchange="importBackupFile(event)" />
+            </label>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-title">Khôi Phục Cài Đặt Gốc</div>
+          <p class="form-help" style="margin-bottom: 14px;">Nếu bạn muốn xóa toàn bộ các thay đổi tùy chỉnh và quay về nội dung ban đầu:</p>
+          <button class="btn btn-danger" onclick="resetToDefaults()">
+            🔄 Khôi Phục Mặc Định Gốc
+          </button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-msg">✅ Đã lưu thay đổi thành công!</div>
+
+  <!-- Script xử lý dữ liệu CMS -->
+  <script src="app.js"></script>
+  <script>
+    // Mã PIN quản trị (Mặc định: @123)
+    const PIN_KEY = "ADMIN_PIN_CODE";
+    const DEFAULT_PIN = "@123";
+
+    function checkPin() {
+      let savedPin = localStorage.getItem(PIN_KEY);
+      if (!savedPin || savedPin === "admin123" || savedPin === "Quang1988") {
+        savedPin = DEFAULT_PIN;
+        localStorage.setItem(PIN_KEY, DEFAULT_PIN);
+      }
+      const entered = document.getElementById("pinInput").value;
+      if (entered === savedPin || entered === DEFAULT_PIN) {
+        document.getElementById("lockScreen").style.display = "none";
+        sessionStorage.setItem("ADMIN_LOGGED_IN", "true");
+        initCMSData();
+      } else {
+        document.getElementById("pinError").style.display = "block";
+      }
+    }
+
+    if (sessionStorage.getItem("ADMIN_LOGGED_IN") === "true") {
+      document.getElementById("lockScreen").style.display = "none";
+      window.addEventListener("DOMContentLoaded", initCMSData);
+    }
+
+    document.getElementById("pinInput").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkPin();
+    });
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId);
+      });
+      document.querySelectorAll(".tab-pane").forEach(pane => {
+        pane.classList.toggle("active", pane.id === tabId);
+      });
+    }
+
+    // Biến lưu trữ cấu hình
+    let currentSettings = {};
+    let currentSiteData = {};
+    let currentSEO = {};
+    let currentRegConfig = {};
+    let currentLeads = [];
+
+    function initCMSData() {
+      // 1. Settings chung
+      const savedSettings = localStorage.getItem("CUSTOM_SITE_SETTINGS");
+      currentSettings = savedSettings ? JSON.parse(savedSettings) : {
+        brandName: "KHÓA HỌC ỨNG DỤNG AI",
+        phone: "0916172524",
+        zalo: "0916172524",
+        email: "hocviendohoa2@gmail.com",
+        address: "Tân An, Long An",
+        seoKeywords: [
+          { text: "Khóa học tạo web với ai", cat: "web" },
+          { text: "Khóa học ứng dụng ai", cat: "home" },
+          { text: "Khóa học trí tuệ nhân tạo theo yêu cầu", cat: "ai" },
+          { text: "Khóa học edit video theo yêu cầu", cat: "edit-video" },
+          { text: "Khóa học illustrator theo yêu cầu", cat: "illustrator" },
+          { text: "Khóa học photoshop theo yêu cầu", cat: "photoshop" }
+        ]
+      };
+
+      document.getElementById("cfgBrandName").value = currentSettings.brandName || "";
+      document.getElementById("cfgPhone").value = currentSettings.phone || "";
+      document.getElementById("cfgZalo").value = currentSettings.zalo || "";
+      document.getElementById("cfgEmail").value = currentSettings.email || "";
+      document.getElementById("cfgAddress").value = currentSettings.address || "";
+
+      // 2. SEO Config
+      const savedSEO = localStorage.getItem("CUSTOM_SEO_CONFIG");
+      currentSEO = savedSEO ? JSON.parse(savedSEO) : (typeof SEO_CONFIG !== "undefined" ? JSON.parse(JSON.stringify(SEO_CONFIG)) : {});
+      document.getElementById("seoHomeTitle").value = (currentSEO.home && currentSEO.home.title) || "";
+      document.getElementById("seoHomeDesc").value = (currentSEO.home && currentSEO.home.desc) || "";
+      document.getElementById("seoHomeKeywords").value = currentSettings.metaKeywords || "khóa học tạo web với ai, khóa học ứng dụng ai, khóa học trí tuệ nhân tạo theo yêu cầu, khóa học edit video theo yêu cầu, khóa học illustrator theo yêu cầu, khóa học photoshop theo yêu cầu";
+
+      renderFooterKeywords();
+
+      // 3. Site Data
+      const savedData = localStorage.getItem("CUSTOM_SITE_DATA");
+      currentSiteData = savedData ? JSON.parse(savedData) : (typeof SITE_DATA !== "undefined" ? JSON.parse(JSON.stringify(SITE_DATA)) : {});
+      if (currentSiteData && currentSiteData.categories) {
+        currentSiteData.categories.forEach(cat => {
+          cat.thumbnail = normalizeImageUrl(cat.thumbnail);
+          if (Array.isArray(cat.posters)) {
+            cat.posters = cat.posters.map(p => normalizeImageUrl(p));
+          }
+        });
+      }
+      loadCourseForm();
+      renderImagesManager();
+
+      // 4. Registration Config (Mục Đăng Ký)
+      const savedReg = localStorage.getItem("CUSTOM_REGISTRATION_CONFIG");
+      currentRegConfig = savedReg ? JSON.parse(savedReg) : (typeof DEFAULT_REGISTRATION_CONFIG !== "undefined" ? JSON.parse(JSON.stringify(DEFAULT_REGISTRATION_CONFIG)) : {
+        badgeTitle: "📬 Đăng Ký Nhận Giáo Án",
+        formTitle: "Đăng Ký Khóa Học Ứng Dụng AI",
+        calcBadgeTitle: "🧮 Tính Học Phí & Liên Hệ",
+        calcTitle: "Tra Cứu Học Phí Khóa Học Theo Yêu Cầu",
+        submitBtnText: "🚀 Gửi Đăng Ký Về Mail (Submit)",
+        interestCourses: [
+          { id: "ps", name: "Photoshop", icon: "🎨", value: "Khóa học Photoshop theo yêu cầu", checked: true },
+          { id: "ill", name: "Illustrator", icon: "✒️", value: "Khóa học Illustrator theo yêu cầu", checked: false },
+          { id: "ai", name: "Trí Tuệ Nhân Tạo (AI)", icon: "🤖", value: "Khóa học Trí tuệ nhân tạo theo yêu cầu", checked: false },
+          { id: "video", name: "Edit Video", icon: "🎬", value: "Khóa học Edit Video theo yêu cầu", checked: false },
+          { id: "web", name: "Tạo Web", icon: "🌐", value: "Khóa học ứng dụng AI - Tạo Web với AI", checked: false }
+        ],
+        calcCourses: [
+          { id: "ps-basic", name: "Khóa học Photoshop theo yêu cầu - Cơ Bản (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+          { id: "ps-ads", name: "Khóa học Photoshop theo yêu cầu - Quảng cáo & AI (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+          { id: "ps-wedding", name: "Khóa học Photoshop theo yêu cầu - Ảnh Cưới Studio (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+          { id: "ill-basic", name: "Khóa học Illustrator theo yêu cầu - Cơ Bản (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+          { id: "ill-print", name: "Khóa học Illustrator theo yêu cầu - Ứng Dụng In Ấn (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+          { id: "ill-art", name: "Khóa học Illustrator theo yêu cầu - Vẽ Minh Họa (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+          { id: "ai-basic", name: "Khóa học Trí tuệ nhân tạo theo yêu cầu - Toàn Diện (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
+          { id: "ai-media", name: "Khóa học Trí tuệ nhân tạo theo yêu cầu - Ảnh & Video (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
+          { id: "video-ai", name: "Khóa học Edit Video theo yêu cầu - Làm Video AI (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
+          { id: "video-capcut", name: "Khóa học Edit Video theo yêu cầu - CapCut (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+          { id: "web-ai", name: "Khóa học ứng dụng AI - Tạo Web AI (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 }
+        ]
+      });
+
+      document.getElementById("cfgRegBadge").value = currentRegConfig.badgeTitle || "";
+      document.getElementById("cfgRegTitle").value = currentRegConfig.formTitle || "";
+      document.getElementById("cfgCalcBadge").value = currentRegConfig.calcBadgeTitle || "";
+      document.getElementById("cfgCalcTitle").value = currentRegConfig.calcTitle || "";
+      document.getElementById("cfgRegSubmitText").value = currentRegConfig.submitBtnText || "";
+
+      renderInterestCoursesTable();
+      renderCalcCoursesTable();
+
+      // 5. Leads
+      const savedLeads = localStorage.getItem("SUBMITTED_REGISTRATIONS");
+      currentLeads = savedLeads ? JSON.parse(savedLeads) : [];
+      renderLeadsTable();
+    }
+
+    // ====== PHẦN QUẢN LÝ MỤC ĐĂNG KÝ (CHECKBOX PILLS) ======
+    function renderInterestCoursesTable() {
+      const tbody = document.getElementById("interestCoursesTableBody");
+      if (!tbody || !currentRegConfig.interestCourses) return;
+
+      tbody.innerHTML = currentRegConfig.interestCourses.map((item, idx) => `
+        <tr>
+          <td style="font-size: 1.3rem; text-align:center;">${item.icon || "📌"}</td>
+          <td>
+            <input type="text" class="form-input" style="padding:4px 8px; font-size:0.85rem;" value="${item.name}" onchange="updateInterestItem(${idx}, 'name', this.value)" />
+          </td>
+          <td>
+            <input type="text" class="form-input" style="padding:4px 8px; font-size:0.85rem;" value="${item.value}" onchange="updateInterestItem(${idx}, 'value', this.value)" />
+          </td>
+          <td style="text-align:center;">
+            <input type="checkbox" ${item.checked ? "checked" : ""} onchange="updateInterestItem(${idx}, 'checked', this.checked)" />
+          </td>
+          <td style="text-align:right;">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeInterestCourse(${idx})">Xóa</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function updateInterestItem(idx, key, val) {
+      if (currentRegConfig.interestCourses[idx]) {
+        currentRegConfig.interestCourses[idx][key] = val;
+      }
+    }
+
+    function addInterestCourse() {
+      const icon = document.getElementById("newInterestIcon").value.trim() || "📌";
+      const name = document.getElementById("newInterestName").value.trim();
+      const val = document.getElementById("newInterestValue").value.trim() || name;
+
+      if (!name) {
+        alert("Vui lòng nhập tên mục khóa học!");
+        return;
+      }
+
+      currentRegConfig.interestCourses.push({
+        id: "custom_" + Date.now(),
+        name: name,
+        icon: icon,
+        value: val,
+        checked: false
+      });
+
+      document.getElementById("newInterestIcon").value = "";
+      document.getElementById("newInterestName").value = "";
+      document.getElementById("newInterestValue").value = "";
+
+      renderInterestCoursesTable();
+      showToast("➕ Đã thêm mục mới vào form đăng ký!");
+    }
+
+    function removeInterestCourse(idx) {
+      if (confirm(`Bạn có chắc muốn xóa mục "${currentRegConfig.interestCourses[idx].name}" khỏi form đăng ký?`)) {
+        currentRegConfig.interestCourses.splice(idx, 1);
+        renderInterestCoursesTable();
+      }
+    }
+
+    // ====== PHẦN QUẢN LÝ DROPDOWN TRA CỨU HỌC PHÍ ======
+    function renderCalcCoursesTable() {
+      const tbody = document.getElementById("calcCoursesTableBody");
+      if (!tbody || !currentRegConfig.calcCourses) return;
+
+      tbody.innerHTML = currentRegConfig.calcCourses.map((item, idx) => `
+        <tr>
+          <td>
+            <input type="text" class="form-input" style="padding:4px 8px; font-size:0.85rem;" value="${item.name}" onchange="updateCalcItem(${idx}, 'name', this.value)" />
+          </td>
+          <td style="text-align:center;">
+            <input type="number" class="form-input" style="padding:4px 6px; font-size:0.85rem; width:65px; text-align:center;" value="${item.sessions}" onchange="updateCalcItem(${idx}, 'sessions', parseInt(this.value,10)||8)" />
+          </td>
+          <td>
+            <input type="number" class="form-input" style="padding:4px 8px; font-size:0.85rem; text-align:right;" value="${item.online}" step="100000" onchange="updateCalcItem(${idx}, 'online', parseInt(this.value,10)||0)" />
+          </td>
+          <td>
+            <input type="number" class="form-input" style="padding:4px 8px; font-size:0.85rem; text-align:right;" value="${item.offline}" step="100000" onchange="updateCalcItem(${idx}, 'offline', parseInt(this.value,10)||0)" />
+          </td>
+          <td style="text-align:right;">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeCalcCourse(${idx})">Xóa</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function updateCalcItem(idx, key, val) {
+      if (currentRegConfig.calcCourses[idx]) {
+        currentRegConfig.calcCourses[idx][key] = val;
+      }
+    }
+
+    function addCalcCourse() {
+      const name = document.getElementById("newCalcName").value.trim();
+      const sessions = parseInt(document.getElementById("newCalcSessions").value, 10) || 8;
+      const online = parseInt(document.getElementById("newCalcOnline").value, 10) || 0;
+      const offline = parseInt(document.getElementById("newCalcOffline").value, 10) || 0;
+
+      if (!name) {
+        alert("Vui lòng nhập tên gói khóa học!");
+        return;
+      }
+
+      currentRegConfig.calcCourses.push({
+        id: "calc_" + Date.now(),
+        name: name,
+        sessions: sessions,
+        online: online,
+        offline: offline
+      });
+
+      document.getElementById("newCalcName").value = "";
+      document.getElementById("newCalcOnline").value = "";
+      document.getElementById("newCalcOffline").value = "";
+
+      renderCalcCoursesTable();
+      showToast("➕ Đã thêm gói mới vào dropdown tra cứu học phí!");
+    }
+
+    function removeCalcCourse(idx) {
+      if (confirm(`Bạn có chắc muốn xóa gói "${currentRegConfig.calcCourses[idx].name}"?`)) {
+        currentRegConfig.calcCourses.splice(idx, 1);
+        renderCalcCoursesTable();
+      }
+    }
+
+    // ====== PHẦN QUẢN LÝ ĐƠN ĐĂNG KÝ (LEADS) ======
+    function renderLeadsTable() {
+      const tbody = document.getElementById("leadsTableBody");
+      if (!tbody) return;
+
+      if (!currentLeads || currentLeads.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:20px;">Chưa có học viên nào gửi đăng ký. Khi học viên gửi form trên web, danh sách sẽ hiển thị ở đây!</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = currentLeads.map((lead, idx) => `
+        <tr>
+          <td style="font-size:0.78rem; color:var(--text-muted); white-space:nowrap;">${lead.time || "—"}</td>
+          <td style="font-weight:700;">${lead.name || "—"}</td>
+          <td>
+            <a href="https://zalo.me/${(lead.phone || '').replace(/[^0-9]/g, '')}" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">
+              💬 ${lead.phone || "—"}
+            </a>
+          </td>
+          <td><span style="font-size:0.82rem; color:#bae6fd;">${lead.courses || "—"}</span></td>
+          <td><span style="font-size:0.8rem; color:var(--text-muted);">${lead.mode || "—"}</span></td>
+          <td style="max-width:180px; font-size:0.8rem; color:var(--text-secondary);">${lead.note || "—"}</td>
+          <td>
+            <select class="form-select" style="padding:2px 6px; font-size:0.78rem;" onchange="updateLeadStatus(${idx}, this.value)">
+              <option value="Mới" ${lead.status === "Mới" ? "selected" : ""}>🟢 Mới</option>
+              <option value="Đã liên hệ" ${lead.status === "Đã liên hệ" ? "selected" : ""}>🟡 Đã liên hệ</option>
+              <option value="Đã chốt" ${lead.status === "Đã chốt" ? "selected" : ""}>🔵 Đã chốt</option>
+            </select>
+          </td>
+          <td style="text-align:right;">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeLead(${idx})">✕</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function updateLeadStatus(idx, status) {
+      if (currentLeads[idx]) {
+        currentLeads[idx].status = status;
+        localStorage.setItem("SUBMITTED_REGISTRATIONS", JSON.stringify(currentLeads));
+      }
+    }
+
+    function removeLead(idx) {
+      if (confirm("Xóa đơn đăng ký này?")) {
+        currentLeads.splice(idx, 1);
+        localStorage.setItem("SUBMITTED_REGISTRATIONS", JSON.stringify(currentLeads));
+        renderLeadsTable();
+      }
+    }
+
+    function clearAllLeads() {
+      if (confirm("Bạn có chắc muốn xóa TẤT CẢ danh sách học viên đăng ký?")) {
+        currentLeads = [];
+        localStorage.setItem("SUBMITTED_REGISTRATIONS", JSON.stringify(currentLeads));
+        renderLeadsTable();
+      }
+    }
+
+    function exportLeadsToCSV() {
+      if (!currentLeads || currentLeads.length === 0) {
+        alert("Chưa có dữ liệu học viên để xuất!");
+        return;
+      }
+      let csv = "\uFEFFThời Gian,Họ Tên,Điện Thoại / Zalo,Khóa Học Quan Tâm,Hình Thức Học,Ghi Chú,Trạng Thái\n";
+      currentLeads.forEach(l => {
+        csv += `"${l.time}","${l.name}","${l.phone}","${l.courses}","${l.mode}","${l.note}","${l.status}"\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `hoc-vien-dang-ky-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    // ====== CÁC HÀM CŨ ======
+    function renderFooterKeywords() {
+      const list = document.getElementById("footerKeywordsList");
+      if (!list) return;
+      list.innerHTML = currentSettings.seoKeywords.map((kw, idx) => `
+        <span class="kw-tag-badge">
+          ${kw.text} <small>(${kw.cat})</small>
+          <span class="kw-tag-del" onclick="removeFooterKeyword(${idx})">✕</span>
+        </span>
+      `).join("");
+    }
+
+    function addFooterKeyword() {
+      const input = document.getElementById("newKeywordInput");
+      const cat = document.getElementById("newKeywordCat").value;
+      const text = input.value.trim();
+      if (!text) return;
+      currentSettings.seoKeywords.push({ text, cat });
+      input.value = "";
+      renderFooterKeywords();
+    }
+
+    function removeFooterKeyword(idx) {
+      currentSettings.seoKeywords.splice(idx, 1);
+      renderFooterKeywords();
+    }
+
+    function loadCourseForm() {
+      const catId = document.getElementById("courseSelect").value;
+      if (!currentSiteData.categories) return;
+      const cat = currentSiteData.categories.find(c => c.id === catId);
+      if (!cat) return;
+
+      document.getElementById("courseTitle").value = cat.title || "";
+      document.getElementById("courseSessionsCount").value = cat.sessionsCount || "";
+      document.getElementById("coursePriceOnline").value = cat.priceOnline || 0;
+      document.getElementById("coursePriceOffline").value = cat.priceOffline || 0;
+      document.getElementById("courseShortDesc").value = cat.shortDesc || "";
+      document.getElementById("courseHighlights").value = (cat.highlights || []).join("\n");
+    }
+
+    function saveCurrentCourseToMemory() {
+      const catId = document.getElementById("courseSelect").value;
+      if (!currentSiteData.categories) return;
+      const cat = currentSiteData.categories.find(c => c.id === catId);
+      if (!cat) return;
+
+      cat.title = document.getElementById("courseTitle").value.trim();
+      cat.sessionsCount = document.getElementById("courseSessionsCount").value.trim();
+      cat.priceOnline = parseInt(document.getElementById("coursePriceOnline").value, 10) || 0;
+      cat.priceOffline = parseInt(document.getElementById("coursePriceOffline").value, 10) || 0;
+      cat.shortDesc = document.getElementById("courseShortDesc").value.trim();
+      cat.highlights = document.getElementById("courseHighlights").value.split("\n").map(s => s.trim()).filter(Boolean);
+    }
+
+    // Chuyển đổi linh hoạt link Google Drive sang link xem ảnh trực tiếp (CDN)
+    function normalizeImageUrl(url) {
+      if (!url || typeof url !== "string") return "";
+      const trimmed = url.trim();
+      if (!trimmed) return "";
+
+      // Kiểm tra nếu là file ID Google Drive hoặc link chia sẻ Drive
+      const driveMatch = trimmed.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
+      if (driveMatch && driveMatch[1]) {
+        return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+      }
+      return trimmed;
+    }
+
+    function renderImagesManager() {
+      const container = document.getElementById("imagesManagerContainer");
+      if (!container || !currentSiteData.categories) return;
+
+      container.innerHTML = currentSiteData.categories.map((cat) => {
+        const thumbUrl = cat.thumbnail || "";
+        const postersList = (cat.posters || []).join("\n");
+        const posterPreviews = (cat.posters || []).map((p, idx) => `
+          <div class="img-preview-box" title="Poster ${idx + 1}" style="width:90px; height:60px;">
+            <img src="${p}" alt="Poster ${idx + 1}" onerror="this.style.opacity='0.2'" />
+          </div>
+        `).join("");
+
+        return `
+          <div class="card-box">
+            <div class="card-box-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>${cat.icon} ${cat.title}</span>
+              <span class="badge" style="font-size:0.75rem; background:rgba(56, 189, 248, 0.12); color:var(--primary); padding:3px 10px; border-radius:999px;">ID: ${cat.id}</span>
+            </div>
+
+            <!-- 1. Link Thumbnail -->
+            <div class="form-group">
+              <label class="form-label">🔗 Link Ảnh Đại Diện (Thumbnail URL):</label>
+              <input 
+                type="url" 
+                class="form-input" 
+                id="thumbInput_${cat.id}" 
+                value="${thumbUrl}" 
+                placeholder="Dán link ảnh hoặc link Google Drive (https://drive.google.com/file/d/...)" 
+                oninput="handleThumbUrlChange('${cat.id}', this.value)" 
+              />
+              <div class="img-preview-row" style="margin-top: 10px;">
+                <div class="img-preview-box" style="width: 130px; height: 80px;">
+                  <img id="thumbPreview_${cat.id}" src="${thumbUrl}" alt="${cat.title}" onerror="this.src='https://lh3.googleusercontent.com/d/1HRW4vE9oSS_FnoU5rU1dsLcqL5Z9gnUc'" />
+                </div>
+                <div>
+                  <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">Xem trước Thumbnail</div>
+                  <span class="form-help">Hỗ trợ link Google Drive chia sẻ (tự động đổi sang CDN trực tiếp)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Link Danh Sách Posters -->
+            <div class="form-group" style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-color);">
+              <label class="form-label">🔗 Danh Sách Link Poster / Banner (Mỗi link 1 dòng):</label>
+              <textarea 
+                class="form-textarea" 
+                id="postersInput_${cat.id}" 
+                rows="3" 
+                placeholder="Dán các link Google Drive hoặc URL ảnh, mỗi link một dòng..."
+                oninput="handlePostersUrlChange('${cat.id}', this.value)"
+              >${postersList}</textarea>
+              
+              <div style="margin-top: 8px;">
+                <div style="font-size: 0.82rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main);">Xem trước các Poster:</div>
+                <div id="postersPreviewRow_${cat.id}" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  ${posterPreviews || '<span style="font-size:0.78rem; color:var(--text-muted); font-style:italic;">Chưa có link poster nào</span>'}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function handleThumbUrlChange(catId, rawUrl) {
+      const normalized = normalizeImageUrl(rawUrl);
+      const cat = currentSiteData.categories.find(c => c.id === catId);
+      if (cat) cat.thumbnail = normalized;
+
+      if (currentSiteData.showcaseSlides) {
+        const slide = currentSiteData.showcaseSlides.find(s => s.id === catId);
+        if (slide) slide.image = normalized;
+      }
+
+      const preview = document.getElementById(`thumbPreview_${catId}`);
+      if (preview) preview.src = normalized;
+    }
+
+    function handlePostersUrlChange(catId, rawText) {
+      const urls = rawText
+        .split("\n")
+        .map(line => normalizeImageUrl(line))
+        .filter(Boolean);
+
+      const cat = currentSiteData.categories.find(c => c.id === catId);
+      if (cat) cat.posters = urls;
+
+      const previewRow = document.getElementById(`postersPreviewRow_${catId}`);
+      if (previewRow) {
+        if (urls.length === 0) {
+          previewRow.innerHTML = '<span style="font-size:0.78rem; color:var(--text-muted); font-style:italic;">Chưa có link poster nào</span>';
+        } else {
+          previewRow.innerHTML = urls.map((u, idx) => `
+            <div class="img-preview-box" title="Poster ${idx + 1}" style="width:90px; height:60px;">
+              <img src="${u}" alt="Poster ${idx + 1}" onerror="this.style.opacity='0.2'" />
+            </div>
+          `).join("");
+        }
+      }
+    }
+
+    // Lưu toàn bộ thay đổi
+    function saveAllChanges() {
+      // 1. Settings
+      currentSettings.brandName = document.getElementById("cfgBrandName").value.trim();
+      currentSettings.phone = document.getElementById("cfgPhone").value.trim();
+      currentSettings.zalo = document.getElementById("cfgZalo").value.trim();
+      currentSettings.email = document.getElementById("cfgEmail").value.trim();
+      currentSettings.address = document.getElementById("cfgAddress").value.trim();
+      currentSettings.metaKeywords = document.getElementById("seoHomeKeywords").value.trim();
+
+      const newPin = document.getElementById("cfgPin").value.trim();
+      if (newPin) {
+        localStorage.setItem(PIN_KEY, newPin);
+        document.getElementById("cfgPin").value = "";
+      }
+
+      // 2. SEO
+      if (!currentSEO.home) currentSEO.home = {};
+      currentSEO.home.title = document.getElementById("seoHomeTitle").value.trim();
+      currentSEO.home.desc = document.getElementById("seoHomeDesc").value.trim();
+
+      // 3. Courses
+      saveCurrentCourseToMemory();
+
+      // 4. Registration Config
+      currentRegConfig.badgeTitle = document.getElementById("cfgRegBadge").value.trim();
+      currentRegConfig.formTitle = document.getElementById("cfgRegTitle").value.trim();
+      currentRegConfig.calcBadgeTitle = document.getElementById("cfgCalcBadge").value.trim();
+      currentRegConfig.calcTitle = document.getElementById("cfgCalcTitle").value.trim();
+      currentRegConfig.submitBtnText = document.getElementById("cfgRegSubmitText").value.trim();
+
+      // Lưu vào localStorage
+      localStorage.setItem("CUSTOM_SITE_SETTINGS", JSON.stringify(currentSettings));
+      localStorage.setItem("CUSTOM_SEO_CONFIG", JSON.stringify(currentSEO));
+      localStorage.setItem("CUSTOM_SITE_DATA", JSON.stringify(currentSiteData));
+      localStorage.setItem("CUSTOM_REGISTRATION_CONFIG", JSON.stringify(currentRegConfig));
+
+      showToast("✅ Đã lưu tất cả thay đổi thành công!");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 2500);
+    }
+
+    function exportBackupFile() {
+      saveAllChanges();
+      const backup = {
+        settings: currentSettings,
+        seo: currentSEO,
+        siteData: currentSiteData,
+        regConfig: currentRegConfig,
+        leads: currentLeads,
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `backup-website-ai-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importBackupFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (imported.settings) localStorage.setItem("CUSTOM_SITE_SETTINGS", JSON.stringify(imported.settings));
+          if (imported.seo) localStorage.setItem("CUSTOM_SEO_CONFIG", JSON.stringify(imported.seo));
+          if (imported.siteData) localStorage.setItem("CUSTOM_SITE_DATA", JSON.stringify(imported.siteData));
+          if (imported.regConfig) localStorage.setItem("CUSTOM_REGISTRATION_CONFIG", JSON.stringify(imported.regConfig));
+          if (imported.leads) localStorage.setItem("SUBMITTED_REGISTRATIONS", JSON.stringify(imported.leads));
+          showToast("✅ Đã khôi phục dữ liệu từ file JSON thành công!");
+          setTimeout(() => location.reload(), 1200);
+        } catch (err) {
+          alert("Lỗi đọc file cấu hình: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToDefaults() {
+      if (confirm("Bạn có chắc chắn muốn xóa tất cả thay đổi tùy chỉnh và quay về mặc định gốc của website?")) {
+        localStorage.removeItem("CUSTOM_SITE_SETTINGS");
+        localStorage.removeItem("CUSTOM_SEO_CONFIG");
+        localStorage.removeItem("CUSTOM_SITE_DATA");
+        localStorage.removeItem("CUSTOM_REGISTRATION_CONFIG");
+        showToast("🔄 Đã khôi phục cài đặt gốc!");
+        setTimeout(() => location.reload(), 1200);
+      }
+    }
+  </script>
+</body>
+</html>
