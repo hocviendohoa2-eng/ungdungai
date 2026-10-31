@@ -56,22 +56,6 @@
 
 ---
 
-## 🔐 Hướng Dẫn Truy Cập Trang Quản Trị (Admin)
-- Trang quản trị nằm độc lập tại file `admin.html` để đảm bảo bảo mật và không bị lộ nút trên trang web chính:
-  - Khi xem trên máy tính: Mở file `admin.html` bằng trình duyệt.
-  - Khi xem trên GitHub Pages: Truy cập theo đường dẫn:  
-    👉 **`https://<ten-tai-khoan>.github.io/<ten-repo>/admin.html`**
-- **Mã PIN quản trị mặc định:** `@123` *(có thể đổi mã PIN mới ngay trong trang quản trị)*.
-- **Các tính năng quản trị:**
-  1. ⚙️ Cài đặt chung: Đổi SĐT Hotline, Zalo, Email, Địa chỉ.
-  2. 🎯 Quản lý từ khóa SEO Google & thẻ Meta.
-  3. 📝 Quản lý các mục trong Form Đăng Ký (thêm/sửa/xóa mục khóa học) & Quản lý danh sách học viên đăng ký (Leads).
-  4. 📚 Quản lý 5 khóa học & học phí (Online / Offline).
-  5. 🖼️ Quản lý hình ảnh & poster: Chỉ nhận link trực tuyến (tự động chuyển link Google Drive sang CDN tốc độ cao).
-  6. 💾 Sao lưu & Khôi phục file cấu hình JSON.
-
----
-
 ## 📞 Hỗ Trợ & Bản Quyền
 - **Đơn vị:** KHÓA HỌC ỨNG DỤNG AI
 - **Hotline / Zalo:** 0916172524
