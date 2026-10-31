@@ -61,12 +61,10 @@
   - Khi xem trên máy tính: Mở file `admin.html` bằng trình duyệt.
   - Khi xem trên GitHub Pages: Truy cập theo đường dẫn:  
     👉 **`https://<ten-tai-khoan>.github.io/<ten-repo>/admin.html`**
-- **Cơ chế bảo mật mã nguồn mở (An toàn khi công khai trên GitHub):**
-  - Hệ thống sử dụng thuật toán mã hóa băm mật khẩu một chiều **SHA-256 + Salt + Pepper** (Web Crypto API) và cơ chế DOM Guarding (toàn bộ giao diện bị ẩn cho đến khi xác thực thành công).
-  - **Lần đầu tiên truy cập:** Hệ thống sẽ yêu cầu bạn tự thiết lập mật khẩu quản trị riêng (tối thiểu 6 ký tự). Mật khẩu hoàn toàn **không lưu sẵn trong mã nguồn đẩy lên GitHub**, bảo vệ an toàn 100% cho trang web của bạn ngay cả khi Repository ở chế độ Public.
-  - Tích hợp tính năng **Chống dò mật khẩu (Brute-Force Protection)**: tự động tạm khóa 60 giây nếu nhập sai liên tiếp 5 lần.
-  - Tích hợp tính năng **Tự động đăng xuất sau 15 phút** không hoạt động để tránh bị thao tác trái phép.
-  - Nút **🔒 Khóa / Đăng Xuất** nhanh ngay trên thanh Header.
+- **Bảo mật trang quản trị:**
+  - Được bảo vệ bằng mã khóa một chiều, không lưu mật khẩu thô trong mã nguồn khi đưa lên GitHub.
+  - Chỉ có quản trị viên nắm giữ mật khẩu mới có thể mở khóa.
+  - Tích hợp tính năng chống dò mật khẩu (tự động khóa tạm nếu nhập sai nhiều lần) và nút khóa đăng xuất an toàn.
 - **Các tính năng quản trị:**
   1. ⚙️ Cài đặt chung: Đổi SĐT Hotline, Zalo, Email, Địa chỉ.
   2. 🎯 Quản lý từ khóa SEO Google & thẻ Meta.

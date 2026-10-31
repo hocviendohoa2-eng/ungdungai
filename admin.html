@@ -444,77 +444,28 @@
 </head>
 <body>
 
-  <!-- Màn hình bảo mật quản trị viên (Smart Security Guard) -->
+  <!-- Màn hình khóa đăng nhập quản trị -->
   <div id="lockScreen">
     <div class="lock-box">
-      <!-- 1. Form Đăng Nhập (Khi thiết bị đã có mật khẩu quản trị) -->
-      <div id="authLoginForm">
-        <div class="lock-icon">🔐</div>
-        <h2 class="lock-title">Quản Trị Website</h2>
-        <p class="lock-desc">Nhập mật khẩu quản trị viên để mở khóa bảng điều khiển</p>
-        
-        <form id="adminLoginForm" onsubmit="event.preventDefault(); submitLogin();">
-          <input 
-            type="password" 
-            id="pinInput" 
-            class="lock-input" 
-            placeholder="Nhập mật khẩu..." 
-            autocomplete="current-password" 
-            autofocus 
-          />
-          <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
-            Đăng Nhập Quản Trị →
-          </button>
-        </form>
+      <div class="lock-icon">🔐</div>
+      <h2 class="lock-title">Quản Trị Website</h2>
+      <p class="lock-desc">Nhập mật khẩu quản trị viên để mở khóa bảng điều khiển</p>
+      
+      <form id="adminLoginForm" onsubmit="event.preventDefault(); submitLogin();">
+        <input 
+          type="password" 
+          id="pinInput" 
+          class="lock-input" 
+          placeholder="••••••••" 
+          autocomplete="current-password" 
+          autofocus 
+        />
+        <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
+          Đăng Nhập Quản Trị →
+        </button>
+      </form>
 
-        <p id="pinError" style="color: #fb7185; font-size: 0.85rem; margin-top: 12px; display: none; line-height: 1.4;"></p>
-
-        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed rgba(255,255,255,0.1); font-size: 0.78rem; color: var(--text-muted);">
-          <span>🛡️ Bảo mật chuẩn SHA-256 an toàn khi chia sẻ mã nguồn công khai.</span><br />
-          <a href="#" onclick="promptResetPassword(); return false;" style="color: var(--primary); text-decoration: underline; margin-top: 6px; display: inline-block;">
-            Quên mật khẩu trên thiết bị này?
-          </a>
-        </div>
-      </div>
-
-      <!-- 2. Form Khởi Tạo Mật Khẩu Riêng Lần Đầu (Không lộ mật khẩu mặc định trên GitHub) -->
-      <div id="authSetupForm" style="display: none;">
-        <div class="lock-icon">🛡️</div>
-        <h2 class="lock-title">Khởi Tạo Mật Khẩu Quản Trị</h2>
-        <p class="lock-desc" style="font-size: 0.82rem; line-height: 1.5; margin-bottom: 16px;">
-          Để bảo mật tuyệt đối khi chia sẻ mã nguồn công khai trên GitHub, hệ thống không lưu mật khẩu mặc định trong code. Hãy tự đặt mật khẩu riêng của bạn:
-        </p>
-
-        <form id="adminSetupForm" onsubmit="event.preventDefault(); submitSetup();">
-          <div style="margin-bottom: 12px; text-align: left;">
-            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Mật khẩu quản trị mới (tối thiểu 6 ký tự):</label>
-            <input 
-              type="password" 
-              id="setupPinInput" 
-              class="lock-input" 
-              style="letter-spacing: normal; text-align: left; margin-bottom: 0;" 
-              placeholder="Nhập mật khẩu mới..." 
-              autocomplete="new-password" 
-            />
-          </div>
-          <div style="margin-bottom: 16px; text-align: left;">
-            <label style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Xác nhận lại mật khẩu:</label>
-            <input 
-              type="password" 
-              id="setupPinConfirm" 
-              class="lock-input" 
-              style="letter-spacing: normal; text-align: left; margin-bottom: 0;" 
-              placeholder="Nhập lại mật khẩu..." 
-              autocomplete="new-password" 
-            />
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
-            🔒 Kích Hoạt & Vào Bảng Quản Trị
-          </button>
-        </form>
-
-        <p id="setupError" style="color: #fb7185; font-size: 0.82rem; margin-top: 12px; display: none; line-height: 1.4;"></p>
-      </div>
+      <p id="pinError" style="color: #fb7185; font-size: 0.85rem; margin-top: 12px; display: none; line-height: 1.4;"></p>
     </div>
   </div>
 
@@ -754,33 +705,6 @@
             <input type="text" id="cfgAddress" class="form-input" />
           </div>
         </div>
-
-        <div class="card-box">
-          <div class="card-box-title">🔐 Bảo Mật & Đổi Mật Khẩu Quản Trị</div>
-          <p class="form-help" style="margin-bottom: 14px;">
-            Mật khẩu được mã hóa băm SHA-256 an toàn tuyệt đối, không lộ ra ngoài kể cả khi bạn đăng toàn bộ mã nguồn lên GitHub công khai.
-          </p>
-          <div class="form-grid-3">
-            <div class="form-group">
-              <label class="form-label">Mật khẩu hiện tại:</label>
-              <input type="password" id="cfgCurrentPin" class="form-input" placeholder="Mật khẩu đang dùng..." autocomplete="current-password" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Mật khẩu mới (tối thiểu 6 ký tự):</label>
-              <input type="password" id="cfgNewPin" class="form-input" placeholder="Mật khẩu mới..." autocomplete="new-password" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Xác nhận mật khẩu mới:</label>
-              <input type="password" id="cfgConfirmNewPin" class="form-input" placeholder="Xác nhận lại..." autocomplete="new-password" />
-            </div>
-          </div>
-          <div style="display: flex; gap: 12px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
-            <button type="button" class="btn btn-primary" onclick="changeAdminPassword()">
-              🔑 Cập Nhật Mật Khẩu Quản Trị
-            </button>
-            <span id="pinChangeNotice" style="font-size: 0.85rem; font-weight: 600;"></span>
-          </div>
-        </div>
       </section>
 
       <!-- TAB: QUẢN LÝ TỪ KHÓA SEO GOOGLE -->
@@ -929,65 +853,37 @@
   <script src="app.js"></script>
   <script>
     // ==========================================
-    // BẢO MẬT & XÁC THỰC QUẢN TRỊ (SHA-256 + PEPPER + SALT)
+    // BẢO MẬT QUẢN TRỊ (MÃ HÓA BĂM SHA-256 1 CHIỀU)
+    // Tuyệt đối không lưu mật khẩu thô trong mã nguồn
     // ==========================================
-    const AUTH_HASH_KEY = "ADMIN_AUTH_HASH_V2";
-    const AUTH_SALT_KEY = "ADMIN_AUTH_SALT_V2";
+    const AUTH_SALT = "web2026_salt::";
+    const VALID_AUTH_HASHES = [
+      "1f2bb17a66219d03ae882d4595861918f17544319fef98b292ddd9c755ede6e6", // Mật khẩu quản trị viên
+      "454750ab6275d953891adad80d5d0676d598da18baaf709cd07b3af9fea4b852"  // Mật khẩu quản trị phụ
+    ];
     const SESSION_KEY = "ADMIN_SESSION_ACTIVE";
     const FAILED_ATTEMPTS_KEY = "ADMIN_FAIL_COUNT";
     const LOCKOUT_UNTIL_KEY = "ADMIN_LOCKOUT_UNTIL";
     const MAX_ATTEMPTS = 5;
-    const LOCKOUT_DURATION_MS = 60 * 1000; // 60s
-    const PEPPER_KEY = "web2026_salt_pepper_secure";
+    const LOCKOUT_DURATION_MS = 60 * 1000;
 
-    function generateSalt() {
-      const arr = new Uint8Array(16);
-      crypto.getRandomValues(arr);
-      return Array.from(arr, b => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    async function hashPassword(password, salt) {
+    async function hashInput(password) {
       const enc = new TextEncoder();
-      const raw = enc.encode(`${salt}:${password}:${PEPPER_KEY}`);
+      const raw = enc.encode(AUTH_SALT + password);
       const buffer = await crypto.subtle.digest("SHA-256", raw);
       return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    async function checkAuthStatus() {
-      // Chuyển đổi mã PIN cũ sang hash an toàn nếu có từ trước trên thiết bị
-      const oldPin = localStorage.getItem("ADMIN_PIN_CODE");
-      if (oldPin) {
-        try {
-          const salt = generateSalt();
-          const hash = await hashPassword(oldPin, salt);
-          localStorage.setItem(AUTH_HASH_KEY, hash);
-          localStorage.setItem(AUTH_SALT_KEY, salt);
-        } catch (err) {
-          console.error("Migration error:", err);
-        } finally {
-          localStorage.removeItem("ADMIN_PIN_CODE");
-        }
-      }
+    function checkAuthStatus() {
+      // Dọn dẹp key lưu trữ cũ nếu có trên trình duyệt
+      localStorage.removeItem("ADMIN_PIN_CODE");
+      localStorage.removeItem("ADMIN_AUTH_HASH_V2");
+      localStorage.removeItem("ADMIN_AUTH_SALT_V2");
 
-      const storedHash = localStorage.getItem(AUTH_HASH_KEY);
-      const isSessionActive = sessionStorage.getItem(SESSION_KEY) === "true";
-
-      if (!storedHash) {
-        // Chưa có mật khẩu -> Yêu cầu người dùng tự thiết lập lần đầu
-        document.getElementById("lockScreen").style.display = "flex";
-        document.getElementById("authLoginForm").style.display = "none";
-        document.getElementById("authSetupForm").style.display = "block";
-        document.body.classList.remove("is-authenticated");
-        setTimeout(() => document.getElementById("setupPinInput")?.focus(), 150);
-        return;
-      }
-
-      if (isSessionActive) {
+      if (sessionStorage.getItem(SESSION_KEY) === "true") {
         unlockAdminView();
       } else {
         document.getElementById("lockScreen").style.display = "flex";
-        document.getElementById("authLoginForm").style.display = "block";
-        document.getElementById("authSetupForm").style.display = "none";
         document.body.classList.remove("is-authenticated");
         checkLockoutTimer();
         setTimeout(() => document.getElementById("pinInput")?.focus(), 150);
@@ -1015,7 +911,7 @@
           loginBtn.style.opacity = "0.5";
         }
         if (errorEl) {
-          errorEl.textContent = `⚠️ Đã nhập sai quá nhiều lần. Tạm khóa bảo vệ trong ${remainingSec} giây...`;
+          errorEl.textContent = `⚠️ Đã nhập sai quá nhiều lần. Tạm khóa trong ${remainingSec} giây...`;
           errorEl.style.display = "block";
         }
         setTimeout(checkLockoutTimer, 1000);
@@ -1040,8 +936,6 @@
       const inputEl = document.getElementById("pinInput");
       const entered = inputEl.value;
       const errorEl = document.getElementById("pinError");
-      const storedHash = localStorage.getItem(AUTH_HASH_KEY);
-      const storedSalt = localStorage.getItem(AUTH_SALT_KEY) || "";
 
       if (!entered) {
         errorEl.textContent = "Vui lòng nhập mật khẩu quản trị.";
@@ -1049,9 +943,9 @@
         return;
       }
 
-      const calculatedHash = await hashPassword(entered, storedSalt);
+      const calculatedHash = await hashInput(entered);
 
-      if (calculatedHash === storedHash) {
+      if (VALID_AUTH_HASHES.includes(calculatedHash)) {
         localStorage.removeItem(FAILED_ATTEMPTS_KEY);
         localStorage.removeItem(LOCKOUT_UNTIL_KEY);
         inputEl.value = "";
@@ -1074,48 +968,10 @@
       }
     }
 
-    async function submitSetup() {
-      const pinEl = document.getElementById("setupPinInput");
-      const confirmEl = document.getElementById("setupPinConfirm");
-      const errorEl = document.getElementById("setupError");
-
-      const pin = pinEl.value.trim();
-      const confirm = confirmEl.value.trim();
-
-      if (pin.length < 6) {
-        errorEl.textContent = "Mật khẩu phải có độ dài tối thiểu 6 ký tự để bảo mật!";
-        errorEl.style.display = "block";
-        return;
-      }
-
-      if (pin !== confirm) {
-        errorEl.textContent = "Xác nhận mật khẩu không khớp. Vui lòng thử lại!";
-        errorEl.style.display = "block";
-        return;
-      }
-
-      const salt = generateSalt();
-      const hash = await hashPassword(pin, salt);
-
-      localStorage.setItem(AUTH_HASH_KEY, hash);
-      localStorage.setItem(AUTH_SALT_KEY, salt);
-      localStorage.removeItem(FAILED_ATTEMPTS_KEY);
-      localStorage.removeItem(LOCKOUT_UNTIL_KEY);
-
-      pinEl.value = "";
-      confirmEl.value = "";
-      errorEl.style.display = "none";
-
-      showToast("🛡️ Đã thiết lập mật khẩu quản trị bảo mật thành công!");
-      unlockAdminView();
-    }
-
     function logoutAdmin(isAuto = false) {
       sessionStorage.removeItem(SESSION_KEY);
       document.body.classList.remove("is-authenticated");
       document.getElementById("lockScreen").style.display = "flex";
-      document.getElementById("authLoginForm").style.display = "block";
-      document.getElementById("authSetupForm").style.display = "none";
       const pinInput = document.getElementById("pinInput");
       if (pinInput) {
         pinInput.value = "";
@@ -1124,82 +980,15 @@
       const errorEl = document.getElementById("pinError");
       if (isAuto) {
         if (errorEl) {
-          errorEl.textContent = "⏰ Phiên làm việc đã hết hạn sau 15 phút không hoạt động. Vui lòng đăng nhập lại.";
+          errorEl.textContent = "⏰ Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.";
           errorEl.style.display = "block";
         }
       } else {
         if (errorEl) errorEl.style.display = "none";
-        showToast("🔒 Đã đăng xuất và khóa trang quản trị an toàn!");
+        showToast("🔒 Đã khóa trang quản trị!");
       }
     }
 
-    async function changeAdminPassword() {
-      const currentPin = document.getElementById("cfgCurrentPin").value;
-      const newPin = document.getElementById("cfgNewPin").value.trim();
-      const confirmNewPin = document.getElementById("cfgConfirmNewPin").value.trim();
-      const notice = document.getElementById("pinChangeNotice");
-
-      const storedHash = localStorage.getItem(AUTH_HASH_KEY);
-      const storedSalt = localStorage.getItem(AUTH_SALT_KEY) || "";
-
-      if (!currentPin) {
-        notice.style.color = "#fb7185";
-        notice.textContent = "⚠️ Vui lòng nhập mật khẩu hiện tại.";
-        return;
-      }
-
-      const checkCurrentHash = await hashPassword(currentPin, storedSalt);
-      if (checkCurrentHash !== storedHash) {
-        notice.style.color = "#fb7185";
-        notice.textContent = "❌ Mật khẩu hiện tại không chính xác!";
-        return;
-      }
-
-      if (newPin.length < 6) {
-        notice.style.color = "#fb7185";
-        notice.textContent = "⚠️ Mật khẩu mới phải có ít nhất 6 ký tự.";
-        return;
-      }
-
-      if (newPin !== confirmNewPin) {
-        notice.style.color = "#fb7185";
-        notice.textContent = "⚠️ Xác nhận mật khẩu mới không trùng khớp!";
-        return;
-      }
-
-      const newSalt = generateSalt();
-      const newHash = await hashPassword(newPin, newSalt);
-
-      localStorage.setItem(AUTH_HASH_KEY, newHash);
-      localStorage.setItem(AUTH_SALT_KEY, newSalt);
-
-      document.getElementById("cfgCurrentPin").value = "";
-      document.getElementById("cfgNewPin").value = "";
-      document.getElementById("cfgConfirmNewPin").value = "";
-
-      notice.style.color = "#34d399";
-      notice.textContent = "✅ Đổi mật khẩu thành công!";
-      showToast("🔑 Mật khẩu quản trị mới đã được cập nhật an toàn!");
-      setTimeout(() => { if (notice) notice.textContent = ""; }, 4000);
-    }
-
-    function promptResetPassword() {
-      const confirmReset = confirm(
-        "Bạn muốn thiết lập lại mật khẩu trên thiết bị này?\n\n" +
-        "Lưu ý: Thao tác này sẽ đặt lại thông tin bảo mật trên trình duyệt này để bạn có thể tạo mật khẩu mới.\n\n" +
-        "Bạn có chắc chắn muốn tiếp tục?"
-      );
-      if (confirmReset) {
-        localStorage.removeItem(AUTH_HASH_KEY);
-        localStorage.removeItem(AUTH_SALT_KEY);
-        localStorage.removeItem(FAILED_ATTEMPTS_KEY);
-        localStorage.removeItem(LOCKOUT_UNTIL_KEY);
-        sessionStorage.removeItem(SESSION_KEY);
-        location.reload();
-      }
-    }
-
-    // Tự động khóa sau 15 phút không thao tác
     let idleTimer = null;
     function resetIdleTimer() {
       clearTimeout(idleTimer);
@@ -1213,7 +1002,6 @@
       window.addEventListener(evt, resetIdleTimer, { passive: true });
     });
 
-    // Kích hoạt kiểm tra xác thực khi mở trang
     window.addEventListener("DOMContentLoaded", checkAuthStatus);
 
     function switchTab(tabId) {
