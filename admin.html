@@ -756,11 +756,12 @@
           <div class="form-group" style="max-width: 400px;">
             <label class="form-label">Chọn Khóa Học Cần Sửa:</label>
             <select id="courseSelect" class="form-select" onchange="loadCourseForm()">
-              <option value="web">🌐 Khóa Học Tạo Web Với AI</option>
-              <option value="ai">🤖 Khóa Học Trí Tuệ Nhân Tạo Theo Yêu Cầu</option>
               <option value="photoshop">🎨 Khóa Học Photoshop Theo Yêu Cầu</option>
               <option value="illustrator">✒️ Khóa Học Illustrator Theo Yêu Cầu</option>
+              <option value="ai">🤖 Khóa Học Trí Tuệ Nhân Tạo Theo Yêu Cầu</option>
               <option value="edit-video">🎬 Khóa Học Edit Video Theo Yêu Cầu</option>
+              <option value="web">🌐 Khóa Học Tạo Web Với AI</option>
+              <option value="theo-yeu-cau">🎯 Khóa Học Theo Yêu Cầu</option>
             </select>
           </div>
 
@@ -1064,6 +1065,10 @@
             cat.posters = cat.posters.map(p => normalizeImageUrl(p));
           }
         });
+        if (!currentSiteData.categories.some(c => c.id === "theo-yeu-cau") && typeof SITE_DATA !== "undefined") {
+          const def = SITE_DATA.categories.find(c => c.id === "theo-yeu-cau");
+          if (def) currentSiteData.categories.push(JSON.parse(JSON.stringify(def)));
+        }
       }
       loadCourseForm();
       renderImagesManager();
@@ -1074,7 +1079,7 @@
         badgeTitle: "📬 Đăng Ký Nhận Giáo Án",
         formTitle: "Đăng Ký Khóa Học Ứng Dụng AI",
         calcBadgeTitle: "🧮 Tính Học Phí & Liên Hệ",
-        calcTitle: "Tra Cứu Học Phí Khóa Học Theo Yêu Cầu",
+        calcTitle: "Tra Cứu Học Phí Khóa Học",
         submitBtnText: "🚀 Gửi Đăng Ký Về Mail (Submit)",
         interestCourses: [
           { id: "ps", name: "Photoshop", icon: "🎨", value: "Khóa học Photoshop theo yêu cầu", checked: true },

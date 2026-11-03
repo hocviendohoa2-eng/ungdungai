@@ -91,7 +91,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20261103_v5" />
 </head>
 <body>
   <div class="ambient-bg" aria-hidden="true">
@@ -122,14 +122,10 @@
         </div>
       </a>
 
-      <!-- Desktop Navigation (5 Courses + Home) -->
+      <!-- Desktop Navigation -->
       <nav class="main-nav" aria-label="Menu chính">
         <button class="nav-btn active" data-nav="home" onclick="navigateTo('home')">🏠 Trang Chủ</button>
-        <button class="nav-btn" data-nav="photoshop" onclick="navigateTo('photoshop')">🎨 Photoshop</button>
-        <button class="nav-btn" data-nav="illustrator" onclick="navigateTo('illustrator')">✒️ Illustrator</button>
-        <button class="nav-btn" data-nav="ai" onclick="navigateTo('ai')">🤖 AI</button>
-        <button class="nav-btn" data-nav="edit-video" onclick="navigateTo('edit-video')">🎬 Edit Video</button>
-        <button class="nav-btn" data-nav="web" onclick="navigateTo('web')">🌐 Tạo Web</button>
+        <button class="nav-btn" data-nav="theo-yeu-cau" onclick="navigateTo('theo-yeu-cau')">🎯 Khóa Học Theo Yêu Cầu</button>
       </nav>
 
       <div class="header-actions">
@@ -142,12 +138,8 @@
 
     <!-- Mobile / Tablet Quick Swipeable Category Bar -->
     <div class="quick-cat-bar" aria-label="Chọn nhanh khóa học">
-      <button class="quick-pill active" data-nav="home" onclick="navigateTo('home')">🏠 Tất cả</button>
-      <button class="quick-pill" data-nav="photoshop" onclick="navigateTo('photoshop')">🎨 Photoshop</button>
-      <button class="quick-pill" data-nav="illustrator" onclick="navigateTo('illustrator')">✒️ Illustrator</button>
-      <button class="quick-pill" data-nav="ai" onclick="navigateTo('ai')">🤖 Khóa AI</button>
-      <button class="quick-pill" data-nav="edit-video" onclick="navigateTo('edit-video')">🎬 Edit Video</button>
-      <button class="quick-pill" data-nav="web" onclick="navigateTo('web')">🌐 Tạo Web</button>
+      <button class="quick-pill active" data-nav="home" onclick="navigateTo('home')">🏠 Trang Chủ</button>
+      <button class="quick-pill" data-nav="theo-yeu-cau" onclick="navigateTo('theo-yeu-cau')">🎯 Khóa Học Theo Yêu Cầu</button>
     </div>
   </header>
 
@@ -161,11 +153,15 @@
         <!-- Left: Quick Fee Calculator & Contact Info -->
         <div>
           <span class="section-badge" id="calcBadgeTitle">🧮 Tính Học Phí & Liên Hệ</span>
-          <h2 class="section-title" id="calcTitle" style="font-size:1.35rem; margin-bottom:10px;">Tra Cứu Học Phí Khóa Học Theo Yêu Cầu</h2>
+          <h2 class="section-title" id="calcTitle" style="font-size:1.35rem; margin-bottom:10px;">Tra Cứu Học Phí Khóa Học</h2>
 
           <div class="form-group">
             <label for="calcCourseSelect">Chọn Khóa Học:</label>
             <select id="calcCourseSelect" class="calc-select" onchange="updateFeeCalculator()">
+              <option value="" selected></option>
+              <option value="custom-personal" data-sessions="10" data-online="3500000" data-offline="4500000">Khóa học Theo Yêu Cầu - Tự Thiết Kế (10 Buổi)</option>
+              <option value="custom-business" data-sessions="10" data-online="3500000" data-offline="4500000">Khóa học Theo Yêu Cầu - Doanh Nghiệp (10 Buổi)</option>
+              <option value="custom-express" data-sessions="6" data-online="2400000" data-offline="3000000">Khóa học Theo Yêu Cầu - Cấp Tốc (6 Buổi)</option>
               <option value="ps-basic" data-sessions="8" data-online="2800000" data-offline="3600000">Khóa học Photoshop theo yêu cầu - Cơ Bản (8 Buổi)</option>
               <option value="ps-ads" data-sessions="8" data-online="2800000" data-offline="3600000">Khóa học Photoshop theo yêu cầu - Quảng cáo & AI (8 Buổi)</option>
               <option value="ps-wedding" data-sessions="8" data-online="2800000" data-offline="3600000">Khóa học Photoshop theo yêu cầu - Ảnh Cưới Studio (8 Buổi)</option>
@@ -183,6 +179,7 @@
           <div class="form-group">
             <label for="calcModeSelect">Hình Thức Học:</label>
             <select id="calcModeSelect" class="calc-select" onchange="updateFeeCalculator()">
+              <option value="" selected></option>
               <option value="online">💻 Học Online (1 kèm 1 qua Zoom / Google Meet)</option>
               <option value="offline">🏠 Học Offline (Giáo viên qua nhà / Dạy tại Công ty)</option>
             </select>
@@ -190,10 +187,8 @@
 
           <div class="calc-result-box">
             <div>
-              <div style="font-size:0.76rem; color:var(--text-secondary); font-weight:700;" id="calcBreakdownText">
-                Trọn khóa 8 buổi (350.000đ/buổi)
-              </div>
-              <div class="calc-total-price" id="calcTotalAmount">2.800.000đ</div>
+              <div style="font-size:0.76rem; color:var(--text-secondary); font-weight:700;" id="calcBreakdownText"></div>
+              <div class="calc-total-price" id="calcTotalAmount"></div>
             </div>
             <a href="https://zalo.me/0916172524" target="_blank" rel="noopener" class="btn btn-primary" style="padding:8px 14px; font-size:0.82rem;">
               💬 Nhắn Zalo
@@ -228,6 +223,10 @@
                 <label>Chọn Khóa Học Quan Tâm:</label>
                 <div class="checkbox-pills" id="checkboxPillsContainer">
                   <label class="checkbox-pill">
+                    <input type="checkbox" name="regCourses" value="Khóa học Theo yêu cầu riêng (1 kèm 1)" />
+                    <span>🎯 Theo Yêu Cầu</span>
+                  </label>
+                  <label class="checkbox-pill">
                     <input type="checkbox" name="regCourses" value="Khóa học Photoshop theo yêu cầu" checked />
                     <span>🎨 Photoshop</span>
                   </label>
@@ -251,14 +250,17 @@
               </div>
 
               <div class="form-group full">
-                <label for="regNote">Ghi chú nhu cầu học (Không bắt buộc):</label>
-                <input type="text" id="regNote" name="Ghi chú" class="form-input" placeholder="Ví dụ: Học 1 kèm 1 buổi tối qua Google Meet..." />
+                <label for="regNote">Ghi chú nhu cầu học & Giáo án tự thiết kế (Không bắt buộc):</label>
+                <textarea id="regNote" name="Ghi chú" class="form-input" rows="4" placeholder="Ví dụ: Học 1 kèm 1 buổi tối qua Google Meet, hoặc nội dung các buổi học tự thiết kế..."></textarea>
               </div>
             </div>
 
             <button type="submit" id="regSubmitBtn" class="btn btn-hot" style="width:100%; padding:12px; font-size:0.95rem; margin-top:4px;">
               🚀 Gửi Đăng Ký Về Mail (Submit)
             </button>
+            <a href="https://zalo.me/0916172524" target="_blank" rel="noopener" class="btn btn-primary" style="width:100%; padding:10px; font-size:0.88rem; margin-top:8px; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+              💬 Hoặc Nhắn Zalo Trực Tiếp: 0916172524
+            </a>
 
             <div id="formSuccessAlert" style="display:none; margin-top:12px; padding:12px; border-radius:10px; background:rgba(16, 185, 129, 0.14); border:1px solid rgba(16, 185, 129, 0.4);"></div>
           </form>
@@ -322,6 +324,32 @@
           <p class="session-modal-desc" id="modalSessionDesc">
             Làm quen giao diện, quản lý Layer và các công cụ tạo vùng chọn cơ bản.
           </p>
+
+          <!-- Nút sửa/xóa buổi học cho khóa theo yêu cầu -->
+          <div class="session-custom-edit-actions" id="sessionEditActions" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" onclick="startEditingCurrentSession()">
+              ✏️ Viết Lại / Chỉnh Sửa Buổi Này
+            </button>
+            <button type="button" class="btn btn-outline" id="btnDeleteCurrentSession" style="padding: 6px 12px; font-size: 0.8rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.35);" onclick="deleteCurrentSession()">
+              🗑️ Xóa Buổi
+            </button>
+          </div>
+
+          <!-- Form chỉnh sửa nội dung buổi học trực tiếp -->
+          <div class="session-custom-edit-form" id="sessionEditForm" style="display: none; margin-top: 12px; background: rgba(99, 102, 241, 0.08); padding: 12px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.25);">
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Tên / Chủ đề buổi học:</label>
+            <input type="text" id="sessionEditTitleInput" class="form-input" style="margin-bottom: 8px;" />
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Chi tiết nội dung cần học:</label>
+            <textarea id="sessionEditDescInput" class="form-input" rows="3" style="margin-bottom: 10px;"></textarea>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.82rem;" onclick="saveEditedCurrentSession()">
+                💾 Lưu Nội Dung
+              </button>
+              <button type="button" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.82rem;" onclick="cancelEditingCurrentSession()">
+                Hủy
+              </button>
+            </div>
+          </div>
         </div>
         
         <div class="session-modal-perks">
@@ -363,6 +391,42 @@
     </div>
   </div>
 
+  <!-- Modal Tạo Buổi Học Mới (+) Cho Khóa Theo Yêu Cầu -->
+  <div class="session-modal-backdrop" id="addSessionModal" onclick="closeAddSessionModal(event)">
+    <div class="session-modal-sheet" onclick="event.stopPropagation()">
+      <div class="session-modal-header">
+        <div class="session-modal-badge" id="addSessionBadge">➕ Tạo Buổi Học Mới</div>
+        <button class="session-modal-close" onclick="closeAddSessionModal()" aria-label="Đóng">✕</button>
+      </div>
+      
+      <h3 style="font-size: 1.22rem; font-weight: 800; margin: 12px 0 6px;">✍️ Thiết Kế Nội Dung Buổi Học Riêng</h3>
+      <p style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
+        Nhập nội dung bạn mong muốn được học. Bé Mochi và Giáo viên sẽ đưa buổi này vào lộ trình cá nhân hóa của bạn!
+      </p>
+
+      <div class="form-group" style="margin-bottom: 12px;">
+        <label for="newSessionTitle" style="font-size: 0.84rem; font-weight: 700;">Tên buổi học *</label>
+        <input type="text" id="newSessionTitle" class="form-input" placeholder="Ví dụ: Thiết kế Banner quảng cáo & Mockup sản phẩm" required />
+      </div>
+
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="newSessionDesc" style="font-size: 0.84rem; font-weight: 700;">Nội dung chi tiết bạn muốn học *</label>
+        <textarea id="newSessionDesc" class="form-input" rows="3" placeholder="Ví dụ: Hướng dẫn cắt ghép sản phẩm sắc nét, chọn font chữ đẹp, phối màu bắt mắt và xuất file in..." required></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+        <button type="button" class="btn btn-outline" onclick="closeAddSessionModal()">Hủy</button>
+        <button type="button" class="btn btn-primary" onclick="confirmAddSession()">➕ Lưu Vào Giáo Án</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Thông Báo Khi Lưu Hoặc Gửi Giáo Án -->
+  <div id="customSyllabusToast" class="syllabus-toast">
+    <span id="toastIcon">🎉</span>
+    <span id="toastMessage">Đã lưu giáo án thành công!</span>
+  </div>
+
   <!-- Floating Quick Action Buttons -->
   <div class="floating-actions">
     <a href="https://zalo.me/0916172524" target="_blank" rel="noopener" class="float-btn float-zalo" title="Chat Zalo">
@@ -376,34 +440,26 @@
   </div>
 
 
-  <!-- Mobile Bottom Navigation Bar (6 Quick Items) -->
+  <!-- Mobile Bottom Navigation Bar -->
   <nav class="mobile-bottom-nav" aria-label="Điều hướng di động">
     <button class="mob-nav-item active" data-nav="home" onclick="navigateTo('home')">
       <span class="mob-icon">🏠</span>
-      <span>Home</span>
+      <span>Trang Chủ</span>
     </button>
-    <button class="mob-nav-item" data-nav="photoshop" onclick="navigateTo('photoshop')">
-      <span class="mob-icon">🎨</span>
-      <span>Photoshop</span>
+    <button class="mob-nav-item" data-nav="theo-yeu-cau" onclick="navigateTo('theo-yeu-cau')">
+      <span class="mob-icon">🎯</span>
+      <span>Theo Yêu Cầu</span>
     </button>
-    <button class="mob-nav-item" data-nav="illustrator" onclick="navigateTo('illustrator')">
-      <span class="mob-icon">✒️</span>
-      <span>Illustrator</span>
-    </button>
-    <button class="mob-nav-item" data-nav="ai" onclick="navigateTo('ai')">
-      <span class="mob-icon">🤖</span>
-      <span>Khóa AI</span>
-    </button>
-    <button class="mob-nav-item" data-nav="edit-video" onclick="navigateTo('edit-video')">
-      <span class="mob-icon">🎬</span>
-      <span>Video</span>
-    </button>
-    <button class="mob-nav-item" data-nav="web" onclick="navigateTo('web')">
-      <span class="mob-icon">🌐</span>
-      <span>Tạo Web</span>
-    </button>
+    <a href="https://zalo.me/0916172524" target="_blank" rel="noopener" class="mob-nav-item">
+      <span class="mob-icon">💬</span>
+      <span>Zalo</span>
+    </a>
+    <a href="#contactSection" class="mob-nav-item">
+      <span class="mob-icon">📝</span>
+      <span>Đăng Ký</span>
+    </a>
   </nav>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20261103_v5"></script>
 </body>
 </html>

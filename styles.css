@@ -680,17 +680,18 @@ img, picture, video, canvas, svg {
   display: flex;
   flex-direction: column;
   transition: var(--transition);
+  box-shadow: var(--shadow-sm);
 }
 
 .category-card:hover {
   transform: translateY(-4px);
-  border-color: var(--border-glow);
-  box-shadow: var(--shadow-lg);
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.12);
 }
 
 .category-thumb {
   position: relative;
-  height: 175px;
+  height: 185px;
   overflow: hidden;
   background: #0f172a;
 }
@@ -699,87 +700,257 @@ img, picture, video, canvas, svg {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.category-card:hover .category-thumb img {
+  transform: scale(1.04);
 }
 
 .category-tag {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(7, 11, 20, 0.82);
+  top: 12px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   color: #fff;
-  padding: 4px 10px;
+  padding: 4px 11px;
   border-radius: 999px;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  z-index: 2;
+  letter-spacing: 0.2px;
 }
 
 .category-count-badge {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: var(--gradient-main);
+  bottom: 12px;
+  right: 12px;
+  background: #2563eb;
   color: #fff;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 999px;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.45);
+  z-index: 2;
+}
+
+/* 3D Rotating Question Mark (Dấu ? 3D Tự Xoay) */
+.thumb-3d-question-box {
+  width: 100%;
+  height: 100%;
+  min-height: 185px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 45%, #1e1b4b 0%, #0f172a 75%, #070b14 100%);
+  perspective: 900px;
+  user-select: none;
+}
+
+.question-ambient-glow {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.45) 0%, rgba(236, 72, 153, 0.22) 50%, transparent 70%);
+  filter: blur(24px);
+  animation: pulseGlowOrb 4s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlowOrb {
+  0% { transform: scale(0.85); opacity: 0.55; }
+  100% { transform: scale(1.35); opacity: 0.95; }
+}
+
+.question-halo-ring {
+  position: absolute;
+  bottom: 18px;
+  width: 110px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(129, 140, 248, 0.5);
+  box-shadow: 0 0 16px rgba(129, 140, 248, 0.65), inset 0 0 12px rgba(236, 72, 153, 0.35);
+  transform: rotateX(72deg);
+  animation: spinHalo 9s linear infinite;
+}
+
+@keyframes spinHalo {
+  from { transform: rotateX(72deg) rotateZ(0deg); }
+  to { transform: rotateX(72deg) rotateZ(360deg); }
+}
+
+.question-mark-3d-wrap {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: floatAndSpinQuestion 6s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+@keyframes floatAndSpinQuestion {
+  0% {
+    transform: translateY(0px) rotateY(0deg) rotateX(4deg);
+  }
+  25% {
+    transform: translateY(-8px) rotateY(90deg) rotateX(-2deg);
+  }
+  50% {
+    transform: translateY(-14px) rotateY(180deg) rotateX(4deg);
+  }
+  75% {
+    transform: translateY(-6px) rotateY(270deg) rotateX(-2deg);
+  }
+  100% {
+    transform: translateY(0px) rotateY(360deg) rotateX(4deg);
+  }
+}
+
+.question-mark-3d-glyph {
+  font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  font-size: 5.6rem;
+  font-weight: 900;
+  line-height: 1;
+  user-select: none;
+  background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 30%, #818cf8 60%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 20px rgba(99, 102, 241, 0.6));
+  text-shadow: 
+    0 1px 0 #818cf8,
+    0 2px 0 #6366f1,
+    0 3px 0 #4f46e5,
+    0 4px 0 #4338ca,
+    0 5px 0 #3730a3,
+    0 7px 15px rgba(0, 0, 0, 0.6);
 }
 
 .category-body {
-  padding: 16px;
+  padding: 16px 18px 18px 18px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 .category-title {
-  font-size: 1.12rem;
+  font-size: 1.08rem;
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
+  color: var(--text-main);
+  line-height: 1.35;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.category-title:hover {
+  color: var(--primary);
 }
 
 .category-subcourses {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 14px;
-  padding: 10px;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
   border-radius: var(--radius-md);
-  background: rgba(56, 189, 248, 0.05);
-  border: 1px solid var(--border-color);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   flex: 1;
+  min-height: 104px;
+  justify-content: center;
+}
+
+[data-theme="dark"] .category-subcourses {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .subcourse-item {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-size: 0.81rem;
+  color: #334155;
   display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 8px;
   font-weight: 600;
+  line-height: 1.45;
+}
+
+[data-theme="dark"] .subcourse-item {
+  color: #cbd5e1;
+}
+
+.subcourse-item .check-svg {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .category-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--border-color);
 }
 
+.category-footer .price-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .price-label {
   font-size: 0.68rem;
-  color: var(--text-muted);
+  color: #64748b;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.4px;
   display: block;
+  margin-bottom: 2px;
+}
+
+[data-theme="dark"] .price-label {
+  color: #94a3b8;
 }
 
 .price-value {
-  font-size: 1.02rem;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: var(--primary);
+  color: #2563eb;
+  line-height: 1.1;
+}
+
+[data-theme="dark"] .price-value {
+  color: #38bdf8;
+}
+
+.btn-cat-action {
+  background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.38);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-cat-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.55);
 }
 
 /* Hero Face Wrapper (Đưa khuôn mặt AI lên vị trí Hero) */
@@ -1515,6 +1686,130 @@ img, picture, video, canvas, svg {
   letter-spacing: 0.3px;
 }
 
+/* Custom Syllabus Builder & Add Session Bubble */
+.mochi-speech-bubble.bubble-add-session {
+  border: 2px dashed #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
+  cursor: pointer;
+  animation: pulseAddBtn 2.2s infinite ease-in-out;
+}
+
+[data-theme="light"] .mochi-speech-bubble.bubble-add-session {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border-color: #059669;
+}
+
+.mochi-speech-bubble.bubble-add-session:hover {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #10b981;
+  transform: scale(1.09) translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+}
+
+@keyframes pulseAddBtn {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
+}
+
+.mochi-custom-builder-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px auto 6px;
+  max-width: 580px;
+  padding: 0 10px;
+}
+
+.builder-btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.builder-btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+.builder-btn-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.builder-btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.contact-section-glow {
+  animation: sectionPulseGlow 2.5s ease;
+}
+
+@keyframes sectionPulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.8); }
+  40% { box-shadow: 0 0 35px 8px rgba(99, 102, 241, 0.45); }
+  100% { box-shadow: none; }
+}
+
+/* Custom Syllabus Toast Notification */
+.syllabus-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: #ffffff;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1.5px solid #818cf8;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  font-size: 0.86rem;
+  font-weight: 700;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.syllabus-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* Session Detail Modal & Mobile Bottom Sheet */
 .session-modal-backdrop {
   position: fixed;
@@ -1970,6 +2265,7 @@ img, picture, video, canvas, svg {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  min-height: 64px;
 }
 
 .calc-total-price {

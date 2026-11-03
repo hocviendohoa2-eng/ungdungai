@@ -8,16 +8,16 @@ const SITE_DATA = {
       image: "https://lh3.googleusercontent.com/d/1_Sls2MgW2rUVhixK96nfCbiWkvgd1MBO"
     },
     {
-      id: "ai",
-      label: "🤖 Khóa AI",
-      title: "Làm chủ Gemini, Google Vids, NotebookLM, Suno & Canva",
-      image: "https://lh3.googleusercontent.com/d/1CNjcRxW4Oy3X98lZAeklc-nXp6ZFKWb8"
-    },
-    {
       id: "illustrator",
       label: "✒️ Illustrator",
       title: "Thiết kế Vector, Ấn phẩm In ấn CMYK & Vẽ Minh Họa",
       image: "https://lh3.googleusercontent.com/d/1vlFZccTbBRWrB4cjDqyrS8LueCQC4w5x"
+    },
+    {
+      id: "ai",
+      label: "🤖 Khóa AI",
+      title: "Làm chủ Gemini, Google Vids, NotebookLM, Suno & Canva",
+      image: "https://lh3.googleusercontent.com/d/1CNjcRxW4Oy3X98lZAeklc-nXp6ZFKWb8"
     },
     {
       id: "edit-video",
@@ -30,6 +30,12 @@ const SITE_DATA = {
       label: "🌐 Tạo Web",
       title: "Thiết kế Website Chuyên Nghiệp với Wix, Gemini & Veo 3",
       image: "https://lh3.googleusercontent.com/d/1GJv4ZKb9s7X9wkGu7BAUuxHl8Dk74tiW"
+    },
+    {
+      id: "theo-yeu-cau",
+      label: "🎯 Theo Yêu Cầu",
+      title: "Thiết kế giáo án riêng 1 kèm 1 theo đúng nhu cầu & công việc thực tế",
+      image: "https://lh3.googleusercontent.com/d/1-oAzJ1NceKo2FGxUW5_p1YMfuYAJoPWS"
     }
   ],
   categories: [
@@ -76,37 +82,37 @@ const SITE_DATA = {
         {
           id: "ps-ads-ai",
           tabLabel: "2. Quảng Cáo Photoshop & AI",
-          title: "Thiết kế Quảng cáo với PHOTOSHOP VÀ AI",
+          title: "KHÓA HỌC Thiết Kế Quảng Cáo Với PHOTOSHOP VÀ AI",
           duration: "8 Buổi",
           priceOffline: 3600000,
           priceOnline: 2800000,
           sessions: [
-            { num: "Buổi 1", title: "🚀 Khởi động Tư duy & Trợ lý AI", desc: "Làm quen Photoshop, thiết lập file chuẩn và viết prompt Gemini brainstorm ý tưởng." },
-            { num: "Buổi 2", title: "✂️ Nền tảng Bóc tách & Cấu trúc", desc: "Dùng AI phân tích đối thủ; làm chủ Layer, Mask và tách nền sản phẩm siêu tốc." },
-            { num: "Buổi 3", title: "🎨 Retouch & Biến hóa Màu sắc", desc: "Tâm lý học màu sắc AI; xóa chi tiết thừa, làm mịn bề mặt và blend màu thương mại." },
-            { num: "Buổi 4", title: "✍️ Xây dựng Content Quảng cáo AI", desc: "Dùng Gemini viết Copywriting (Headline, CTA) và tạo prompt sinh ảnh nguyên liệu." },
-            { num: "Buổi 5", title: "🔠 Nghệ thuật Typography", desc: "AI gợi ý cặp Font chữ; sắp xếp bố cục chữ, phân cấp thị giác và hiệu ứng Text." },
-            { num: "Buổi 6", title: "🪄 Ghép ảnh (Manipulation) & Ánh sáng", desc: "Xử lý bóng đổ, đánh sáng và dùng Generative Fill ghép bối cảnh chân thực." },
-            { num: "Buổi 7", title: "💻 Thực chiến Thiết kế Ấn phẩm", desc: "Kết hợp nguyên liệu AI & Photoshop hoàn thiện Banner / Social Post từ A-Z." },
-            { num: "Buổi 8", title: "🏆 Nghiệm thu & Portfolio", desc: "Phản biện thiết kế cùng AI; đưa ấn phẩm vào Mockup và tổng kết dự án." }
+            { num: "Buổi 1", title: "🚀 Khởi động Tư duy & Trợ lý AI", desc: "Làm quen giao diện Photoshop, thiết lập file chuẩn và học cách viết prompt cho Gemini để 'brainstorm' ý tưởng thiết kế." },
+            { num: "Buổi 2", title: "✂️ Nền tảng Bóc tách & Cấu trúc", desc: "Dùng AI phân tích hình ảnh đối thủ; thực hành làm chủ Layer, Mặt nạ (Mask) và kỹ năng tách nền sản phẩm siêu tốc trong Photoshop." },
+            { num: "Buổi 3", title: "🎨 Retouch & Biến hóa Màu sắc", desc: "Hỏi AI về tâm lý học màu sắc; thực hành xóa chi tiết thừa, làm mịn bề mặt và blend màu thương mại sắc nét." },
+            { num: "Buổi 4", title: "✍️ Xây dựng Content Quảng cáo bằng AI", desc: "Dành 100% thời lượng dùng Gemini viết Copywriting (Headline, Call-to-action) và tạo prompt sinh hình ảnh nguyên liệu." },
+            { num: "Buổi 5", title: "🔠 Nghệ thuật Typography", desc: "Nhờ AI gợi ý các cặp Font chữ phù hợp; thực hành sắp xếp bố cục chữ, phân cấp thị giác và tạo hiệu ứng Text bắt mắt." },
+            { num: "Buổi 6", title: "🪄 Ghép ảnh (Manipulation) & Ánh sáng", desc: "Dùng AI kiểm tra logic khung hình; thực hành xử lý bóng đổ, đánh sáng, và dùng Generative Fill ghép bối cảnh chân thực." },
+            { num: "Buổi 7", title: "💻 Thực chiến Thiết kế Ấn phẩm", desc: "Lắp ghép toàn bộ nguyên liệu từ AI và kỹ năng Photoshop để hoàn thiện 1 Banner hoặc Social Post chỉn chu từ A-Z." },
+            { num: "Buổi 8", title: "🏆 Nghiệm thu & Trình bày Portfolio", desc: "Đóng vai khách hàng khó tính cùng Gemini để phản biện thiết kế; thực hành đưa ấn phẩm vào Mockup và tổng kết dự án." }
           ]
         },
         {
           id: "ps-wedding",
           tabLabel: "3. Ảnh Cưới Studio & AI",
-          title: "Ghép ảnh & Xử lý Ảnh Cưới Studio",
+          title: "KHÓA HỌC Ghép Ảnh & Xử Lý Ảnh Cưới Studio",
           duration: "8 Buổi",
           priceOffline: 3600000,
           priceOnline: 2800000,
           sessions: [
-            { num: "Buổi 1", title: "🚀 Cảm hứng AI & Hệ màu Album", desc: "Dùng Gemini brainstorm concept ảnh cưới; thiết lập hệ màu chuẩn in ấn Album." },
-            { num: "Buổi 2", title: "✂️ Bóc tách Váy cưới & Tóc phức tạp", desc: "Thực hành chuyên sâu Mask, Pen tool, tách voan xuyên thấu và tóc cô dâu siêu tốc." },
-            { num: "Buổi 3", title: "✨ Retouch Da & Dáng hoàn hảo", desc: "Kỹ thuật Frequency Separation làm mịn da cao cấp, dùng Liquify nắn dáng & váy cưới." },
-            { num: "Buổi 4", title: "🖼️ Kiến tạo Bối cảnh Studio bằng AI", desc: "Viết Prompt phông nền (lâu đài, cổng hoa) và dùng Generative Fill mở rộng bối cảnh." },
-            { num: "Buổi 5", title: "🪄 Ghép nền, Khớp màu & Ánh sáng", desc: "Ghép cô dâu chú rể vào nền mới, xử lý bóng đổ, khớp tone màu và xóa phông." },
-            { num: "Buổi 6", title: "🎨 Blend Màu theo Concept", desc: "Blend màu Hàn Quốc, Vintage, Fine-Art bằng Camera Raw và áp dụng Preset hàng loạt." },
-            { num: "Buổi 7", title: "✍️ Typography & Layout Album", desc: "Thiết kế Typography chữ ký bay bổng, làm Layout bìa Album và Banner chốt sale." },
-            { num: "Buổi 8", title: "🏆 Action Hàng Loạt & Photobook", desc: "Chạy Action chỉnh ảnh hàng loạt, đưa ảnh vào Mockup Album cưới thực tế." }
+            { num: "Buổi 1", title: "🚀 Khởi động - Cảm hứng AI & Nền tảng Photoshop", desc: "Dùng Gemini để 'brainstorm' các concept ảnh cưới xu hướng; làm quen giao diện Photoshop, thiết lập hệ màu chuẩn in ấn Album." },
+            { num: "Buổi 2", title: "✂️ Nghệ thuật Bóc tách Váy cưới & Tóc phức tạp", desc: "Hỏi Gemini về các phong cách váy cưới; thực hành chuyên sâu công cụ Mask, Pen tool, tách voan xuyên thấu và tóc cô dâu siêu tốc." },
+            { num: "Buổi 3", title: "✨ Retouch Đỉnh cao - Da & Dáng hoàn hảo", desc: "Dùng Gemini phân tích tiêu chuẩn thẩm mỹ chân dung; thực hành kỹ thuật Frequency Separation làm mịn da cao cấp, dùng Liquify nắn chỉnh dáng và váy cưới." },
+            { num: "Buổi 4", title: "🖼️ Kiến tạo Bối cảnh Studio bằng AI", desc: "Dành trọng tâm dùng Gemini viết Prompt miêu tả phông nền (cổng hoa, lâu đài, phong cảnh); thực hành dùng Generative Fill/AI tạo và mở rộng bối cảnh trong Photoshop." },
+            { num: "Buổi 5", title: "🪄 Kỹ xảo Ghép nền, Khớp màu & Ánh sáng", desc: "Hỏi Gemini kiểm tra logic ánh sáng khung hình; thực hành các kỹ thuật ghép cô dâu chú rể vào nền mới, xử lý bóng đổ, khớp tone màu và tạo chiều sâu (xóa phông)." },
+            { num: "Buổi 6", title: "🎨 Blend Màu (Color Grading) theo Concept", desc: "Nhờ Gemini tư vấn công thức màu theo chủ đề (Hàn Quốc trong trẻo, Vintage, Fine-Art); thực hành blend màu bằng Camera Raw và áp dụng hàng loạt (Preset)." },
+            { num: "Buổi 7", title: "✍️ Marketing Studio & Nghệ thuật Typography", desc: "Dùng Gemini viết Content quảng cáo gói chụp, text chèn vào album; thực hành thiết kế Typography chữ ký bay bổng, làm Layout bìa Album và Banner chốt sale." },
+            { num: "Buổi 8", title: "🏆 Tối ưu Quy trình & Nghiệm thu Photobook", desc: "Nhờ Gemini đóng vai khách hàng khó tính để feedback ảnh; thực hành dùng Action chỉnh ảnh hàng loạt, đưa ảnh vào Mockup Album cưới thực tế và tổng kết." }
           ]
         }
       ]
@@ -114,7 +120,7 @@ const SITE_DATA = {
     {
       id: "illustrator",
       navName: "Illustrator",
-      icon: "✒️",
+      icon: "🚀",
       badge: "Vector & In Ấn",
       title: "Khóa Học ILLUSTRATOR Theo Yêu Cầu",
       shortDesc: "Thiết kế Logo, Nhận diện thương hiệu, bình trang chuẩn xưởng in CMYK & Vẽ Minh Họa.",
@@ -141,14 +147,14 @@ const SITE_DATA = {
           priceOffline: 3600000,
           priceOnline: 2800000,
           sessions: [
-            { num: "Buổi 1", title: "Nền tảng & Hình khối", desc: "Làm quen giao diện, hiểu đồ họa Vector và dựng logo/icon bằng công cụ cắt ghép." },
-            { num: "Buổi 2", title: "Typography & Bố cục", desc: "Xử lý chữ nghệ thuật, uốn ép chữ và dàn trang thông tin quảng cáo mạng xã hội." },
-            { num: "Buổi 3", title: "Màu sắc & Tạo khối", desc: "Làm chủ hệ màu (RGB/CMYK) và đánh bóng chân thực bằng Gradient/Mesh Tool." },
-            { num: "Buổi 4", title: "Pen Tool & Đồ họa phẳng", desc: "Rèn vẽ nét chính xác, trace hình ảnh và vẽ nhân vật/icon (flat vector, chibi)." },
-            { num: "Buổi 5", title: "Hiệu ứng & 3D Isometric", desc: "Ứng dụng Clipping Mask, Blend và công cụ 3D dựng phối cảnh không gian, Key Visual." },
-            { num: "Buổi 6", title: "Thực chiến Digital", desc: "Quản lý đa Artboard và thiết kế bộ banner chạy quảng cáo Facebook, Website." },
-            { num: "Buổi 7", title: "Thực chiến In ấn", desc: "Thiết lập vùng an toàn (Margin), tràn lề (Bleed) và xuất file chuẩn xưởng in Poster, Standee." },
-            { num: "Buổi 8", title: "Đồ án & Portfolio", desc: "Tự lên ý tưởng thiết kế chiến dịch trọn vẹn, sửa trực tiếp và làm Mockup Portfolio." }
+            { num: "Buổi 1", title: "Nền tảng & Hình khối", desc: "Làm quen giao diện, hiểu bản chất đồ họa Vector và thực hành dựng logo/icon bằng các công cụ cắt ghép cơ bản." },
+            { num: "Buổi 2", title: "Typography & Bố cục", desc: "Xử lý chữ nghệ thuật, uốn ép chữ và dàn trang thông tin hợp lý cho quảng cáo mạng xã hội." },
+            { num: "Buổi 3", title: "Màu sắc & Tạo khối", desc: "Làm chủ hệ màu (RGB/CMYK) và kỹ thuật đánh bóng chân thực bằng Gradient/Mesh Tool." },
+            { num: "Buổi 4", title: "Pen Tool & Đồ họa phẳng", desc: "Rèn luyện vẽ nét chính xác, đồ lại (trace) hình ảnh và vẽ minh họa nhân vật/icon (phong cách flat vector, chibi)." },
+            { num: "Buổi 5", title: "Hiệu ứng & 3D Isometric", desc: "Ứng dụng Clipping Mask, Blend và các công cụ 3D cơ bản để dựng phối cảnh không gian, làm Key Visual." },
+            { num: "Buổi 6", title: "Thực chiến Digital", desc: "Quản lý đa Artboard và thiết kế bộ banner chạy quảng cáo trên Facebook, Website." },
+            { num: "Buổi 7", title: "Thực chiến In ấn", desc: "Thiết lập vùng an toàn (Margin), tràn lề (Bleed) và xuất file chuẩn xưởng in cho Poster, Standee." },
+            { num: "Buổi 8", title: "Đồ án & Portfolio", desc: "Tự lên ý tưởng thiết kế một chiến dịch trọn vẹn, nhận chỉnh sửa trực tiếp và làm mock-up để đưa vào Portfolio." }
           ]
         },
         {
@@ -159,32 +165,32 @@ const SITE_DATA = {
           priceOffline: 3600000,
           priceOnline: 2800000,
           sessions: [
-            { num: "Buổi 1", title: "Nền tảng in ấn", desc: "Thiết lập không gian làm việc, quản lý hệ màu CMYK (Bleed/Margin)." },
-            { num: "Buổi 2", title: "Dựng hình Vector", desc: "Làm chủ Pen Tool, Pathfinder và thực hành thiết kế hệ thống icon." },
-            { num: "Buổi 3", title: "Xử lý Typography", desc: "Nguyên lý chữ, kỹ thuật rã chữ (Create Outlines) và dàn trang văn bản." },
-            { num: "Buổi 4", title: "Màu sắc chuyên sâu", desc: "Quản lý bảng màu Pantone, xử lý Gradient và cân bằng màu để bản in không xỉn." },
-            { num: "Buổi 5", title: "Thiết kế Pattern", desc: "Tạo họa tiết liền mạch (Seamless Pattern) ứng dụng cho in vải và bao bì." },
-            { num: "Buổi 6", title: "Nhận diện thương hiệu", desc: "Thiết kế chuẩn kích thước bộ ấn phẩm văn phòng (Namecard, bao thư, tiêu đề thư)." },
-            { num: "Buổi 7", title: "Ấn phẩm quảng cáo (POSM)", desc: "Xử lý ảnh bitmap và thiết kế ấn phẩm khổ lớn như Poster, Standee." },
-            { num: "Buổi 8", title: "Kiểm tra & Xuất file (Pre-press)", desc: "Rà soát lỗi (Overprint, link ảnh, font), bình trang và xuất file PDF/X chuẩn nhà in." }
+            { num: "Buổi 1", title: "Nền tảng in ấn", desc: "Nền tảng in ấn – Thiết lập không gian làm việc, quản lý hệ màu CMYK (Bleed/Margin)." },
+            { num: "Buổi 2", title: "Dựng hình Vector", desc: "Dựng hình Vector – Làm chủ các công cụ vẽ (Pen Tool, Pathfinder) và thực hành thiết kế hệ thống icon." },
+            { num: "Buổi 3", title: "Xử lý Typography", desc: "Xử lý Typography – Nguyên lý sử dụng chữ, kỹ thuật rã chữ (Create Outlines) và dàn trang văn bản." },
+            { num: "Buổi 4", title: "Màu sắc chuyên sâu", desc: "Màu sắc chuyên sâu – Quản lý bảng màu Pantone, xử lý Gradient và cân bằng màu để bản in không bị xỉn." },
+            { num: "Buổi 5", title: "Thiết kế Pattern", desc: "Thiết kế Pattern – Kỹ thuật tạo họa tiết liền mạch (Seamless Pattern) ứng dụng cho in vải và bao bì." },
+            { num: "Buổi 6", title: "Nhận diện thương hiệu", desc: "Nhận diện thương hiệu – Thiết kế chuẩn kích thước bộ ấn phẩm văn phòng (Namecard, bao thư, tiêu đề thư)." },
+            { num: "Buổi 7", title: "Ấn phẩm quảng cáo (POSM)", desc: "Ấn phẩm quảng cáo (POSM) – Kỹ thuật xử lý ảnh bitmap và thiết kế các ấn phẩm khổ lớn như Poster, Standee." },
+            { num: "Buổi 8", title: "Kiểm tra & Xuất file (Pre-press)", desc: "Kiểm tra & Xuất file (Pre-press) – Rà soát lỗi (Overprint, link ảnh, font), bình trang cơ bản và xuất file PDF/X chuẩn nhà in." }
           ]
         },
         {
           id: "ill-art",
           tabLabel: "3. Vẽ Minh Họa & Concept",
-          title: "ILLUSTRATOR Vẽ Minh Họa & Concept Art",
+          title: "KHÓA HỌC ILLUSTRATOR Vẽ Minh Họa & Concept Art",
           duration: "8 Buổi",
           priceOffline: 3600000,
           priceOnline: 2800000,
           sessions: [
-            { num: "Buổi 1", title: "Khởi động & Tư duy hình khối", desc: "Tối ưu Workspace Digital Art, phân tích vật thể bằng Shape Builder, Pathfinder." },
-            { num: "Buổi 2", title: "Pen Tool & Đường nét (Line-art)", desc: "Đi nét mượt với Pen Tool, Curvature, Pencil và chỉnh Stroke/Width Tool tạo chiều sâu." },
-            { num: "Buổi 3", title: "Màu sắc & Đổ màu Vector", desc: "Bánh xe màu, tạo Color Palette, ứng dụng Gradient, Mesh Tool và Live Paint." },
-            { num: "Buổi 4", title: "Minh họa Flat Design & Icon", desc: "Tư duy tối giản Flat Design, kết hợp Typography thiết kế set icon, logo minh họa." },
-            { num: "Buổi 5", title: "Thiết kế Nhân vật & Mascot", desc: "Tỷ lệ cơ thể Chibi/Mascot, xây dựng biểu cảm khuôn mặt và pose dáng động." },
-            { num: "Buổi 6", title: "Môi trường Concept Art & Isometric", desc: "Thiết lập lưới Grid vẽ môi trường Isometric cắt lớp (cutaway) 3D trong 2D." },
-            { num: "Buổi 7", title: "Brush, Texture & Ánh sáng", desc: "Tạo Art/Pattern Brush giả lập màu nước, chì, mực kết hợp Mask và Blending Mode." },
-            { num: "Buổi 8", title: "Hoàn thiện & Xuất file", desc: "Feedback 1 kèm 1, chuẩn bị file in CMYK và digital RGB, phát triển Portfolio." }
+            { num: "Buổi 1", title: "Khởi động & Tư duy hình khối (Shape-building)", desc: "Làm quen giao diện và vùng làm việc (Workspace) tối ưu cho Digital Art. Nắm vững các công cụ vẽ cơ bản và tư duy phân tích vật thể thành các mảng hình học (Shape Builder, Pathfinder)." },
+            { num: "Buổi 2", title: "Pen Tool & Nghệ thuật đường nét (Line-art)", desc: "Kỹ thuật đi nét mượt mà, dứt khoát với Pen Tool, Curvature Tool và Pencil Tool. Điều chỉnh độ dày mỏng (Stroke, Width Tool) để tạo chiều sâu cho bản vẽ." },
+            { num: "Buổi 3", title: "Màu sắc & Kỹ thuật đổ màu Vector", desc: "Bố cục màu sắc trong minh họa: Bánh xe màu, vòng thuần sắc và cách tạo bảng màu (Color Palette) thu hút. Ứng dụng Gradient, Mesh Tool và Live Paint để tạo khối và ánh sáng." },
+            { num: "Buổi 4", title: "Minh họa Flat Design & Vector Icon", desc: "Tư duy tối giản trong thiết kế minh họa phẳng (Flat Design). Kết hợp Typography và hình ảnh để thiết kế các set icon, logo minh họa." },
+            { num: "Buổi 5", title: "Thiết kế Nhân vật (Character Design) & Mascot", desc: "Tỷ lệ cơ thể trong minh họa (từ tả thực đến phong cách Chibi, Mascot). Xây dựng biểu cảm khuôn mặt và pose dáng động." },
+            { num: "Buổi 6", title: "Xây dựng Môi trường (Concept Art & Isometric)", desc: "Tư duy không gian 3D và phối cảnh trong môi trường 2D. Kỹ thuật thiết lập lưới đồ thị (Grid) để vẽ môi trường Isometric cắt lớp (cutaway)." },
+            { num: "Buổi 7", title: "Brush, Texture & Thổi hồn vào tác phẩm", desc: "Tạo và tùy chỉnh Art Brush, Pattern Brush để giả lập các chất liệu như màu nước, chì, mực. Ứng dụng Mask (Clipping Mask, Opacity Mask) và Blending Mode để tạo hiệu ứng ánh sáng, bóng đổ." },
+            { num: "Buổi 8", title: "Hoàn thiện & Kỹ thuật xuất file chuyên nghiệp", desc: "Đánh giá và chỉnh sửa (feedback). Tối ưu hóa file làm việc, chuẩn bị file in ấn (hệ màu CMYK) và file hiển thị digital, web (hệ màu RGB). Định hướng phát triển portfolio cá nhân." }
           ]
         }
       ]
@@ -211,37 +217,37 @@ const SITE_DATA = {
       tracks: [
         {
           id: "ai-basic",
-          tabLabel: "1. AI Cơ Bản Toàn Diện",
-          title: "KHÓA HỌC AI CƠ BẢN (10 Buổi)",
+          tabLabel: "1. AI Cơ Bản (10 Buổi)",
+          title: "KHÓA HỌC AI CƠ BẢN",
           duration: "10 Buổi",
           priceOffline: 4500000,
           priceOnline: 3500000,
           sessions: [
-            { num: "Buổi 1, 2, 3", title: "Google Gemini - Prompt & Tạo Ảnh", desc: "Viết prompt chuẩn xác, lên ý tưởng và huấn luyện AI tạo hình ảnh nghệ thuật phục vụ công việc." },
-            { num: "Buổi 4", title: "Google Vids - Dựng Video AI", desc: "Tối ưu quy trình dựng video tự động cho thuyết trình và marketing nhanh chóng." },
-            { num: "Buổi 5", title: "NotebookLM - Trợ lý Nghiên cứu", desc: "Tổng hợp tài liệu, phân tích thông tin và quản lý dữ liệu thông minh bằng AI." },
-            { num: "Buổi 6", title: "Suno AI - Sáng tác Âm nhạc", desc: "Tự sản xuất các bản nhạc hoàn chỉnh theo nhiều phong cách không cần nhạc lý." },
-            { num: "Buổi 7, 8, 9, 10", title: "Wix Web Design - Làm Website", desc: "Xây dựng website hoàn chỉnh từ số 0, kéo thả trực quan, tối ưu hiển thị máy tính & điện thoại." }
+            { num: "Buổi 1, 2, 3", title: "Google Gemini - Prompt & Tạo Ảnh Nghệ Thuật", desc: "Bí quyết viết prompt chuẩn xác, ứng dụng sức mạnh của Gemini để lên ý tưởng và huấn luyện AI tạo ra các tác phẩm hình ảnh nghệ thuật, phục vụ đúng nhu cầu công việc." },
+            { num: "Buổi 4", title: "Google Vids - Tối Ưu Hóa Dựng Video", desc: "Tối ưu hóa quy trình dựng video. Ứng dụng AI để tự động hóa và tạo video thuyết trình, marketing nhanh chóng." },
+            { num: "Buổi 5", title: "NotebookLM - Trợ Lý Nghiên Cứu Đắc Lực", desc: "Biến AI thành trợ lý nghiên cứu đắc lực. Học cách tổng hợp tài liệu, phân tích thông tin và quản lý dữ liệu thông minh." },
+            { num: "Buổi 6", title: "Suno AI - Sáng Tạo Âm Nhạc Không Cần Nhạc Lý", desc: "Thỏa sức sáng tạo âm nhạc! Tự tay sản xuất các bản nhạc hoàn chỉnh theo nhiều phong cách khác nhau mà không cần kiến thức nhạc lý." },
+            { num: "Buổi 7, 8, 9, 10", title: "Wix Web Design - Xây Dựng Website Hoàn Chỉnh", desc: "Thực hành xây dựng website hoàn chỉnh từ con số 0. Nắm vững tư duy bố cục, thao tác kéo thả trên nền tảng Wix, tối ưu giao diện hiển thị cho cả máy tính và điện thoại. Đến cuối khóa, bạn sẽ sở hữu một website đẹp mắt của riêng mình." }
           ]
         },
         {
           id: "ai-design-video",
-          tabLabel: "2. AI Hình Ảnh & Video",
-          title: "KHÓA HỌC AI THIẾT KẾ HÌNH ẢNH & EDIT VIDEO (10 Buổi)",
+          tabLabel: "2. AI Hình Ảnh & Video (10 Buổi)",
+          title: "KHÓA HỌC AI THIẾT KẾ HÌNH ẢNH & EDIT VIDEO",
           duration: "10 Buổi",
           priceOffline: 4500000,
           priceOnline: 3500000,
           sessions: [
-            { num: "Buổi 1", title: "🔥 Prompt Engineering cùng Gemini", desc: "Tư duy ứng dụng AI trong sáng tạo đồ họa và kỹ thuật viết câu lệnh chuyên sâu." },
-            { num: "Buổi 2", title: "🔥 Kết nối AI sang Canva", desc: "Chuyển hóa ý tưởng từ Gemini thành các thành phần thiết kế thực tế trên Canva." },
-            { num: "Buổi 3", title: "🔥 Thiết kế Ấn phẩm Truyền thông", desc: "Quy trình thiết kế Banner, Poster và bài đăng mạng xã hội chuẩn kích thước." },
-            { num: "Buổi 4", title: "🔥 Tư duy Typography & Màu sắc", desc: "Phối màu và kết hợp font chữ chuyên nghiệp thu hút thị giác." },
-            { num: "Buổi 5", title: "🔥 Hoàn thiện Bộ Thiết Kế", desc: "Lên kịch bản với Gemini và thiết kế trọn bộ ấn phẩm trên Canva." },
-            { num: "Buổi 6", title: "🎬 Video & Storyboard với Google Vids", desc: "Xây dựng phân cảnh và khởi tạo video nhanh với Google Vids." },
-            { num: "Buổi 7", title: "🎬 Nhịp độ (Pacing) & Cắt ghép CapCut", desc: "Đưa tài nguyên vào CapCut, cắt ghép thô và loại bỏ cảnh thừa." },
-            { num: "Buổi 8", title: "🎬 Keyframe & Đồng bộ Âm thanh", desc: "Tạo chuyển động mượt bằng Keyframe, thêm nhạc nền và Sound Effects." },
-            { num: "Buổi 9", title: "🎬 Hiệu ứng Masking & Phụ đề Tự động", desc: "Kỹ thuật mặt nạ thị giác và tạo Auto-captions nhanh chóng." },
-            { num: "Buổi 10", title: "🎬 Xuất bản Video Đa Nền Tảng", desc: "Hoàn thiện video TikTok, Reels, Shorts, YouTube từ kịch bản AI đến xuất file." }
+            { num: "Buổi 1", title: "🔥 Prompt Engineering Cùng Gemini", desc: "Làm chủ Prompt Engineering cùng Gemini. Tư duy ứng dụng AI trong quy trình sáng tạo đồ họa. Kỹ thuật viết câu lệnh (prompt) chuyên sâu." },
+            { num: "Buổi 2", title: "🔥 Kết Nối Không Gian Làm Việc AI Sang Canva", desc: "Kết nối không gian làm việc từ AI sang Canva. Chuyển hóa ý tưởng của Gemini thành các thành phần thiết kế thực tế." },
+            { num: "Buổi 3", title: "🔥 Thực Chiến Thiết Kế Ấn Phẩm Truyền Thông", desc: "Quy trình thiết kế Banner, Poster, và bài đăng mạng xã hội chuẩn kích thước." },
+            { num: "Buổi 4", title: "🔥 Nâng Cao Tư Duy Typography & Màu Sắc", desc: "Nâng cao Tư duy Typography & Màu sắc, xây dựng nhận diện thương hiệu thu hút thị giác." },
+            { num: "Buổi 5", title: "🔥 Hoàn Thiện Bộ Thiết Kế Trên Canva", desc: "Hoàn thiện Bộ Thiết Kế: lên kịch bản với Gemini và thiết kế trọn bộ ấn phẩm trên Canva." },
+            { num: "Buổi 6", title: "🎬 Khởi Tạo Video & Storyboard Với Google Vids", desc: "Khởi tạo Video & Storyboard với Google Vids, tạo video thuyết trình tự động." },
+            { num: "Buổi 7", title: "🎬 Tư Duy Nhịp Độ (Pacing) & Cắt Ghép CapCut", desc: "Tư duy Nhịp độ (Pacing) & Cắt ghép CapCut. Đưa tài nguyên vào CapCut: Cắt ghép thô, loại bỏ cảnh thừa." },
+            { num: "Buổi 8", title: "🎬 Kỹ Thuật Keyframe & Đồng Bộ Âm Thanh", desc: "Sử dụng Keyframe (khung hình chính) để tạo chuyển động mượt mà. Thiết kế âm thanh: Thêm nhạc nền, hiệu ứng âm thanh (sound effect)." },
+            { num: "Buổi 9", title: "🎬 Hiệu Ứng Thị Giác (Masking) & Phụ Đề Tự Động", desc: "Kỹ thuật mặt nạ Masking và tính năng Auto-captions tạo phụ đề tự động sắc nét." },
+            { num: "Buổi 10", title: "🎬 Xuất Bản Video Đa Nền Tảng Hoàn Chỉnh", desc: "Xuất bản Video. Thực hành sản xuất video (TikTok, Reels, Shorts, Youtube) hoàn chỉnh từ khâu lên kịch bản AI đến lúc edit xong." }
           ]
         }
       ]
@@ -269,39 +275,39 @@ const SITE_DATA = {
         {
           id: "video-ai",
           tabLabel: "1. Làm Video AI (10 Buổi)",
-          title: "KHÓA HỌC Làm Video AI (Gemini + Suno + CapCut)",
+          title: "KHÓA HỌC LÀM VIDEO AI",
           duration: "10 Buổi",
           priceOffline: 4500000,
           priceOnline: 3500000,
           sessions: [
-            { num: "Buổi 1", title: "Tư duy tự động hóa & Prompt Gemini", desc: "Quy trình sản xuất video AI và khai thác ý tưởng video viral theo ngách." },
-            { num: "Buổi 2", title: "Xây dựng Kịch bản & Phân cảnh", desc: "Dùng Gemini viết kịch bản phân cảnh (Storyboarding) hoàn chỉnh." },
-            { num: "Buổi 3", title: "Tạo nhạc nền với Suno AI", desc: "Viết prompt thể loại nhạc (Pop, Cinematic, Lofi...) tạo nhạc không bản quyền." },
-            { num: "Buổi 4", title: "Kỹ thuật âm thanh & AI Vocals", desc: "Dùng tính năng Extend phát triển cấu trúc bài hát và xuất file chất lượng cao." },
-            { num: "Buổi 5", title: "Làm chủ không gian CapCut", desc: "Quản lý dự án, import tài nguyên, cắt ghép cơ bản và điều chỉnh nhịp độ." },
-            { num: "Buổi 6", title: "Chuyển động Keyframe & Masking", desc: "Tạo chuyển động mượt cho ảnh/text và lồng ghép khung hình sáng tạo." },
-            { num: "Buổi 7", title: "Phụ đề tự động & Chữ động", desc: "Sử dụng Auto-captions chính xác và thiết kế Text animations hiện đại." },
-            { num: "Buổi 8", title: "Âm thanh SFX & Chuyển cảnh", desc: "Đồng bộ nhạc Suno, giọng đọc AI, SFX và áp dụng Transitions hợp lý." },
-            { num: "Buổi 9", title: "Chỉnh màu & Tối ưu đa nền tảng", desc: "Color Grading điện ảnh và thiết lập thông số Export chuẩn TikTok, Reels, Shorts." },
-            { num: "Buổi 10", title: "Tổng duyệt 1 kèm 1 & Định hướng kênh", desc: "Sửa bài trực tiếp, tư vấn phát triển kênh và chia sẻ tài nguyên." }
+            { num: "Buổi 1", title: "Tư duy tự động hóa & Prompt với Gemini", desc: "Tổng quan về quy trình sản xuất video bằng AI. Công thức viết câu lệnh (Prompt Engineering) giúp Gemini hiểu đúng ý đồ người dùng. Thực hành: Khai thác ý tưởng video viral cho các ngách chủ đề khác nhau." },
+            { num: "Buổi 2", title: "Xây dựng Kịch bản & Phân cảnh chi tiết", desc: "Dùng Gemini để viết kịch bản phân cảnh (Storyboarding) từ text thành video. Hoàn thiện 1 kịch bản video ngắn hoàn chỉnh." },
+            { num: "Buổi 3", title: "Tạo bản nhạc đầu tiên với Suno AI", desc: "Giao diện và nguyên lý hoạt động của Suno AI. Cách viết prompt mô tả thể loại nhạc (Pop, Cinematic, Lofi...) và cảm xúc. Tạo nhạc nền không bản quyền và các đoạn nhạc." },
+            { num: "Buổi 4", title: "Kỹ thuật âm thanh nâng cao & Tùy biến nhạc", desc: "Sử dụng tính năng Extend để kéo dài và phát triển cấu trúc bài hát (Verse, Chorus, Outro). Kết hợp giọng hát AI (AI Vocals) và điều chỉnh nhịp điệu phù hợp với video. Xuất file chất lượng cao và chuẩn bị tài nguyên." },
+            { num: "Buổi 5", title: "Làm chủ không gian làm việc CapCut", desc: "Quản lý dự án, import tài nguyên hình ảnh, video và âm thanh (từ Suno). Các công cụ cắt ghép cơ bản, điều chỉnh tốc độ và pacing (nhịp độ video)." },
+            { num: "Buổi 6", title: "Kỹ thuật chuyển động nâng cao (Keyframe & Masking)", desc: "Ứng dụng Keyframe để tạo chuyển động mượt mà cho hình ảnh và text. Sử dụng Masking (Mặt nạ) để tạo các hiệu ứng biến mất, lồng ghép khung hình sáng tạo. Áp dụng Keyframe và Masking vào dự án thực tế." },
+            { num: "Buổi 7", title: "Xử lý phụ đề tự động & Hiệu ứng chữ động", desc: "Sử dụng tính năng Auto-captions (Phụ đề tự động) chính xác và nhanh chóng. Thiết kế typo, hiệu ứng chữ (Text animations) theo phong cách hiện đại." },
+            { num: "Buổi 8", title: "Xử lý âm thanh tổng hợp & Hiệu ứng chuyển cảnh", desc: "Đồng bộ hóa nhạc Suno, giọng đọc AI và Sound Effects (SFX) để tăng cảm xúc. Sử dụng transitions (chuyển cảnh) và bộ lọc hiệu ứng (Effects) hợp lý, không lạm dụng." },
+            { num: "Buổi 9", title: "Chỉnh màu (Color Grading) & Tối ưu hóa đa nền tảng", desc: "Kỹ thuật chỉnh màu giúp video điện ảnh và bắt mắt hơn. Thiết lập thông số Export (Xuất file) tối ưu cho TikTok, YouTube Shorts, Reels và Facebook." },
+            { num: "Buổi 10", title: "Tổng duyệt cuối khóa & Hỗ trợ chuyên sâu", desc: "Nhận xét, sửa lỗi trực tiếp 1 kèm 1. Tư vấn định hướng phát triển kênh và chia sẻ tài nguyên." }
           ]
         },
         {
           id: "video-capcut",
           tabLabel: "2. Edit Video CapCut (8 Buổi)",
-          title: "KHÓA HỌC Edit Video CAPCUT Thực Chiến",
+          title: "KHÓA HỌC EDIT VIDEO CAPCUT",
           duration: "8 Buổi",
           priceOffline: 3600000,
           priceOnline: 2800000,
           sessions: [
-            { num: "Buổi 1", title: "Giao diện & Cắt ghép cơ bản", desc: "Làm chủ CapCut (PC, Mobile), quản lý Media và dựng thô video ngắn." },
-            { num: "Buổi 2", title: "Âm thanh (Audio) & Tiêu đề (Text)", desc: "Khớp nhạc (Beat sync), lọc tạp âm, hiệu ứng chữ và Auto-captions." },
-            { num: "Buổi 3", title: "Hiệu ứng & Chuyển cảnh", desc: "Áp dụng Transitions, Video Effects, Body Effects và Stickers." },
-            { num: "Buổi 4", title: "Tốc độ (Speed Curve) & Keyframe", desc: "Tua nhanh, Slo-mo, Speed Curve và tạo chuyển động Zoom/Panning." },
-            { num: "Buổi 5", title: "Lớp phủ (Overlay) & Mặt nạ (Mask)", desc: "Ghép PIP nhiều lớp video và làm hiệu ứng nhân bản, lồng ghép." },
-            { num: "Buổi 6", title: "Chỉnh màu & Tách nền Chroma Key", desc: "Sử dụng Filters, LUTs điện ảnh, xóa phông xanh và tách nền tự động." },
-            { num: "Buổi 7", title: "Tracking & Chống rung", desc: "Gắn chữ/sticker bám theo vật thể (Tracking), chống rung và làm đẹp AI." },
-            { num: "Buổi 8", title: "Dự án cuối khóa & Xuất file", desc: "Hoàn thiện video TikTok/Reels/Vlog thực tế và xuất file sắc nét." }
+            { num: "Buổi 1", title: "Làm quen giao diện & Thao tác cắt ghép cơ bản", desc: "Tổng quan giao diện làm việc của CapCut (PC, Mobile). Quản lý Media: Cách import video, hình ảnh, âm thanh. Công cụ chỉnh sửa cốt lõi: Cắt, xóa, và sắp xếp các đoạn clip. Thực hành: Dựng thô một video ngắn từ các source nguyên bản." },
+            { num: "Buổi 2", title: "Xử lý âm thanh (Audio) & Tiêu đề (Text)", desc: "Âm thanh: Thêm nhạc nền, hiệu ứng âm thanh, ghi âm giọng nói. Kỹ thuật xử lý: Khớp nhạc (Beat sync), điều chỉnh âm lượng, fade in/out và lọc tạp âm. Văn bản: Thêm text, áp dụng hiệu ứng chữ, và sử dụng tính năng tạo phụ đề tự động (Auto-captions)." },
+            { num: "Buổi 3", title: "Hiệu ứng (Effects) & Chuyển cảnh (Transitions)", desc: "Chuyển cảnh: Áp dụng các hiệu ứng chuyển tiếp giữa các clip để tạo sự mượt mà. Hiệu ứng: Cách sử dụng Hiệu ứng Video (Video Effects) và Hiệu ứng Cơ thể (Body Effects). Chèn nhãn dán (Stickers) và các thành phần đồ họa có sẵn." },
+            { num: "Buổi 4", title: "Điều chỉnh tốc độ & Kỹ thuật Keyframe", desc: "Tốc độ: Tua nhanh, làm chậm (Slo-mo) và làm quen với Đồ thị tốc độ (Speed Curve). Keyframe: Nguyên lý hoạt động của Keyframe. Ứng dụng Keyframe để tạo các chuyển động cơ bản cho video hoặc hình ảnh (Zoom in/out, Panning)." },
+            { num: "Buổi 5", title: "Lớp phủ (Overlay) & Mặt nạ (Masking)", desc: "Lớp phủ (PIP): Kỹ thuật chèn nhiều video/hình ảnh chồng lên nhau trong cùng một khung hình. Mặt nạ (Mask): Các loại mặt nạ cơ bản (chia nửa, hình tròn, v.v.) để ẩn/hiện các phần của video. Kết hợp Mask và Overlay để làm video nhân bản hoặc hiệu ứng lồng ghép." },
+            { num: "Buổi 6", title: "Chỉnh màu (Color Grading) & Tách nền", desc: "Chỉnh màu cơ bản: Cân bằng sáng, độ tương phản, độ bão hòa, nhiệt độ màu. Sử dụng Bộ lọc (Filters) và bảng màu (LUTs) để tạo phong cách điện ảnh. Xóa nền: Kỹ thuật xóa phông xanh (Chroma Key) và tính năng xóa nền tự động của CapCut." },
+            { num: "Buổi 7", title: "Tracking & Các công cụ tự động nâng cao", desc: "Bám sát mục tiêu (Tracking): Gắn text, hình ảnh hoặc sticker chuyển động theo một vật thể trong video. Xử lý lỗi video: Chống rung (Stabilize) cho các source quay tay. Sử dụng các công cụ làm đẹp và một số tính năng AI hỗ trợ rảnh tay của CapCut." },
+            { num: "Buổi 8", title: "Thực hành dự án cuối khóa & Xuất file tối ưu", desc: "Học viên vận dụng toàn bộ kỹ năng để hoàn thiện một dự án thực tế (Ví dụ: Video TikTok/Reels, Vlog, hoặc Video bài giảng). Thiết lập thông số xuất file (Độ phân giải, Tốc độ khung hình, Format) chuẩn xác cho từng nền tảng mạng xã hội." }
           ]
         }
       ]
@@ -314,7 +320,9 @@ const SITE_DATA = {
       title: "Khóa Học Tạo Web Với AI Theo Yêu Cầu",
       shortDesc: "Xây dựng Website Wix kết hợp Gemini viết nội dung, tạo ảnh AI, làm video Veo 3 & SEO Google.",
       thumbnail: "https://lh3.googleusercontent.com/d/1GJv4ZKb9s7X9wkGu7BAUuxHl8Dk74tiW",
-      posters: ["https://lh3.googleusercontent.com/d/1GJv4ZKb9s7X9wkGu7BAUuxHl8Dk74tiW"],
+      posters: [
+        "https://lh3.googleusercontent.com/d/1GJv4ZKb9s7X9wkGu7BAUuxHl8Dk74tiW"
+      ],
       sessionsCount: "10 Buổi / Khóa",
       priceOnline: 3500000,
       priceOffline: 4500000,
@@ -332,17 +340,46 @@ const SITE_DATA = {
           priceOffline: 4500000,
           priceOnline: 3500000,
           sessions: [
-            { num: "Buổi 1", title: "Khởi tạo & Giao diện Wix", desc: "Phân tích cấu trúc web, chọn template và thao tác kéo thả text, ảnh, nút bấm." },
-            { num: "Buổi 2", title: "Tùy chỉnh Layout & Tương tác", desc: "Quản lý Section, Header, Footer, Menu, thêm Form liên hệ, bản đồ, nút chat." },
-            { num: "Buổi 3", title: "Tối ưu Giao diện Điện thoại (Mobile)", desc: "Tinh chỉnh hiển thị Mobile Responsive, quản lý media và thêm hiệu ứng cuộn." },
-            { num: "Buổi 4", title: "Tên miền (Domain) & Xuất bản", desc: "Rà soát lỗi tổng thể, kết nối tên miền, cấu hình hosting và Publish website." },
-            { num: "Buổi 5", title: "Viết Copywriting Web với Gemini", desc: "Dùng Gemini viết trang Giới thiệu, Slogan, mô tả dịch vụ và bài Blog chuẩn SEO." },
-            { num: "Buổi 6", title: "Kỹ thuật Prompt Hình ảnh AI", desc: "Nguyên lý bố cục, phong cách, ánh sáng và thực hành tạo ảnh minh họa bằng Gemini." },
-            { num: "Buổi 7", title: "Tạo Banner & Tài nguyên Web", desc: "Tạo Hero Banner, icon, ảnh nền cho web và tối ưu dung lượng ảnh tải nhanh." },
-            { num: "Buổi 8", title: "Khám phá Veo 3 & Kịch bản Video", desc: "Viết kịch bản Promo/Intro web cùng Gemini và thiết lập motion prompt trong Veo 3." },
-            { num: "Buổi 9", title: "Sản xuất & Nhúng Video lên Web", desc: "Tạo video clip bằng Veo 3, ghép nối hoàn chỉnh và nhúng trực tiếp lên website." },
-            { num: "Buổi 10", title: "SEO On-page & Nghiệm thu", desc: "Tối ưu Title, Meta Description, thẻ Alt trên Wix SEO Wiz và khai báo Google." }
+            { num: "Buổi 1", title: "Khởi tạo & Làm quen giao diện Wix (Phần 1: Nền tảng)", desc: "Tạo tài khoản và phân tích cấu trúc website cơ bản. Cách chọn template phù hợp với ngành nghề. Thao tác kéo - thả, thêm xóa các element (text, ảnh, nút bấm)." },
+            { num: "Buổi 2", title: "Tùy chỉnh Layout & Trải nghiệm người dùng (Phần 1: Nền tảng)", desc: "Quản lý Section, Header, Footer và điều hướng Menu. Thêm các tính năng tương tác: Form liên hệ, bản đồ, nút gọi/chat. Thực hành căn chỉnh bố cục gọn gàng." },
+            { num: "Buổi 3", title: "Tối ưu Mobile & Quản lý Media (Phần 1: Nền tảng)", desc: "Chuyển đổi và tinh chỉnh giao diện trên giao diện điện thoại (Mobile Responsive). Cách quản lý thư viện hình ảnh/video trên Wix. Thêm hiệu ứng cuộn và animation cơ bản." },
+            { num: "Buổi 4", title: "Hoàn thiện & Xuất bản Website (Phần 1: Nền tảng)", desc: "Rà soát lỗi giao diện tổng thể. Hướng dẫn kết nối tên miền (Domain) và cấu hình hosting của Wix. Publish (Xuất bản) website và kiểm tra trực tiếp." },
+            { num: "Buổi 5", title: "Tư duy Prompt & Viết Copywriting (Phần 2: Gemini Copywriting)", desc: "Cấu trúc câu lệnh (Prompt) chuẩn để Gemini hiểu đúng ngữ cảnh. Sử dụng Gemini để viết nội dung Website: Giới thiệu (About Us), Slogan, Mô tả sản phẩm/dịch vụ. Lên ý tưởng bài viết Blog chuẩn bị cho SEO." },
+            { num: "Buổi 6", title: "Kỹ thuật Prompt Hình ảnh cơ bản (Phần 3: Tạo ảnh AI)", desc: "Nguyên lý tạo ảnh bằng AI: Bố cục, phong cách nghệ thuật, ánh sáng, màu sắc. Thực hành gõ prompt tạo các bức ảnh minh họa cơ bản." },
+            { num: "Buổi 7", title: "Thực hành tạo Tài nguyên ảnh cho Web (Phần 3: Tạo ảnh AI)", desc: "Dùng Gemini tạo Banner chính (Hero image), ảnh bài viết, icon, hoặc ảnh nền cho website Wix. Mẹo chỉnh sửa, cắt cúp và tối ưu dung lượng ảnh trước khi tải lên web." },
+            { num: "Buổi 8", title: "Khám phá Veo 3 & Kịch bản Video (Phần 4: Chế tác Video Veo 3)", desc: "Giới thiệu giao diện và cách hoạt động của công cụ tạo video AI Veo 3. Phối hợp với Gemini để viết kịch bản video ngắn (Promo, Intro web). Cách thiết lập prompt chuyển động (motion prompt) trong Veo 3." },
+            { num: "Buổi 9", title: "Sản xuất & Nhúng Video lên Web (Phần 4: Chế tác Video Veo 3)", desc: "Thực hành tạo các đoạn video clip từ kịch bản đã chuẩn bị. Ghép nối các đoạn video ngắn thành một clip hoàn chỉnh. Xuất file video và nhúng trực tiếp lên website Wix." },
+            { num: "Buổi 10", title: "SEO On-page cơ bản & Tổng kết (Phần 5: Tối ưu SEO Google)", desc: "Tối ưu hóa thẻ Tiêu đề (Title), Mô tả (Meta Description) và URL trên hệ thống Wix SEO Wiz. Cập nhật thẻ Alt cho hình ảnh (đã tạo bằng Gemini). Khai báo website với Google và nghiệm thu toàn bộ dự án website 10 buổi." }
           ]
+        }
+      ]
+    },
+    {
+      id: "theo-yeu-cau",
+      navName: "Theo Yêu Cầu",
+      icon: "🎯",
+      badge: "",
+      title: "Khóa Học THEO YÊU CẦU",
+      shortDesc: "Chương trình thiết kế riêng 1 kèm 1 theo ngành nghề, giải quyết trực tiếp sản phẩm, thương hiệu & công việc thực tế của bạn.",
+      thumbnail: "3d-question",
+      posters: [],
+      sessionsCount: "",
+      priceOnline: 0,
+      priceOffline: 0,
+      highlights: [
+        "Khóa Học Theo Nhu Cầu Cá Nhân",
+        "Khóa Đào Tạo Doanh Nghiệp & Nhóm",
+        "Khóa Cấp Tốc Xử Lý Việc Gấp"
+      ],
+      tracks: [
+        {
+          id: "custom-personal",
+          tabLabel: "Tự Thiết Kế Giáo Án Theo Nhu Cầu",
+          title: "Khóa Học THEO YÊU CẦU",
+          duration: "Linh hoạt",
+          priceOffline: 0,
+          priceOnline: 0,
+          sessions: []
         }
       ]
     }
@@ -350,10 +387,11 @@ const SITE_DATA = {
 };
 
 // State
-let currentTab = "home"; // 'home', 'photoshop', 'illustrator', 'ai', 'edit-video', 'web'
+let currentTab = "home"; // 'home', 'theo-yeu-cau', 'photoshop', 'illustrator', 'ai', 'edit-video', 'web'
 let currentPricingMode = "online"; // 'online' | 'offline'
 let currentShowcaseIdx = 0;
 let activeTrackIdxMap = {
+  "theo-yeu-cau": 0,
   photoshop: 0,
   illustrator: 0,
   ai: 0,
@@ -370,6 +408,10 @@ const SEO_CONFIG = {
   home: {
     title: "Khóa Học Ứng Dụng AI | Khóa Học Tạo Web Với AI, Trí Tuệ Nhân Tạo, Photoshop, Illustrator, Edit Video Theo Yêu Cầu",
     desc: "Chuyên đào tạo Khóa học ứng dụng AI, Khóa học tạo web với AI, Khóa học trí tuệ nhân tạo theo yêu cầu, Khóa học Photoshop theo yêu cầu, Khóa học Illustrator theo yêu cầu, Khóa học Edit Video theo yêu cầu. Học 1 kèm 1 hoặc nhóm."
+  },
+  "theo-yeu-cau": {
+    title: "Khóa Học Theo Yêu Cầu 1 Kèm 1 | Thiết Kế Đồ Họa & AI Theo Nhu Cầu Riêng",
+    desc: "Khóa học theo yêu cầu 1 kèm 1: Cá nhân hóa lộ trình học theo mục tiêu công việc, ngành nghề cụ thể hoặc dự án doanh nghiệp. Giáo viên qua nhà hoặc Online linh hoạt."
   },
   photoshop: {
     title: "Khóa Học Photoshop Theo Yêu Cầu | Học Thiết Kế Quảng Cáo & Ảnh Cưới Với AI 1 Kèm 1",
@@ -622,41 +664,78 @@ function renderInteractiveFaceCard() {
   `;
 }
 
-// Render 5 Ô Khóa Học
+// Render Các Ô Khóa Học (Khung thẻ chuẩn thiết kế & màu sắc Kỹ Năng Số)
 function renderCategoryCards() {
   const courseCardsHtml = SITE_DATA.categories
     .map((cat) => {
+      const isCustomCat = cat.id === "theo-yeu-cau";
       const displayPrice =
         currentPricingMode === "online" ? cat.priceOnline : cat.priceOffline;
       const modeText =
         currentPricingMode === "online"
-          ? "Học Online (Zoom/Meet)"
-          : "Học Offline (Tận nơi)";
+          ? "HỌC ONLINE (ZOOM/MEET)"
+          : "HỌC OFFLINE (TẬN NƠI)";
       const subItems = cat.highlights
-        .map((h) => `<div class="subcourse-item"><span>✅</span> <span>${h}</span></div>`)
+        .map(
+          (h) => `
+        <div class="subcourse-item">
+          <svg class="check-svg" width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="20" height="20" rx="4" fill="#10b981"/>
+            <path d="M5 10.5L8.5 14L15 6.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>${h}</span>
+        </div>
+      `
+        )
         .join("");
+
+      const thumbContent = isCustomCat
+        ? `
+          <div class="thumb-3d-question-box" title="Khóa học thiết kế giáo án theo yêu cầu riêng">
+            <div class="question-ambient-glow"></div>
+            <div class="question-halo-ring"></div>
+            <div class="question-mark-3d-wrap">
+              <span class="question-mark-3d-glyph">?</span>
+            </div>
+          </div>
+        `
+        : `
+          <img src="${cat.thumbnail}" alt="${cat.title}" loading="lazy" />
+          ${cat.badge ? `<span class="category-tag">${cat.icon} ${cat.badge}</span>` : ""}
+          ${cat.sessionsCount ? `<span class="category-count-badge">${cat.sessionsCount}</span>` : ""}
+        `;
+
+      const footerContent = isCustomCat
+        ? `
+          <div class="category-footer" style="justify-content: flex-end;">
+            <button class="btn btn-cat-action" onclick="navigateTo('${cat.id}')" aria-label="Xem thêm ${cat.title}">
+              XEM THÊM →
+            </button>
+          </div>
+        `
+        : `
+          <div class="category-footer">
+            <div class="price-col">
+              <span class="price-label">${modeText}</span>
+              <span class="price-value">${formatVND(displayPrice)}</span>
+            </div>
+            <button class="btn btn-cat-action" onclick="navigateTo('${cat.id}')" aria-label="Xem thêm ${cat.title}">
+              XEM THÊM →
+            </button>
+          </div>
+        `;
 
       return `
         <article class="category-card">
-          <div class="category-thumb" onclick="navigateTo('${cat.id}')" style="cursor:pointer;">
-            <img src="${cat.thumbnail}" alt="${cat.title}" loading="lazy" />
-            <span class="category-tag">${cat.icon} ${cat.badge}</span>
-            <span class="category-count-badge">${cat.sessionsCount}</span>
+          <div class="category-thumb" onclick="navigateTo('${cat.id}')" style="cursor:pointer;" title="Xem chi tiết ${cat.title}">
+            ${thumbContent}
           </div>
           <div class="category-body">
-            <h3 class="category-title">${cat.title}</h3>
+            <h3 class="category-title" onclick="navigateTo('${cat.id}')">${cat.title}</h3>
             <div class="category-subcourses">
               ${subItems}
             </div>
-            <div class="category-footer">
-              <div>
-                <span class="price-label">${modeText}</span>
-                <span class="price-value">${formatVND(displayPrice)}</span>
-              </div>
-              <button class="btn btn-primary" style="padding:8px 16px; font-size:0.84rem;" onclick="navigateTo('${cat.id}')">
-                XEM THÊM →
-              </button>
-            </div>
+            ${footerContent}
           </div>
         </article>
       `;
@@ -665,6 +744,27 @@ function renderCategoryCards() {
 
   return courseCardsHtml;
 }
+
+// Cuộn mượt đến mục Khóa Học Theo Yêu Cầu
+window.scrollToCourses = function () {
+  if (currentTab !== "home") {
+    navigateTo("home", false);
+    setTimeout(() => {
+      const sec = document.getElementById("coursesSection");
+      if (sec) {
+        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 60);
+  } else {
+    const sec = document.getElementById("coursesSection");
+    if (sec) {
+      sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+  document.querySelectorAll("[data-nav]").forEach((btn) => {
+    btn.classList.toggle("active", btn.getAttribute("data-nav") === "courses");
+  });
+};
 
 // Lớp điều khiển Nhân Vật AI Mochi 3D Squishy Tương Tác Đáng Yêu
 class AIFaceTracker {
@@ -2254,11 +2354,19 @@ function updateSessionModalContent() {
   const prevBtn = document.getElementById("modalPrevBtn");
   const nextBtn = document.getElementById("modalNextBtn");
   const dotsEl = document.getElementById("modalSessionDots");
+  const deleteBtn = document.getElementById("btnDeleteCurrentSession");
 
   if (badgeEl) badgeEl.innerHTML = `💬 ${s.num} / ${track.sessions.length} Buổi`;
   if (courseEl) courseEl.textContent = track.title;
   if (titleEl) titleEl.textContent = s.title;
   if (descEl) descEl.textContent = s.desc;
+
+  // Reset form chỉnh sửa về trạng thái xem ban đầu
+  cancelEditingCurrentSession();
+
+  if (deleteBtn) {
+    deleteBtn.style.display = track.sessions.length > 1 ? "inline-flex" : "none";
+  }
 
   if (prevBtn) {
     prevBtn.disabled = activeModalSession.sessionIdx === 0;
@@ -2283,6 +2391,254 @@ function updateSessionModalContent() {
   }
 }
 
+// Chỉnh sửa trực tiếp nội dung buổi học
+window.startEditingCurrentSession = function () {
+  if (!activeModalSession) return;
+  const cat = SITE_DATA.categories.find((c) => c.id === activeModalSession.catId);
+  if (!cat) return;
+  const track = cat.tracks[activeModalSession.trackIdx];
+  if (!track || !track.sessions[activeModalSession.sessionIdx]) return;
+  const s = track.sessions[activeModalSession.sessionIdx];
+
+  const titleInp = document.getElementById("sessionEditTitleInput");
+  const descInp = document.getElementById("sessionEditDescInput");
+  const form = document.getElementById("sessionEditForm");
+  const actions = document.getElementById("sessionEditActions");
+
+  if (titleInp) titleInp.value = s.title;
+  if (descInp) descInp.value = s.desc;
+  if (form) form.style.display = "block";
+  if (actions) actions.style.display = "none";
+  if (titleInp) titleInp.focus();
+};
+
+window.cancelEditingCurrentSession = function () {
+  const form = document.getElementById("sessionEditForm");
+  const actions = document.getElementById("sessionEditActions");
+  if (form) form.style.display = "none";
+  if (actions) actions.style.display = "flex";
+};
+
+window.saveEditedCurrentSession = function () {
+  if (!activeModalSession) return;
+  const cat = SITE_DATA.categories.find((c) => c.id === activeModalSession.catId);
+  if (!cat) return;
+  const track = cat.tracks[activeModalSession.trackIdx];
+  if (!track || !track.sessions[activeModalSession.sessionIdx]) return;
+  const s = track.sessions[activeModalSession.sessionIdx];
+
+  const titleInp = document.getElementById("sessionEditTitleInput");
+  const descInp = document.getElementById("sessionEditDescInput");
+  const newTitle = titleInp ? titleInp.value.trim() : "";
+  const newDesc = descInp ? descInp.value.trim() : "";
+
+  if (!newTitle) {
+    alert("Vui lòng nhập tên buổi học!");
+    return;
+  }
+
+  s.title = newTitle;
+  s.desc = newDesc || "Theo yêu cầu đào tạo cá nhân hóa của học viên.";
+
+  cancelEditingCurrentSession();
+  updateSessionModalContent();
+  renderMainView();
+  showSyllabusToast(`💾 Đã lưu thay đổi cho ${s.num}!`);
+
+  if (mochiSyllabusInstance) {
+    mochiSyllabusInstance.blushUntil = Date.now() + 3000;
+  }
+};
+
+window.deleteCurrentSession = function () {
+  if (!activeModalSession) return;
+  const cat = SITE_DATA.categories.find((c) => c.id === activeModalSession.catId);
+  if (!cat) return;
+  const track = cat.tracks[activeModalSession.trackIdx];
+  if (!track || track.sessions.length <= 1) {
+    alert("Khóa học cần ít nhất 1 buổi học!");
+    return;
+  }
+
+  if (!confirm(`Bạn có chắc muốn xóa ${track.sessions[activeModalSession.sessionIdx].num} không?`)) {
+    return;
+  }
+
+  track.sessions.splice(activeModalSession.sessionIdx, 1);
+  track.sessions.forEach((s, idx) => {
+    s.num = `Buổi ${idx + 1}`;
+  });
+  track.duration = `${track.sessions.length} Buổi`;
+  track.priceOnline = track.sessions.length * 350000;
+  track.priceOffline = track.sessions.length * 450000;
+
+  closeSessionModal();
+  renderMainView();
+  showSyllabusToast(`🗑️ Đã xóa buổi học. Lộ trình còn ${track.sessions.length} buổi.`);
+};
+
+// Modal Thêm Buổi Học Mới (+)
+let activeAddSessionContext = null;
+
+window.openAddSessionModal = function (catId, trackIdx) {
+  const cat = SITE_DATA.categories.find((c) => c.id === catId);
+  if (!cat) return;
+  const track = cat.tracks[trackIdx] || cat.tracks[0];
+  if (!track) return;
+
+  activeAddSessionContext = { catId, trackIdx };
+  const badgeEl = document.getElementById("addSessionBadge");
+  const nextNum = track.sessions.length + 1;
+  if (badgeEl) badgeEl.textContent = `➕ Tạo Buổi Học Số ${nextNum}`;
+
+  const titleInp = document.getElementById("newSessionTitle");
+  const descInp = document.getElementById("newSessionDesc");
+  if (titleInp) titleInp.value = "";
+  if (descInp) descInp.value = "";
+
+  const modal = document.getElementById("addSessionModal");
+  if (modal) {
+    modal.classList.add("open");
+    document.body.style.overflow = "hidden";
+    setTimeout(() => {
+      if (titleInp) titleInp.focus();
+    }, 100);
+  }
+};
+
+window.closeAddSessionModal = function (e) {
+  if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains("session-modal-close")) {
+    return;
+  }
+  const modal = document.getElementById("addSessionModal");
+  if (modal) {
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  activeAddSessionContext = null;
+};
+
+window.confirmAddSession = function () {
+  if (!activeAddSessionContext) return;
+  const cat = SITE_DATA.categories.find((c) => c.id === activeAddSessionContext.catId);
+  if (!cat) return;
+  const track = cat.tracks[activeAddSessionContext.trackIdx];
+  if (!track) return;
+
+  const titleInp = document.getElementById("newSessionTitle");
+  const descInp = document.getElementById("newSessionDesc");
+  const title = titleInp ? titleInp.value.trim() : "";
+  const desc = descInp ? descInp.value.trim() : "";
+
+  if (!title) {
+    alert("Vui lòng nhập tên buổi học bạn muốn tạo!");
+    if (titleInp) titleInp.focus();
+    return;
+  }
+
+  const nextNum = `Buổi ${track.sessions.length + 1}`;
+  track.sessions.push({
+    num: nextNum,
+    title: title,
+    desc: desc || "Học 1 kèm 1 thực chiến theo yêu cầu riêng của học viên."
+  });
+
+  track.duration = `${track.sessions.length} Buổi`;
+  track.priceOnline = track.sessions.length * 350000;
+  track.priceOffline = track.sessions.length * 450000;
+
+  closeAddSessionModal();
+  renderMainView();
+  showSyllabusToast(`🎉 Đã tạo thành công ${nextNum}: "${title}"!`);
+
+  if (mochiSyllabusInstance) {
+    mochiSyllabusInstance.blushUntil = Date.now() + 4000;
+  }
+};
+
+// Gửi nội dung tự thiết kế để đăng ký khóa học
+window.sendCustomSyllabusToReg = function (catId, trackIdx) {
+  const cat = SITE_DATA.categories.find((c) => c.id === catId);
+  if (!cat) return;
+  const track = cat.tracks[trackIdx] || cat.tracks[0];
+  if (!track) return;
+
+  const sessionsText = track.sessions
+    .map((s) => `• ${s.num}: ${s.title}\n  - Yêu cầu học: ${s.desc}`)
+    .join("\n\n");
+
+  const modeStr = currentPricingMode === "online" ? "Học Online (1 kèm 1 qua Zoom / Meet)" : "Học Trực Tiếp (Qua nhà / Công ty)";
+  const priceVal = currentPricingMode === "online" ? track.priceOnline : track.priceOffline;
+
+  const fullSyllabusMsg = `[ĐĂNG KÝ GIÁO ÁN TỰ THIẾT KẾ 1 KÈM 1]\n` +
+    `Khóa học: ${cat.title} - ${track.title}\n` +
+    `Tổng thời lượng: ${track.sessions.length} Buổi\n` +
+    `Hình thức học: ${modeStr}\n` +
+    `Học phí dự kiến: ${formatVND(priceVal)}\n\n` +
+    `CHI TIẾT LỘ TRÌNH TỪNG BUỔI HỌC BẠN ĐÃ THIẾT KẾ:\n` +
+    `${sessionsText}`;
+
+  // 1. Ghi vào ô Ghi chú nhu cầu học
+  const regNote = document.getElementById("regNote");
+  if (regNote) {
+    regNote.value = fullSyllabusMsg;
+  }
+
+  // 2. Tự động chọn Khóa học Quan Tâm
+  document.querySelectorAll('input[name="regCourses"]').forEach((cb) => {
+    if (cb.value.includes("yêu cầu") || cb.value.includes("Theo Yêu Cầu") || cb.value.includes("1 kèm 1")) {
+      cb.checked = true;
+    }
+  });
+
+  // 3. Cập nhật bảng tính học phí
+  const calcSel = document.getElementById("calcCourseSelect");
+  if (calcSel) {
+    let opt = calcSel.querySelector('option[value="custom-personal"]');
+    if (opt) {
+      opt.setAttribute("data-sessions", track.sessions.length);
+      opt.setAttribute("data-online", track.priceOnline);
+      opt.setAttribute("data-offline", track.priceOffline);
+      opt.textContent = `Khóa học Theo Yêu Cầu - Tự Thiết Kế (${track.sessions.length} Buổi)`;
+      calcSel.value = "custom-personal";
+    }
+    updateFeeCalculator();
+  }
+
+  // 4. Cập nhật tiêu đề form đăng ký
+  const regTitle = document.getElementById("regFormTitle");
+  if (regTitle) {
+    regTitle.innerHTML = `Đăng Ký Khóa Học Theo Yêu Cầu <span style="color:var(--primary); font-size:0.95rem;">(${track.sessions.length} Buổi Đã Thiết Kế)</span>`;
+  }
+
+  // 5. Cuộn mượt đến form đăng ký và nhấp nháy hiệu ứng
+  const contactSec = document.getElementById("contactSection");
+  if (contactSec) {
+    contactSec.scrollIntoView({ behavior: "smooth" });
+    contactSec.classList.add("contact-section-glow");
+    setTimeout(() => {
+      contactSec.classList.remove("contact-section-glow");
+    }, 2800);
+  }
+
+  showSyllabusToast(`🚀 Đã nạp ${track.sessions.length} buổi học vào Form Đăng Ký bên dưới!`);
+};
+
+// Toast notification helper
+let toastTimeout = null;
+window.showSyllabusToast = function (msg) {
+  const toast = document.getElementById("customSyllabusToast");
+  const msgEl = document.getElementById("toastMessage");
+  if (!toast) return;
+  if (msgEl) msgEl.textContent = msg;
+
+  toast.classList.add("show");
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3500);
+};
+
 // Register course from inside session modal
 window.registerCurrentSessionCourse = function () {
   if (!activeModalSession) return;
@@ -2290,13 +2646,19 @@ window.registerCurrentSessionCourse = function () {
   const track = cat ? cat.tracks[activeModalSession.trackIdx] : null;
   const courseTitle = track ? track.title : "";
   closeSessionModal();
-  prefillCourseAndScroll(courseTitle);
+  
+  if (cat && cat.id === "theo-yeu-cau") {
+    sendCustomSyllabusToReg(cat.id, activeModalSession.trackIdx);
+  } else {
+    prefillCourseAndScroll(courseTitle);
+  }
 };
 
 // Close modal on Escape key
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeSessionModal();
+    closeAddSessionModal();
   }
 });
 
@@ -2900,6 +3262,32 @@ function renderInteractiveMochiSyllabus(cat, track, activeIdx) {
     })
     .join("");
 
+  const isCustomizable = cat.id === "theo-yeu-cau";
+  const addBubbleHtml = isCustomizable
+    ? `
+      <button class="mochi-speech-bubble bubble-right bubble-add-session" 
+              onclick="openAddSessionModal('${cat.id}', ${activeIdx})"
+              title="Nhấn để tạo thêm buổi học mới (+)"
+              aria-label="Tạo thêm buổi học">
+        <span class="bubble-icon">➕</span>
+        <span class="bubble-text">Thêm Buổi</span>
+      </button>
+    `
+    : "";
+
+  const customBuilderBarHtml = isCustomizable
+    ? `
+      <div class="mochi-custom-builder-bar">
+        <button type="button" class="builder-btn-add" onclick="openAddSessionModal('${cat.id}', ${activeIdx})">
+          <span>➕</span> Tạo Buổi Học Mới (+)
+        </button>
+        <button type="button" class="builder-btn-submit" onclick="sendCustomSyllabusToReg('${cat.id}', ${activeIdx})">
+          <span>🚀</span> Gửi Giáo Án Tự Thiết Kế Để Đăng Ký
+        </button>
+      </div>
+    `
+    : "";
+
   return `
     <div class="mochi-interactive-stage">
       <!-- Cột bóng nói chuyện bên trái -->
@@ -2915,8 +3303,10 @@ function renderInteractiveMochiSyllabus(cat, track, activeIdx) {
       <!-- Cột bóng nói chuyện bên phải -->
       <div class="mochi-bubbles-col mochi-bubbles-right">
         ${rightBubblesHtml}
+        ${addBubbleHtml}
       </div>
     </div>
+    ${customBuilderBarHtml}
   `;
 }
 
@@ -2927,20 +3317,30 @@ window.toggleAllSessions = function (expand) {
   });
 };
 
-// Render Department Page (Compact with Sub-Course Tabs, Interactive Mochi & Accordion Sessions)
+// Render Department Page (Compact with Sub-Course Tabs & Interactive Mochi Syllabus)
 function renderDepartmentPage(cat) {
   const activeIdx = activeTrackIdxMap[cat.id] || 0;
   const track = cat.tracks[activeIdx] || cat.tracks[0];
 
-  const postersHtml = cat.posters
-    .map(
-      (imgUrl) => `
-      <div class="poster-thumb" onclick="openLightbox('${imgUrl}', '${cat.title}')">
-        <img src="${imgUrl}" alt="${cat.title}" loading="lazy" />
+  const postersHtml = cat.id === "theo-yeu-cau"
+    ? `
+      <div class="thumb-3d-question-box" style="border-radius: var(--radius-xl); height: 195px; width: 100%; max-width: 320px; box-shadow: 0 14px 40px rgba(0,0,0,0.3); border: 1.5px solid rgba(99,102,241,0.35);">
+        <div class="question-ambient-glow"></div>
+        <div class="question-halo-ring"></div>
+        <div class="question-mark-3d-wrap">
+          <span class="question-mark-3d-glyph">?</span>
+        </div>
       </div>
     `
-    )
-    .join("");
+    : cat.posters
+        .map(
+          (imgUrl) => `
+        <div class="poster-thumb" onclick="openLightbox('${imgUrl}', '${cat.title}')">
+          <img src="${imgUrl}" alt="${cat.title}" loading="lazy" />
+        </div>
+      `
+        )
+        .join("");
 
   const trackTabsHtml =
     cat.tracks.length > 1
@@ -2959,20 +3359,28 @@ function renderDepartmentPage(cat) {
     `
       : "";
 
-  const sessionsHtml = track.sessions
-    .map(
-      (s, idx) => `
-      <div class="session-item ${idx < 2 ? "expanded" : ""}" onclick="this.classList.toggle('expanded')">
-        <div class="session-top">
-          <span class="session-num">${s.num}</span>
-          <span class="session-title">${s.title}</span>
-          <span class="session-chevron">▼</span>
+  const heroBadgeText = cat.id === "theo-yeu-cau"
+    ? `${cat.icon} 1 Kèm 1 Theo Yêu Cầu • Tự Thiết Kế Giáo Án`
+    : `${cat.icon} ${cat.badge} • 1 Kèm 1 Theo Yêu Cầu`;
+
+  const trackSubtitle = cat.id === "theo-yeu-cau"
+    ? `📅 Giờ học linh hoạt 1 kèm 1 theo học viên • Tự do tạo số buổi học và viết nội dung bạn muốn học`
+    : `⏱️ Thời lượng: <strong>${track.duration}</strong> • 📅 Giờ học linh hoạt theo học viên (Chạm vào từng buổi để xem chi tiết)`;
+
+  const pricingCardsHtml = cat.id === "theo-yeu-cau"
+    ? ""
+    : `
+      <div class="track-pricing-cards">
+        <div class="pricing-Badge-box ${currentPricingMode === "online" ? "highlighted" : ""}">
+          <div class="pricing-Badge-mode">🚀 HỌC ONLINE (${track.duration})</div>
+          <div class="pricing-Badge-amount">${formatVND(track.priceOnline)}</div>
         </div>
-        <div class="session-desc">${s.desc}</div>
+        <div class="pricing-Badge-box ${currentPricingMode === "offline" ? "highlighted" : ""}">
+          <div class="pricing-Badge-mode">🚀 HỌC OFFLINE (${track.duration})</div>
+          <div class="pricing-Badge-amount">${formatVND(track.priceOffline)}</div>
+        </div>
       </div>
-    `
-    )
-    .join("");
+    `;
 
   return `
     <section class="container" style="padding-top: 18px;">
@@ -2992,11 +3400,11 @@ function renderDepartmentPage(cat) {
 
       <div class="department-hero">
         <div>
-          <span class="hero-pill">${cat.icon} ${cat.badge} • 1 Kèm 1 Theo Yêu Cầu</span>
+          <span class="hero-pill">${heroBadgeText}</span>
           <h1 class="hero-title" style="font-size: clamp(1.4rem, 2.8vw, 2.1rem);">${cat.title}</h1>
           <p class="hero-desc">${cat.shortDesc}</p>
           <div class="hero-cta-group">
-            <button class="btn btn-primary" onclick="prefillCourseAndScroll('${track.title}')">
+            <button class="btn btn-primary" onclick="${cat.id === 'theo-yeu-cau' ? `sendCustomSyllabusToReg('${cat.id}', ${activeIdx})` : `prefillCourseAndScroll('${track.title}')`}">
               ✍️ Đăng Ký Học Ngay
             </button>
             <a class="btn btn-hot" href="https://zalo.me/0916172524" target="_blank" rel="noopener">
@@ -3016,20 +3424,11 @@ function renderDepartmentPage(cat) {
           <div>
             <h2 class="track-title">${track.title}</h2>
             <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:4px;">
-              ⏱️ Thời lượng: <strong>${track.duration}</strong> • 📅 Giờ học linh hoạt theo học viên (Chạm vào từng buổi để xem chi tiết)
+              ${trackSubtitle}
             </div>
           </div>
 
-          <div class="track-pricing-cards">
-            <div class="pricing-Badge-box ${currentPricingMode === "online" ? "highlighted" : ""}">
-              <div class="pricing-Badge-mode">🚀 HỌC ONLINE (${track.duration})</div>
-              <div class="pricing-Badge-amount">${formatVND(track.priceOnline)}</div>
-            </div>
-            <div class="pricing-Badge-box ${currentPricingMode === "offline" ? "highlighted" : ""}">
-              <div class="pricing-Badge-mode">🚀 HỌC OFFLINE (${track.duration})</div>
-              <div class="pricing-Badge-amount">${formatVND(track.priceOffline)}</div>
-            </div>
-          </div>
+          ${pricingCardsHtml}
         </div>
 
         <!-- Interactive Mochi Header -->
@@ -3095,8 +3494,8 @@ function renderMainView() {
             </div>
 
             <div class="hero-cta-group">
-              <a href="#coursesSection" class="btn btn-primary">
-                🔥 Xem Khóa Học
+              <a href="#coursesSection" class="btn btn-primary" onclick="scrollToCourses(); return false;">
+                🔥 Xem Khóa Học Theo Yêu Cầu
               </a>
               <a href="https://zalo.me/0916172524" target="_blank" rel="noopener" class="btn btn-hot">
                 💬 Zalo: 0916172524
@@ -3111,12 +3510,12 @@ function renderMainView() {
       </div>
     </section>
 
-    <section id="coursesSection" class="container">
+    <section id="coursesSection" class="container courses-section-wrapper">
       <div class="section-header">
-        <span class="section-badge">🎓 Chương Trình Đào Tạo</span>
-        <h2 class="section-title">KHÓA HỌC ỨNG DỤNG AI</h2>
+        <span class="section-badge">🎯 Đào Tạo 1 Kèm 1 & Nhóm</span>
+        <h2 class="section-title">KHÓA HỌC THEO YÊU CẦU</h2>
         <p class="section-subtitle">
-          Chọn hình thức học bên dưới để xem học phí tương ứng:
+          Chọn hình thức học để tra cứu học phí và xem chi tiết giáo trình đào tạo thực chiến:
         </p>
       </div>
 
@@ -3149,15 +3548,38 @@ window.updateFeeCalculator = function () {
   const breakdownEl = document.getElementById("calcBreakdownText");
   if (!courseSel || !modeSel || !totalEl || !breakdownEl) return;
 
-  const opt = courseSel.options[courseSel.selectedIndex];
-  const sessions = parseInt(opt.getAttribute("data-sessions") || "8", 10);
-  const price =
-    modeSel.value === "online"
-      ? parseInt(opt.getAttribute("data-online"), 10)
-      : parseInt(opt.getAttribute("data-offline"), 10);
+  const courseVal = courseSel.value;
+  const modeVal = modeSel.value;
 
-  totalEl.textContent = formatVND(price);
-  breakdownEl.textContent = `Trọn khóa ${sessions} buổi (${formatVND(Math.round(price / sessions))}/buổi)`;
+  // Nếu chưa chọn khóa học hoặc chưa chọn hình thức học -> không hiện gì
+  if (!courseVal || !modeVal) {
+    totalEl.textContent = "";
+    breakdownEl.textContent = "";
+    return;
+  }
+
+  const opt = courseSel.options[courseSel.selectedIndex];
+  if (!opt) {
+    totalEl.textContent = "";
+    breakdownEl.textContent = "";
+    return;
+  }
+
+  const sessions = parseInt(opt.getAttribute("data-sessions") || "8", 10);
+  const onlinePrice = parseInt(opt.getAttribute("data-online") || "0", 10);
+  const offlinePrice = parseInt(opt.getAttribute("data-offline") || "0", 10);
+  const price = modeVal === "online" ? onlinePrice : offlinePrice;
+
+  if (price > 0 && sessions > 0) {
+    totalEl.textContent = formatVND(price);
+    breakdownEl.textContent = `Trọn khóa ${sessions} buổi (${formatVND(Math.round(price / sessions))}/buổi)`;
+  } else if (price === 0) {
+    totalEl.textContent = "Liên hệ học phí";
+    breakdownEl.textContent = "Giáo trình tùy chỉnh linh hoạt";
+  } else {
+    totalEl.textContent = "";
+    breakdownEl.textContent = "";
+  }
 };
 
 window.prefillCourseAndScroll = function (courseName) {
@@ -3349,9 +3771,10 @@ const DEFAULT_REGISTRATION_CONFIG = {
   badgeTitle: "📬 Đăng Ký Nhận Giáo Án",
   formTitle: "Đăng Ký Khóa Học Ứng Dụng AI",
   calcBadgeTitle: "🧮 Tính Học Phí & Liên Hệ",
-  calcTitle: "Tra Cứu Học Phí Khóa Học Theo Yêu Cầu",
+  calcTitle: "Tra Cứu Học Phí Khóa Học",
   submitBtnText: "🚀 Gửi Đăng Ký Về Mail (Submit)",
   interestCourses: [
+    { id: "custom", name: "Theo Yêu Cầu", icon: "🎯", value: "Khóa học Theo yêu cầu riêng (1 kèm 1)", checked: false },
     { id: "ps", name: "Photoshop", icon: "🎨", value: "Khóa học Photoshop theo yêu cầu", checked: true },
     { id: "ill", name: "Illustrator", icon: "✒️", value: "Khóa học Illustrator theo yêu cầu", checked: false },
     { id: "ai", name: "Trí Tuệ Nhân Tạo (AI)", icon: "🤖", value: "Khóa học Trí tuệ nhân tạo theo yêu cầu", checked: false },
@@ -3359,6 +3782,9 @@ const DEFAULT_REGISTRATION_CONFIG = {
     { id: "web", name: "Tạo Web", icon: "🌐", value: "Khóa học ứng dụng AI - Tạo Web với AI", checked: false }
   ],
   calcCourses: [
+    { id: "custom-personal", name: "Khóa học Theo Yêu Cầu - Cá Nhân (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+    { id: "custom-business", name: "Khóa học Theo Yêu Cầu - Doanh Nghiệp (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
+    { id: "custom-express", name: "Khóa học Theo Yêu Cầu - Cấp Tốc (6 Buổi)", sessions: 6, online: 2400000, offline: 3000000 },
     { id: "ps-basic", name: "Khóa học Photoshop theo yêu cầu - Cơ Bản (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
     { id: "ps-ads", name: "Khóa học Photoshop theo yêu cầu - Quảng cáo & AI (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
     { id: "ps-wedding", name: "Khóa học Photoshop theo yêu cầu - Ảnh Cưới Studio (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
@@ -3405,6 +3831,9 @@ function normalizeAppImageUrl(url) {
 // Nạp dữ liệu tùy chỉnh từ Trang Quản Trị (admin.html)
 function loadAdminCustomData() {
   try {
+    const defaultTheoYeuCau = SITE_DATA.categories.find((c) => c.id === "theo-yeu-cau");
+    const defaultTheoYeuCauSlide = SITE_DATA.showcaseSlides.find((s) => s.id === "theo-yeu-cau");
+
     // 1. Dữ liệu khóa học & Slide
     const savedSiteData = localStorage.getItem("CUSTOM_SITE_DATA");
     if (savedSiteData) {
@@ -3416,12 +3845,64 @@ function loadAdminCustomData() {
             cat.posters = cat.posters.map((p) => normalizeAppImageUrl(p));
           }
         });
+
+        // Luôn đảm bảo "theo-yeu-cau" tồn tại, đứng ở vị trí thứ 6 (hàng 2 cột 3) và chuẩn hóa đúng yêu cầu
+        const customIdx = parsed.categories.findIndex((c) => c.id === "theo-yeu-cau");
+        let item = null;
+        if (customIdx >= 0) {
+          [item] = parsed.categories.splice(customIdx, 1);
+        } else if (defaultTheoYeuCau) {
+          item = JSON.parse(JSON.stringify(defaultTheoYeuCau));
+        }
+
+        if (item) {
+          item.title = "Khóa Học THEO YÊU CẦU";
+          item.badge = "";
+          item.sessionsCount = "";
+          item.thumbnail = "3d-question";
+          item.posters = [];
+          item.highlights = [
+            "Khóa Học Theo Nhu Cầu Cá Nhân",
+            "Khóa Đào Tạo Doanh Nghiệp & Nhóm",
+            "Khóa Cấp Tốc Xử Lý Việc Gấp"
+          ];
+          item.priceOnline = 0;
+          item.priceOffline = 0;
+          if (!item.tracks || item.tracks.length !== 1 || (item.tracks[0].sessions && item.tracks[0].sessions.length === 10)) {
+            item.tracks = [
+              {
+                id: "custom-personal",
+                tabLabel: "Tự Thiết Kế Giáo Án Theo Nhu Cầu",
+                title: "Khóa Học THEO YÊU CẦU",
+                duration: "Linh hoạt",
+                priceOffline: 0,
+                priceOnline: 0,
+                sessions: []
+              }
+            ];
+          } else {
+            item.tracks[0].title = "Khóa Học THEO YÊU CẦU";
+            item.tracks[0].tabLabel = "Tự Thiết Kế Giáo Án Theo Nhu Cầu";
+            item.tracks[0].duration = "Linh hoạt";
+          }
+          parsed.categories.push(item);
+        }
+
         SITE_DATA.categories = parsed.categories;
+
+        // Lưu lại để đồng bộ vĩnh viễn trong localStorage của trình duyệt
+        try {
+          parsed.categories = SITE_DATA.categories;
+          localStorage.setItem("CUSTOM_SITE_DATA", JSON.stringify(parsed));
+        } catch (e) {}
       }
       if (parsed.showcaseSlides && Array.isArray(parsed.showcaseSlides)) {
         parsed.showcaseSlides.forEach((s) => {
           s.image = normalizeAppImageUrl(s.image);
         });
+        if (defaultTheoYeuCauSlide && !parsed.showcaseSlides.some((s) => s.id === "theo-yeu-cau")) {
+          parsed.showcaseSlides.push(defaultTheoYeuCauSlide);
+        }
         SITE_DATA.showcaseSlides = parsed.showcaseSlides;
       }
     }
@@ -3492,7 +3973,15 @@ function loadAdminCustomData() {
       const calcBadge = document.getElementById("calcBadgeTitle");
       if (calcBadge && regConfig.calcBadgeTitle) calcBadge.textContent = regConfig.calcBadgeTitle;
       const calcTitle = document.getElementById("calcTitle");
-      if (calcTitle && regConfig.calcTitle) calcTitle.textContent = regConfig.calcTitle;
+      if (calcTitle) {
+        if (regConfig.calcTitle === "Tra Cứu Học Phí Khóa Học Theo Yêu Cầu") {
+          regConfig.calcTitle = "Tra Cứu Học Phí Khóa Học";
+          try {
+            localStorage.setItem("CUSTOM_REGISTRATION_CONFIG", JSON.stringify(regConfig));
+          } catch(e) {}
+        }
+        calcTitle.textContent = regConfig.calcTitle || "Tra Cứu Học Phí Khóa Học";
+      }
       const submitBtn = document.getElementById("regSubmitBtn");
       if (submitBtn && regConfig.submitBtnText) submitBtn.textContent = regConfig.submitBtnText;
 
@@ -3507,14 +3996,30 @@ function loadAdminCustomData() {
         `).join("");
       }
 
-      // Render lại danh sách Dropdown Tra Cứu Học Phí
+      // Render lại danh sách Dropdown Tra Cứu Học Phí (để trống khi chưa chọn)
       const calcSel = document.getElementById("calcCourseSelect");
       if (calcSel && Array.isArray(regConfig.calcCourses) && regConfig.calcCourses.length > 0) {
-        calcSel.innerHTML = regConfig.calcCourses.map(item => `
-          <option value="${item.id}" data-sessions="${item.sessions}" data-online="${item.online}" data-offline="${item.offline}">
-            ${item.name}
-          </option>
-        `).join("");
+        calcSel.innerHTML = `
+          <option value="" selected></option>
+          ${regConfig.calcCourses.map(item => `
+            <option value="${item.id}" data-sessions="${item.sessions}" data-online="${item.online}" data-offline="${item.offline}">
+              ${item.name}
+            </option>
+          `).join("")}
+        `;
+        calcSel.value = "";
+      }
+
+      // Đảm bảo dropdown hình thức học cũng để trống khi chưa chọn
+      const modeSel = document.getElementById("calcModeSelect");
+      if (modeSel && !modeSel.querySelector('option[value=""]')) {
+        const blankOpt = document.createElement("option");
+        blankOpt.value = "";
+        blankOpt.selected = true;
+        modeSel.insertBefore(blankOpt, modeSel.firstChild);
+        modeSel.value = "";
+      } else if (modeSel) {
+        modeSel.value = "";
       }
     }
   } catch (err) {
