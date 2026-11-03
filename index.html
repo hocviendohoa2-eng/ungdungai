@@ -305,6 +305,64 @@
     </div>
   </div>
 
+  <!-- Interactive Course Session Detail Modal (Centered on Screen) -->
+  <div class="session-modal-backdrop" id="sessionDetailModal" onclick="closeSessionModal(event)">
+    <div class="session-modal-sheet" onclick="event.stopPropagation()">
+      <div class="session-modal-header">
+        <div class="session-modal-badge" id="modalSessionBadge">💬 Buổi 1 / 8</div>
+        <button class="session-modal-close" onclick="closeSessionModal()" aria-label="Đóng chi tiết buổi học">✕</button>
+      </div>
+
+      <div class="session-modal-course-name" id="modalCourseName">Khóa Học Photoshop Cơ Bản</div>
+      <h3 class="session-modal-title" id="modalSessionTitle">Nền tảng cơ bản</h3>
+      
+      <div class="session-modal-body">
+        <div class="session-modal-desc-box">
+          <div class="desc-box-label">📖 Nội dung buổi học:</div>
+          <p class="session-modal-desc" id="modalSessionDesc">
+            Làm quen giao diện, quản lý Layer và các công cụ tạo vùng chọn cơ bản.
+          </p>
+        </div>
+        
+        <div class="session-modal-perks">
+          <div class="modal-perk-item">
+            <span class="perk-icon">🎯</span>
+            <div><strong>Học 1 Kèm 1:</strong> Giáo án cá nhân hóa theo đúng nhu cầu & ngành nghề</div>
+          </div>
+          <div class="modal-perk-item">
+            <span class="perk-icon">⏱️</span>
+            <div><strong>Linh hoạt lịch học:</strong> Tự chọn khung giờ sáng, chiều, tối hoặc cuối tuần</div>
+          </div>
+          <div class="modal-perk-item">
+            <span class="perk-icon">🚀</span>
+            <div><strong>Thực chiến sản phẩm:</strong> Nắm chắc kỹ năng, hoàn thiện sản phẩm ngay sau buổi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stepper / Navigation between sessions -->
+      <div class="session-modal-nav">
+        <button class="btn btn-outline session-nav-btn" id="modalPrevBtn" onclick="navigateModalSession(-1)">
+          ← Buổi trước
+        </button>
+        <div class="session-modal-dots" id="modalSessionDots"></div>
+        <button class="btn btn-outline session-nav-btn" id="modalNextBtn" onclick="navigateModalSession(1)">
+          Buổi sau →
+        </button>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div class="session-modal-actions">
+        <button class="btn btn-primary" id="modalRegisterBtn" onclick="registerCurrentSessionCourse()">
+          ✍️ Đăng Ký Khóa Này
+        </button>
+        <a class="btn btn-hot" href="https://zalo.me/0916172524" target="_blank" rel="noopener">
+          💬 Zalo: 0916172524
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Quick Action Buttons -->
   <div class="floating-actions">
     <a href="https://zalo.me/0916172524" target="_blank" rel="noopener" class="float-btn float-zalo" title="Chat Zalo">

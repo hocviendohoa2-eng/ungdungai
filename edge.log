@@ -1,0 +1,26 @@
+[16696:12396:1103/134812.350:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[19268:5164:1103/134812.434:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[18564:8356:1103/134812.460:WARNING:chrome\browser\extensions\external_registry_loader_win.cc:283] Error observing HKLM: 5
+[7428:15364:1103/134812.529:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[13464:10572:1103/134812.615:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[16280:7872:1103/134812.639:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[8136:18444:1103/134812.641:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[9528:464:1103/134812.709:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[1212:15584:1103/134812.709:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[17748:18936:1103/134812.773:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[18368:2128:1103/134812.773:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[7808:12960:1103/134812.779:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[15608:12696:1103/134812.813:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[18564:8356:1103/134812.865:INFO:CONSOLE:6233] "[ProtocolLaunch] handler constructed; wiring port events.", source: chrome-extension://ndcpkimcihhghdcddljkfmmjccdmcmof/background.rollup.js (6233)
+[19176:16556:1103/134812.922:INFO:third_party\webrtc\rtc_base\cpu_info.cc:77] Available number of cores: 8
+[13880:8068:1103/134812.966:VERBOSE1:components\viz\service\main\viz_main_impl.cc:87] VizNullHypothesis is disabled (not a warning)
+[13880:16376:1103/134812.966:VERBOSE1:base\allocator\scheduler_loop_quarantine_config.cc:199] No entry found for gpu-process/viz-compositor.
+[18564:8356:1103/134813.272:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.273:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.273:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.303:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.337:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.337:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.337:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.420:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.
+[18564:8356:1103/134813.420:ERROR:chrome\browser\task_manager\providers\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a "Renderer" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.

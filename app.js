@@ -406,6 +406,10 @@ function navigateTo(tabId, scrollToTop = true) {
     aiFaceInstance.destroy();
     aiFaceInstance = null;
   }
+  if (mochiSyllabusInstance) {
+    mochiSyllabusInstance.destroy();
+    mochiSyllabusInstance = null;
+  }
   currentTab = tabId;
 
   document.querySelectorAll("[data-nav]").forEach((btn) => {
@@ -469,25 +473,144 @@ window.selectShowcase = function (idx) {
   }
 };
 
+// Bảng màu Mochi theo từng loại bánh (Hồng Dâu, Vàng Xoài, Xanh Matcha, Trắng)
+const MOCHI_PALETTES = {
+  white: {
+    c0: [255, 255, 255],
+    c1: [255, 255, 255],
+    c2: [246, 247, 252],
+    c3: [232, 236, 248],
+    c4: [220, 226, 242],
+    stroke: [203, 213, 225, 0.7],
+    rim: [244, 114, 182, 0.14]
+  },
+  pink: {
+    c0: [255, 255, 255],
+    c1: [255, 228, 238],
+    c2: [254, 202, 222],
+    c3: [251, 165, 196],
+    c4: [244, 114, 155],
+    stroke: [244, 114, 182, 0.75],
+    rim: [244, 63, 94, 0.28]
+  },
+  yellow: {
+    c0: [255, 255, 255],
+    c1: [254, 248, 210],
+    c2: [254, 232, 150],
+    c3: [250, 204, 95],
+    c4: [234, 179, 50],
+    stroke: [245, 158, 11, 0.75],
+    rim: [234, 88, 12, 0.25]
+  },
+  matcha: {
+    c0: [255, 255, 255],
+    c1: [236, 253, 240],
+    c2: [198, 246, 208],
+    c3: [150, 228, 168],
+    c4: [95, 200, 125],
+    stroke: [34, 197, 94, 0.75],
+    rim: [22, 163, 74, 0.26]
+  }
+};
+
+// Cho Bé Mochi ăn bánh (Hồng dâu, Vàng xoài, Xanh matcha)
+window.feedAIFace = function (flavor, btnEl) {
+  if (aiFaceInstance) {
+    aiFaceInstance.feed(flavor);
+  }
+
+  // Hiệu ứng bánh bay từ icon vào miệng Mochi
+  const thumbArea = document.getElementById("aiFaceThumbArea");
+  if (thumbArea && btnEl) {
+    const thumbRect = thumbArea.getBoundingClientRect();
+    const btnRect = btnEl.getBoundingClientRect();
+
+    const flyingEl = document.createElement("div");
+    flyingEl.className = `flying-snack snack-${flavor}`;
+    const startX = btnRect.left - thumbRect.left + btnRect.width / 2 - 16;
+    const startY = btnRect.top - thumbRect.top + 6;
+    flyingEl.style.left = `${startX}px`;
+    flyingEl.style.top = `${startY}px`;
+    thumbArea.appendChild(flyingEl);
+
+    const targetX = thumbRect.width / 2 + 12;
+    const targetY = thumbRect.height / 2 + 20;
+
+    requestAnimationFrame(() => {
+      flyingEl.style.transform = `translate(${targetX - startX}px, ${targetY - startY}px) scale(0.35)`;
+      flyingEl.style.opacity = "0";
+    });
+
+    setTimeout(() => {
+      flyingEl.remove();
+    }, 450);
+  }
+};
+
+// Đổi cảm xúc nhân vật chính (😄 Vui vẻ, 😍 Thả tim, 😎 Siêu ngầu, 😜 Tinh nghịch)
+window.setMochiEmotion = function (emotion) {
+  if (aiFaceInstance) {
+    aiFaceInstance.setEmotion(emotion);
+  }
+};
+
 // Biến quản lý khuôn mặt AI tương tác
 let aiFaceInstance = null;
 
-// Render Nhân vật AI Mochi 3D tương tác (chuyển lên vị trí Hero section bên phải)
+// Render Nhân vật AI Mochi 3D tương tác (Hero section bên phải)
 function renderInteractiveFaceCard() {
   return `
     <article class="category-card ai-face-card" id="aiInteractiveFaceCard">
       <div class="category-thumb ai-face-thumb" id="aiFaceThumbArea">
         <canvas id="aiFaceCanvas" class="ai-face-canvas"></canvas>
-        <span class="category-tag">🤖 Trợ Lý AI</span>
-        <span class="category-count-badge">Tương Tác 3D</span>
-        <div class="ai-face-drag-hint" id="aiFaceDragHint">
-          <span>🖐️</span> Kéo bé Mochi 3D nè!
+
+        <!-- Icon Cho Ăn Bánh Trắng ở bên trái (Ăn to dần lên, quá 5 lần sẽ phát nổ và về ban đầu) -->
+        <div class="mochi-feed-dock" id="mochiFeedDock">
+          <button type="button" class="feed-snack-btn snack-white" onclick="feedAIFace('white', this)" title="Cho Bé Mochi ăn bánh trắng (Ăn to lên!)" aria-label="Cho Mochi ăn bánh trắng">
+            <span class="snack-ball"></span>
+          </button>
+        </div>
+
+        <!-- 2 Cột Icon Cảm Xúc ở góc phải:
+             Cột 1: 😄 Vui vẻ, 😍 Thả tim, 🤓 Kính cận, 😧 Hoang mang
+             Cột 2: 🤥 Nói dối mũi dài, 😪 Buồn ngủ, 😒 Chán chường, 🙄 Đảo mắt -->
+        <div class="mochi-emotion-dock" id="mochiEmotionDock">
+          <div class="emotion-col">
+            <button type="button" class="emotion-btn" id="btnEmoHappy" onclick="setMochiEmotion('happy')" title="Cảm xúc Vui vẻ" aria-label="Vui vẻ">
+              😄
+            </button>
+            <button type="button" class="emotion-btn" id="btnEmoLove" onclick="setMochiEmotion('love')" title="Cảm xúc Thả tim" aria-label="Thả tim">
+              😍
+            </button>
+            <button type="button" class="emotion-btn" id="btnEmoNerd" onclick="setMochiEmotion('nerd')" title="Kính cận mọt sách" aria-label="Kính cận">
+              🤓
+            </button>
+            <button type="button" class="emotion-btn" id="btnEmoShocked" onclick="setMochiEmotion('shocked')" title="Cảm xúc Hoang mang" aria-label="Hoang mang">
+              😧
+            </button>
+          </div>
+          <div class="emotion-col">
+            <button type="button" class="emotion-btn" id="btnEmoLie" onclick="setMochiEmotion('lie')" title="Mũi dài Pinocchio" aria-label="Nói dối">
+              🤥
+            </button>
+            <button type="button" class="emotion-btn" id="btnEmoSleepy" onclick="setMochiEmotion('sleepy')" title="Cảm xúc Buồn ngủ" aria-label="Buồn ngủ">
+              😪
+            </button>
+            <button type="button" class="emotion-btn" id="btnEmoUnamused" onclick="setMochiEmotion('unamused')" title="Cảm xúc Chán nản" aria-label="Chán nản">
+              😒
+            </button>
+            <button type="button" class="emotion-btn" id="btnEmoRolling" onclick="setMochiEmotion('rolling')" title="Cảm xúc Đảo mắt" aria-label="Đảo mắt">
+              🙄
+            </button>
+          </div>
         </div>
       </div>
       <div class="category-body ai-face-body">
         <div class="category-footer" style="padding-top: 0; border-top: none;">
           <div>
-            <span class="price-label">Trạng thái AI</span>
+            <span class="price-label" style="display:block; font-size:0.82rem; font-weight:800; color:var(--text-main); margin-bottom:2px;">
+              kéo và cho ăn Mochi 3D nè !
+            </span>
             <span class="price-value" id="aiFaceStatusText" style="font-size: 0.95rem; color: var(--primary);">Đang nhìn bạn nè 🥰</span>
           </div>
           <button class="btn btn-primary" style="padding:8px 16px; font-size:0.84rem;" onclick="prefillCourseAndScroll('Khóa học Trí tuệ nhân tạo')">
@@ -585,6 +708,37 @@ class AIFaceTracker {
     this.isBlinking = false;
     this.nextBlinkTime = Date.now() + 2500;
     this.blinkStartTime = 0;
+
+    // Đỏ 2 má khi kéo (kéo sẽ đỏ trong 5 giây rồi hết)
+    this.blushUntil = 0;
+
+    // Trạng thái khóc (khóc khi kéo và 5 giây sau khi kéo)
+    this.cryUntil = 0;
+    this.wasCrying = false;
+
+    // Phụ kiện thời trang hoặc Cảm xúc nhân vật: "normal", "happy", "love", "cool", "playful"
+    this.currentEmotion = "normal";
+    this.glasses = "none";
+    this.hat = "none";
+
+    // Trạng thái cho ăn bánh Mochi trắng & phóng to (to lên mỗi lần ăn, quá 5 lần thì nổ)
+    this.feedCount = 0;
+    this.growthScale = 1.0;
+    this.targetGrowthScale = 1.0;
+    this.isExploding = false;
+    this.explosionTime = 0;
+    this.explosionParticles = [];
+
+    // Màu sắc Mochi đổi dần dần theo bánh vừa ăn (Smooth Color Morphing)
+    this.currentPalette = JSON.parse(JSON.stringify(MOCHI_PALETTES.white));
+    this.targetPalette = MOCHI_PALETTES.white;
+    this.currentFlavor = "white";
+
+    // Trạng thái ăn bánh và nhai nhồm nhoàm
+    this.isEating = false;
+    this.eatingStart = 0;
+    this.chewProgress = 0;
+    this.crumbs = [];
 
     this.statusTimer = null;
     this.rafId = null;
@@ -718,21 +872,73 @@ class AIFaceTracker {
     this.dragStartY = clientY;
     this.currentDragX = clientX;
     this.currentDragY = clientY;
+    this.blushUntil = Date.now() + 5000;
+    this.cryUntil = Date.now() + 5000; // Khi kéo nhân vật khóc 5 giây sau trở lại bình thường
+    this.wasCrying = true;
     this.canvas.classList.add("is-dragging");
 
     if (this.hintEl) {
       this.hintEl.style.opacity = "0";
     }
-    this.setStatus("Bé Mochi dẻo quánh nè! 😋");
+    this.setStatus("Huhu... đừng kéo má tớ mà, đau quá à! 😭");
   }
 
   endDrag() {
     this.isDragging = false;
+    this.blushUntil = Math.max(this.blushUntil, Date.now() + 5000);
+    this.cryUntil = Math.max(this.cryUntil, Date.now() + 5000);
     this.canvas.classList.remove("is-dragging");
     if (navigator.vibrate) {
-      try { navigator.vibrate(20); } catch (_) {}
+      try { navigator.vibrate([40, 60, 40]); } catch (_) {}
     }
-    this.setStatus("Nảy tưng tưng luôn! 💖", 1500);
+    this.setStatus("Huhu... kéo dãn đau muốn rớt nước mắt! 😭", 4000);
+  }
+
+  setEmotion(emotion) {
+    if (this.currentEmotion === emotion) {
+      this.currentEmotion = "normal";
+    } else {
+      this.currentEmotion = emotion;
+    }
+    this.updateEmotionUI();
+
+    const msgs = {
+      happy: "Bé Mochi đang siêu vui vẻ cười tít mắt nè! 😄✨",
+      love: "Bé Mochi thả ngàn trái tim yêu thương gửi đến bạn! 😍💖",
+      nerd: "Bé Mochi đeo kính cận thành giáo sư AI mọt sách! 🤓📚",
+      shocked: "Ủa gì vậy trời? Bé Mochi hoang mang tột độ! 😧⚡",
+      lie: "Mũi tớ dài ra như Pinocchio rồi nè, không nói dối đâu nha! 🤥🤥",
+      sleepy: "Oaaa... Buồn ngủ quá, bong bóng mũi phập phồng nè! 😪💤",
+      unamused: "Hứ, tớ đang giận dỗi và liếc chán nản bạn đó! 😒💅",
+      rolling: "Ủa alo? Đảo mắt lên trần nhà luôn nè! 🙄🙄",
+      normal: "Đang nhìn bạn nè 🥰"
+    };
+    this.setStatus(msgs[this.currentEmotion] || "Đang nhìn bạn nè 🥰", 3500);
+
+    // Mochi nảy nhẹ khi đổi cảm xúc
+    this.velY = -4;
+    if (this.currentEmotion !== "normal") {
+      this.blushUntil = Date.now() + 4000;
+    }
+  }
+
+  updateEmotionUI() {
+    const emotionBtns = {
+      happy: document.getElementById("btnEmoHappy"),
+      love: document.getElementById("btnEmoLove"),
+      nerd: document.getElementById("btnEmoNerd"),
+      shocked: document.getElementById("btnEmoShocked"),
+      lie: document.getElementById("btnEmoLie"),
+      sleepy: document.getElementById("btnEmoSleepy"),
+      unamused: document.getElementById("btnEmoUnamused"),
+      rolling: document.getElementById("btnEmoRolling")
+    };
+    Object.keys(emotionBtns).forEach((key) => {
+      const btn = emotionBtns[key];
+      if (btn) {
+        btn.classList.toggle("active", this.currentEmotion === key);
+      }
+    });
   }
 
   setStatus(text, duration = 0) {
@@ -751,8 +957,183 @@ class AIFaceTracker {
     }
   }
 
+  feed(flavor) {
+    if (this.isExploding) return;
+
+    this.feedCount++;
+
+    if (this.feedCount > 3) {
+      // Cho ăn vượt quá 3 lần sẽ phát nổ và trở lại hình dạng bình thường!
+      this.triggerExplosion();
+      return;
+    }
+
+    // Tăng kích thước dần dần mỗi lần ăn (1.0 -> 1.25 -> 1.50 -> 1.75)
+    this.targetGrowthScale = 1.0 + this.feedCount * 0.25;
+    this.isEating = true;
+    this.eatingStart = Date.now();
+    this.blushUntil = Date.now() + 5000;
+
+    const feedMessages = {
+      1: "Măm măm... Bánh Mochi ngon quá, tớ béo lên một chút rồi nè! (Lần 1/3) 😋",
+      2: "Ngoàm ngoàm... Tớ to thêm một vòng phổng phao rồi nè! (Lần 2/3) 🥟",
+      3: "Căng tròn sắp nổ tung rồi đó nha! Ăn thêm cái nữa là BÙÙÙM! (Lần 3/3) 💣"
+    };
+
+    this.setStatus(feedMessages[this.feedCount] || "Mochi tròn xoe no căng bụng rồi! 🥰", 3800);
+
+    // Mochi nảy tưng tưng vì no
+    this.velY = -3 - this.feedCount * 2;
+
+    if (navigator.vibrate) {
+      try { navigator.vibrate([40, 50, 40]); } catch (_) {}
+    }
+  }
+
+  triggerExplosion() {
+    this.isExploding = true;
+    this.explosionTime = Date.now();
+    this.feedCount = 0;
+    this.targetGrowthScale = 1.0;
+    this.growthScale = 0.35; // Co nhỏ sau vụ nổ rồi phục hồi về 1.0
+    this.isEating = false;
+    this.chewProgress = 0;
+
+    // Sinh các hạt nổ bung toả khắp khung hình
+    this.explosionParticles = [];
+    const count = 52;
+    const colors = ["#fb7185", "#38bdf8", "#facc15", "#a855f7", "#ffffff", "#4ade80", "#f43f5e", "#fb923c"];
+    const centerX = this.width / 2;
+    const centerY = this.height / 2;
+
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.35;
+      const speed = 4.5 + Math.random() * 8.5;
+      this.explosionParticles.push({
+        x: centerX,
+        y: centerY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        r: 3 + Math.random() * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 1.0,
+        decay: 0.016 + Math.random() * 0.018,
+        isStar: Math.random() > 0.45
+      });
+    }
+
+    if (navigator.vibrate) {
+      try { navigator.vibrate([100, 50, 100, 50, 200]); } catch (_) {}
+    }
+
+    this.setStatus("💥 BÙÙÙM! Ăn no quá phát nổ rồi... Bé Mochi biến về ban đầu nè! 💨✨", 4500);
+
+    setTimeout(() => {
+      this.isExploding = false;
+      this.targetGrowthScale = 1.0;
+    }, 1800);
+  }
+
+  spawnCrumb() {
+    const rx = this.rx || 105;
+    const mouthX = (this.width / 2 + 12) + (this.gazeX * 8.5) * 0.45;
+    const mouthY = (this.height / 2 - 4) + rx * 0.36;
+    const colors = {
+      pink: ["#fb7185", "#f43f5e", "#fda4af", "#fff1f2"],
+      yellow: ["#facc15", "#f59e0b", "#fde047", "#fef9c3"],
+      matcha: ["#4ade80", "#22c55e", "#86efac", "#dcfce7"],
+      white: ["#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0"]
+    };
+    const palette = colors[this.currentFlavor] || ["#f472b6", "#fbbf24", "#34d399"];
+    const col = palette[Math.floor(Math.random() * palette.length)];
+
+    this.crumbs.push({
+      x: mouthX + (Math.random() - 0.5) * 32,
+      y: mouthY + (Math.random() - 0.5) * 12,
+      vx: (Math.random() - 0.5) * 2.8,
+      vy: -1.6 - Math.random() * 2.2,
+      r: 2.5 + Math.random() * 2.5,
+      col: col,
+      isHeart: Math.random() > 0.55,
+      life: 1.0,
+      scale: 1.0
+    });
+  }
+
   update() {
     const now = Date.now();
+
+    // Tăng dần kích thước khi được cho ăn Mochi trắng
+    if (this.growthScale === undefined) this.growthScale = 1.0;
+    if (this.targetGrowthScale === undefined) this.targetGrowthScale = 1.0;
+    this.growthScale += (this.targetGrowthScale - this.growthScale) * 0.12;
+
+    // Cập nhật các hạt nổ bung toả
+    if (this.explosionParticles && this.explosionParticles.length > 0) {
+      this.explosionParticles = this.explosionParticles.filter((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.94;
+        p.vy = p.vy * 0.94 + 0.18; // hiệu ứng trọng lực rơi xuống
+        p.life -= p.decay;
+        return p.life > 0;
+      });
+    }
+
+    // Từ từ đổi màu theo bánh vừa ăn (Smooth Color Interpolation)
+    const lerpRate = 0.045;
+    ["c0", "c1", "c2", "c3", "c4"].forEach((key) => {
+      for (let i = 0; i < 3; i++) {
+        this.currentPalette[key][i] +=
+          (this.targetPalette[key][i] - this.currentPalette[key][i]) * lerpRate;
+      }
+    });
+    for (let i = 0; i < 4; i++) {
+      this.currentPalette.stroke[i] +=
+        (this.targetPalette.stroke[i] - this.currentPalette.stroke[i]) * lerpRate;
+      this.currentPalette.rim[i] +=
+        (this.targetPalette.rim[i] - this.currentPalette.rim[i]) * lerpRate;
+    }
+
+    // Cập nhật hiệu ứng ăn bánh & nhai nhóp nhép
+    if (this.isEating) {
+      const elapsed = now - this.eatingStart;
+      const totalDuration = 2200;
+      if (elapsed < totalDuration) {
+        if (elapsed < 350) {
+          this.chewProgress = elapsed / 350;
+        } else if (elapsed < 1850) {
+          const chewTime = elapsed - 350;
+          this.chewProgress = 0.35 + Math.sin(chewTime * 0.02) * 0.45;
+          this.dispY += Math.sin(chewTime * 0.02) * 0.35;
+        } else {
+          this.chewProgress = (1 - (elapsed - 1850) / 350) * 0.2;
+        }
+
+        if (Math.random() < 0.25 && elapsed > 350 && elapsed < 1850) {
+          this.spawnCrumb();
+        }
+      } else {
+        this.isEating = false;
+        this.chewProgress = 0;
+      }
+    }
+
+    // Cập nhật vụn bánh / trái tim bay
+    this.crumbs = this.crumbs.filter((c) => {
+      c.x += c.vx;
+      c.y += c.vy;
+      c.vy += 0.08;
+      c.life -= 0.028;
+      c.scale = Math.max(0, c.life);
+      return c.life > 0;
+    });
+
+    // Hết khóc sau 5 giây thì thông báo tươi cười trở lại
+    if (this.wasCrying && now >= this.cryUntil) {
+      this.wasCrying = false;
+      this.setStatus("Hết đau rồi, lại tươi cười với bạn nè! 🥰", 3000);
+    }
 
     // Khi chuột không di chuyển hoặc trên điện thoại -> tự động liếc nhìn tự nhiên
     if (now - this.lastMouseMoveTime > 1800 && !this.isDragging) {
@@ -831,10 +1212,14 @@ class AIFaceTracker {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.scale(this.dpr, this.dpr);
 
+    const now = Date.now();
+    const isCrying = now < this.cryUntil;
+
+    // Căn giữa màn hình ô tương tác
     const cx = this.width / 2;
     const cy = this.height / 2 - 4;
 
-    // 1. NỀN GRADIENT PASTEL HỒNG TÍM (Đúng theo mẫu ảnh)
+    // 1. NỀN GRADIENT PASTEL HỒNG TÍM
     const bgGrad = ctx.createLinearGradient(0, 0, this.width, this.height);
     bgGrad.addColorStop(0, "#ffd3e2");    // hồng pastel ấm
     bgGrad.addColorStop(0.38, "#f3e0f7"); // tím hồng nhạt
@@ -848,10 +1233,16 @@ class AIFaceTracker {
     const stretch = 1 + (pullDist / 95) * 0.46;
     const squash = 1 / Math.sqrt(stretch);
 
-    // 2. BÓNG ĐỔ 3D MỀM BÊN DƯỚI (Soft Contact Shadow)
-    const shadowY = cy + 76 + (this.dispY * 0.22);
-    const shadowRx = 68 * (pullDist > 0.01 ? (1 / Math.sqrt(stretch)) : 1);
-    const shadowRy = 15 * (pullDist > 0.01 ? stretch : 1);
+    // 2. KÍCH THƯỚC KHUÔN MẶT TO NỔI BẬT + PHÓNG TO KHI ĐƯỢC CHO ĂN (Dynamic Large Sizing & Feeding Growth)
+    const baseRx = Math.min(this.width * 0.32, this.height * 0.38, 110);
+    const rx = baseRx * (this.growthScale || 1.0);
+    const ry = rx * 0.94;
+    this.rx = rx;
+
+    // 3. BÓNG ĐỔ 3D MỀM BÊN DƯỚI (Soft Contact Shadow)
+    const shadowY = cy + ry + 4 + (this.dispY * 0.22);
+    const shadowRx = (rx * 0.88) * (pullDist > 0.01 ? (1 / Math.sqrt(stretch)) : 1);
+    const shadowRy = (rx * 0.19) * (pullDist > 0.01 ? stretch : 1);
     const shadowGrad = ctx.createRadialGradient(cx + (this.dispX * 0.22), shadowY, 2, cx + (this.dispX * 0.22), shadowY, shadowRx);
     shadowGrad.addColorStop(0, "rgba(165, 155, 195, 0.45)");
     shadowGrad.addColorStop(0.5, "rgba(165, 155, 195, 0.2)");
@@ -876,80 +1267,180 @@ class AIFaceTracker {
     const px = this.gazeX * 8.5;
     const py = this.gazeY * 6.5;
 
-    // 3. THÂN NHÂN VẬT MOCHI 3D TRẮNG (Clay 3D / Soft Dough Sphere)
-    const rx = 78;
-    const ry = 74;
-
-    // Đường cong khối Mochi tròn múp míp, đáy hơi dẹp nhẹ tự nhiên
+    // 4. THÂN NHÂN VẬT MOCHI 3D (Đổi màu dần dần theo bánh vừa ăn)
     ctx.beginPath();
     ctx.moveTo(0, -ry);
-    ctx.bezierCurveTo(rx * 0.95, -ry * 0.95, rx * 1.05, -ry * 0.1, rx * 1.03, 16);
+    ctx.bezierCurveTo(rx * 0.95, -ry * 0.95, rx * 1.05, -ry * 0.1, rx * 1.03, rx * 0.20);
     ctx.bezierCurveTo(rx * 0.98, ry * 0.82, rx * 0.55, ry * 1.02, 0, ry * 1.02);
-    ctx.bezierCurveTo(-rx * 0.55, ry * 1.02, -rx * 0.98, ry * 0.82, -rx * 1.03, 16);
+    ctx.bezierCurveTo(-rx * 0.55, ry * 1.02, -rx * 0.98, ry * 0.82, -rx * 1.03, rx * 0.20);
     ctx.bezierCurveTo(-rx * 1.05, -ry * 0.1, -rx * 0.95, -ry * 0.95, 0, -ry);
     ctx.closePath();
 
-    // Hiệu ứng ánh sáng 3D khối cầu mềm (3D Lighting & Specular)
-    const lightX = -26 + px * 0.45;
-    const lightY = -30 + py * 0.45;
-    const bodyGrad = ctx.createRadialGradient(lightX, lightY, 12, 0, 10, rx * 1.15);
-    bodyGrad.addColorStop(0, "#ffffff");
-    bodyGrad.addColorStop(0.55, "#ffffff");
-    bodyGrad.addColorStop(0.82, "#f6f7fc");
-    bodyGrad.addColorStop(0.96, "#e8ecf8");
-    bodyGrad.addColorStop(1, "#dce2f2");
+    // Hiệu ứng ánh sáng 3D chuyển sắc từ từ theo bánh ăn
+    const p = this.currentPalette;
+    const rgbStr = (arr) => `rgb(${Math.round(arr[0])}, ${Math.round(arr[1])}, ${Math.round(arr[2])})`;
+    const rgbaStr = (arr) => `rgba(${Math.round(arr[0])}, ${Math.round(arr[1])}, ${Math.round(arr[2])}, ${arr[3]})`;
+
+    const lightX = -rx * 0.32 + px * 0.45;
+    const lightY = -ry * 0.38 + py * 0.45;
+    const bodyGrad = ctx.createRadialGradient(lightX, lightY, rx * 0.15, 0, 10, rx * 1.15);
+    bodyGrad.addColorStop(0, rgbStr(p.c0));
+    bodyGrad.addColorStop(0.52, rgbStr(p.c1));
+    bodyGrad.addColorStop(0.80, rgbStr(p.c2));
+    bodyGrad.addColorStop(0.95, rgbStr(p.c3));
+    bodyGrad.addColorStop(1, rgbStr(p.c4));
     ctx.fillStyle = bodyGrad;
     ctx.fill();
 
     // Viền stroke mềm mại
-    ctx.strokeStyle = "rgba(215, 222, 238, 0.65)";
-    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = rgbaStr(p.stroke);
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Ánh sáng phản xạ môi trường pastel (Ambient Rim Light)
-    const rimGrad = ctx.createRadialGradient(rx * 0.55, ry * 0.55, 15, rx * 0.55, ry * 0.55, 60);
-    rimGrad.addColorStop(0, "rgba(244, 114, 182, 0.14)");
+    // Ánh sáng phản xạ môi trường (Ambient Rim Light)
+    const rimGrad = ctx.createRadialGradient(rx * 0.55, ry * 0.55, 15, rx * 0.55, ry * 0.55, rx * 0.75);
+    rimGrad.addColorStop(0, rgbaStr(p.rim));
     rimGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = rimGrad;
     ctx.fill();
 
-    // 4. VỆT MÁ HỒNG PASTEL (Đúng theo góc mắt trong ảnh mẫu)
+    // 5. VỆT MÁ HỒNG (Đỏ rực 2 má khi khóc, khi kéo hoặc khi ăn bánh ngon)
+    const remainingBlush = this.blushUntil - now;
+    let blushFactor = isCrying ? 1.0 : 0;
+    if (!isCrying && remainingBlush > 0) {
+      blushFactor = remainingBlush > 800 ? 1.0 : remainingBlush / 800;
+    }
+
     [-1, 1].forEach((dir) => {
-      const blushX = dir * 48 + px * 0.5;
-      const blushY = 8 + py * 0.5;
+      const blushX = dir * (rx * 0.62) + px * 0.5;
+      const blushY = rx * 0.10 + py * 0.5;
       ctx.save();
       ctx.translate(blushX, blushY);
       ctx.rotate(dir * 0.22);
-      const blushGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, 15);
-      blushGrad.addColorStop(0, "rgba(244, 114, 182, 0.72)");
-      blushGrad.addColorStop(0.5, "rgba(244, 114, 182, 0.4)");
-      blushGrad.addColorStop(1, "rgba(244, 114, 182, 0)");
+      const bW = rx * 0.20 + blushFactor * 5;
+      const bH = rx * 0.11 + blushFactor * 4;
+      const blushGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, bW);
+      if (blushFactor > 0.01) {
+        blushGrad.addColorStop(0, `rgba(244, 63, 94, ${0.45 + blushFactor * 0.5})`);
+        blushGrad.addColorStop(0.5, `rgba(251, 113, 133, ${0.25 + blushFactor * 0.45})`);
+        blushGrad.addColorStop(1, "rgba(244, 63, 94, 0)");
+      } else {
+        blushGrad.addColorStop(0, "rgba(244, 114, 182, 0.72)");
+        blushGrad.addColorStop(0.5, "rgba(244, 114, 182, 0.4)");
+        blushGrad.addColorStop(1, "rgba(244, 114, 182, 0)");
+      }
       ctx.fillStyle = blushGrad;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 15, 8, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, bW, bH, 0, 0, Math.PI * 2);
       ctx.fill();
+
+      // Nét vẽ má hồng ngượng ngùng cute
+      if (blushFactor > 0.3) {
+        ctx.strokeStyle = `rgba(225, 29, 72, ${blushFactor * 0.75})`;
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = "round";
+        for (let i = -1; i <= 1; i++) {
+          ctx.beginPath();
+          ctx.moveTo(i * 5 - 2, 4);
+          ctx.lineTo(i * 5 + 2, -4);
+          ctx.stroke();
+        }
+      }
+
       ctx.restore();
     });
 
-    // 5. ĐÔI MẮT 3D TO TRÒN LIẾC NHÌN THEO CHUỘT
-    const eyeSpacing = 28;
-    const eyeY = 6 + py;
-    const outerEyeW = 20;
-    const outerEyeH = 22 * (1 - this.blinkProgress * 0.95);
+    // 6. ĐÔI MẮT 3D TO TRÒN LIẾC NHÌN THEO CHUỘT (Hoặc Nhắm Khóc > < / Nhắm Cười ^ ^)
+    const eyeSpacing = rx * 0.36;
+    const eyeY = rx * 0.07 + py;
+    const outerEyeW = rx * 0.26;
+    const outerEyeH = (rx * 0.28) * (1 - this.blinkProgress * 0.95);
+
+    const isChewing = this.isEating && (now - this.eatingStart) > 300 && (now - this.eatingStart) < 1850;
 
     [-1, 1].forEach((dir) => {
       const eyeX = dir * eyeSpacing + px;
 
-      // Khi chớp mắt: nét cong mỉm cười nhắm mắt ^ ^
-      if (this.blinkProgress > 0.65 || outerEyeH < 3) {
+      // Lông mày biểu cảm
+      if (this.currentEmotion === "shocked") {
+        // Lông mày nhướng cao hoang mang lo lắng 😧
         ctx.beginPath();
-        ctx.arc(eyeX, eyeY - 2, 14, Math.PI * 0.15, Math.PI * 0.85);
+        ctx.moveTo(eyeX - dir * 10, eyeY - rx * 0.22);
+        ctx.quadraticCurveTo(eyeX, eyeY - rx * 0.28, eyeX + dir * 11, eyeY - rx * 0.20);
+        ctx.lineWidth = 2.4;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      } else if (this.currentEmotion === "unamused") {
+        // Lông mày cau lại chán nản 😒
+        ctx.beginPath();
+        ctx.moveTo(eyeX - dir * 10, eyeY - rx * 0.20 + dir * 2);
+        ctx.lineTo(eyeX + dir * 10, eyeY - rx * 0.18 - dir * 2);
+        ctx.lineWidth = 2.4;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      }
+
+      if (isCrying) {
+        // Đôi mắt khóc mếu máo nhắm tịt > < cực đáng yêu
+        const eyeSign = dir;
+        ctx.beginPath();
+        ctx.moveTo(eyeX - eyeSign * 11, eyeY - 8);
+        ctx.lineTo(eyeX + eyeSign * 8, eyeY);
+        ctx.lineTo(eyeX - eyeSign * 11, eyeY + 8);
+        ctx.lineWidth = 3.6;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+      } else if (isChewing || this.currentEmotion === "happy") {
+        // Mắt cười tít đáng yêu ^ ^
+        ctx.beginPath();
+        ctx.arc(eyeX, eyeY + 2, rx * 0.16, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.lineWidth = 3.4;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      } else if (this.currentEmotion === "love") {
+        // Mắt trái tim đập thình thịch cực yêu 😍
+        const heartBeat = 0.9 + Math.sin(now * 0.01) * 0.14;
+        ctx.save();
+        ctx.translate(eyeX, eyeY);
+        ctx.scale(heartBeat, heartBeat);
+        ctx.fillStyle = "#f43f5e";
+        const hr = rx * 0.11;
+        ctx.beginPath();
+        ctx.arc(-hr * 0.45, -hr * 0.35, hr * 0.5, Math.PI, 0);
+        ctx.arc(hr * 0.45, -hr * 0.35, hr * 0.5, Math.PI, 0);
+        ctx.lineTo(0, hr * 0.75);
+        ctx.closePath();
+        ctx.fill();
+
+        // Ánh sáng lấp lánh trên mắt trái tim
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(-hr * 0.42, -hr * 0.4, hr * 0.15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      } else if (this.currentEmotion === "sleepy") {
+        // Mắt buồn ngủ nhắm tịt ngủ gật 😪
+        ctx.beginPath();
+        ctx.arc(eyeX, eyeY + 1, rx * 0.15, 0.15 * Math.PI, 0.85 * Math.PI);
+        ctx.lineWidth = 3.2;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      } else if (this.blinkProgress > 0.65 || outerEyeH < 3) {
+        // Khi chớp mắt
+        ctx.beginPath();
+        ctx.arc(eyeX, eyeY - 2, rx * 0.17, Math.PI * 0.15, Math.PI * 0.85);
         ctx.lineWidth = 3.2;
         ctx.strokeStyle = "#1e1e2d";
         ctx.lineCap = "round";
         ctx.stroke();
       } else {
-        // Hốc mắt / Vòng ngoài tròng mắt màu xám trắng 3D đục (như ảnh mẫu)
+        // Hốc mắt / Vòng ngoài tròng mắt
         ctx.beginPath();
         ctx.ellipse(eyeX, eyeY, outerEyeW, outerEyeH, 0, 0, Math.PI * 2);
         ctx.fillStyle = "#f5f6fb";
@@ -958,17 +1449,35 @@ class AIFaceTracker {
         ctx.lineWidth = 1.3;
         ctx.stroke();
 
-        // Tròng đen to bóng bẩy nhìn theo chuột 360° (Glossy Dark Pupil)
         ctx.save();
         ctx.beginPath();
         ctx.ellipse(eyeX, eyeY, outerEyeW - 0.5, outerEyeH - 0.5, 0, 0, Math.PI * 2);
         ctx.clip();
 
-        const pupilOffsetX = this.gazeX * 7.4;
-        const pupilOffsetY = this.gazeY * 5.6;
+        let pupilOffsetX = this.gazeX * (rx * 0.095);
+        let pupilOffsetY = this.gazeY * (rx * 0.075);
+        let pupilR = rx * 0.145;
+
+        if (this.currentEmotion === "shocked") {
+          // Mắt hoang mang co nhỏ con ngươi và run rẩy 😧
+          pupilR = rx * 0.085;
+          pupilOffsetX += Math.sin(now * 0.04) * 1.5;
+          pupilOffsetY += Math.cos(now * 0.04) * 1.5;
+        } else if (this.currentEmotion === "rolling") {
+          // Đảo mắt lên tận trần nhà 🙄
+          pupilOffsetY = -outerEyeH * 0.52;
+          pupilOffsetX = 0;
+        } else if (this.currentEmotion === "unamused") {
+          // Mắt liếc xéo chán nản 😒
+          pupilOffsetX = -rx * 0.08;
+          pupilOffsetY = 0;
+        } else if (this.currentEmotion === "lie") {
+          // Mắt đảo liếc ngượng ngùng nói dối 🤥
+          pupilOffsetX = dir === 1 ? -rx * 0.07 : rx * 0.07;
+        }
+
         const pupilX = eyeX + pupilOffsetX;
         const pupilY = eyeY + pupilOffsetY;
-        const pupilR = 11.5;
 
         // Tròng đen ánh tím sâu bóng bẩy
         const pupilGrad = ctx.createRadialGradient(pupilX - 2, pupilY - 2, 1, pupilX, pupilY, pupilR);
@@ -983,36 +1492,102 @@ class AIFaceTracker {
 
         // Điểm phản quang chính (Catchlight): Đốm sáng trắng tinh ở góc trên
         ctx.beginPath();
-        ctx.arc(pupilX - 2.8, pupilY - 3.2, 3.8, 0, Math.PI * 2);
+        ctx.arc(pupilX - (rx * 0.036), pupilY - (rx * 0.04), rx * 0.049, 0, Math.PI * 2);
         ctx.fillStyle = "#ffffff";
         ctx.fill();
 
         // Điểm phản quang phụ nhỏ li ti ở góc dưới
         ctx.beginPath();
-        ctx.arc(pupilX + 3.2, pupilY + 3.2, 1.6, 0, Math.PI * 2);
+        ctx.arc(pupilX + (rx * 0.04), pupilY + (rx * 0.04), rx * 0.02, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
         ctx.fill();
+
+        // Mí mắt sụp xuống nửa mắt cho cảm xúc chán nản 😒
+        if (this.currentEmotion === "unamused") {
+          ctx.fillStyle = "rgba(235, 225, 245, 0.95)";
+          ctx.beginPath();
+          ctx.rect(eyeX - outerEyeW - 2, eyeY - outerEyeH - 2, outerEyeW * 2 + 4, outerEyeH + 2);
+          ctx.fill();
+          ctx.strokeStyle = "#1e1e2d";
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(eyeX - outerEyeW, eyeY);
+          ctx.lineTo(eyeX + outerEyeW, eyeY + 1);
+          ctx.stroke();
+        }
 
         ctx.restore();
       }
     });
 
-    // 6. MIỆNG CƯỜI CONG NHỎ XINH ◡ (Theo ảnh mẫu)
-    const mouthX = px * 0.45;
-    const mouthY = 28 + py * 0.45;
+    // 7. DÒNG NƯỚC MẮT CHẢY KHI KHÓC (Khi bị kéo hoặc 5 giây sau khi kéo)
+    if (isCrying) {
+      const tearTime = now * 0.015;
+      [-1, 1].forEach((dir) => {
+        const tearSourceX = dir * (eyeSpacing + rx * 0.14) + px;
+        const tearSourceY = eyeY + 2;
 
-    if (pullDist < 7) {
-      // Đường cong lưỡi liềm mỉm cười nhỏ xinh
+        ctx.save();
+        // Dòng nước mắt uốn lượn anime chảy dài xuống
+        ctx.beginPath();
+        ctx.moveTo(tearSourceX, tearSourceY);
+        ctx.bezierCurveTo(
+          tearSourceX + dir * (rx * 0.12) + Math.sin(tearTime * 1.5) * 3, tearSourceY + ry * 0.35,
+          tearSourceX + dir * (rx * 0.18) + Math.cos(tearTime * 1.2) * 4, tearSourceY + ry * 0.7,
+          tearSourceX + dir * (rx * 0.14), ry * 0.95
+        );
+        ctx.lineWidth = rx * 0.085;
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.75)";
+        ctx.lineCap = "round";
+        ctx.stroke();
+
+        // Vạch phản quang trắng sáng giữa dòng nước mắt
+        ctx.lineWidth = rx * 0.035;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.stroke();
+
+        // Giọt lệ to tròn đọng ở khóe mắt
+        ctx.beginPath();
+        ctx.arc(tearSourceX, tearSourceY, rx * 0.065, 0, Math.PI * 2);
+        ctx.fillStyle = "#38bdf8";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(tearSourceX - 1.5, tearSourceY - 1.5, rx * 0.025, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    // 8. MIỆNG CƯỜI CONG NHỎ XINH ◡ HOẶC MẾU MÁO KHÓC / NHAI NHÓP NHÉP
+    const mouthX = px * 0.45;
+    const mouthY = rx * 0.36 + py * 0.45;
+
+    if (isCrying) {
+      // Miệng mếu máo khóc ròng ︵
+      const cryW = rx * 0.18;
+      const cryH = 9 + Math.sin(now * 0.025) * 3;
+      ctx.save();
       ctx.beginPath();
-      ctx.arc(mouthX, mouthY - 4, 8, Math.PI * 0.22, Math.PI * 0.78);
-      ctx.lineWidth = 2.4;
+      ctx.moveTo(mouthX - cryW, mouthY + cryH * 0.5);
+      ctx.quadraticCurveTo(mouthX, mouthY - cryH * 0.8, mouthX + cryW, mouthY + cryH * 0.5);
+      ctx.quadraticCurveTo(mouthX, mouthY + cryH * 0.2, mouthX - cryW, mouthY + cryH * 0.5);
+      ctx.fillStyle = "#2c0b14";
+      ctx.fill();
+      ctx.lineWidth = 2.2;
       ctx.strokeStyle = "#1e1e2d";
-      ctx.lineCap = "round";
       ctx.stroke();
-    } else {
-      // Miệng mở chữ O ngơ ngác đáng yêu khi bị kéo dãn đàn hồi
-      const openH = Math.min(6 + pullDist * 0.35, 24);
-      const openW = Math.max(10, 14 - pullDist * 0.05);
+
+      ctx.clip();
+      ctx.fillStyle = "#fb7185";
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY + cryH * 0.5, cryW * 0.65, Math.PI, 0);
+      ctx.fill();
+      ctx.restore();
+    } else if (this.isEating) {
+      // Miệng nhóp nhép ăn bánh
+      const openH = Math.max(5, this.chewProgress * 22);
+      const openW = Math.max(10, rx * 0.18 - this.chewProgress * 3);
 
       ctx.save();
       ctx.beginPath();
@@ -1021,7 +1596,141 @@ class AIFaceTracker {
       ctx.fill();
       ctx.clip();
 
-      // Chiếc lưỡi hồng chúm chím
+      ctx.fillStyle = "#fb7185";
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY + openH * 0.25 + openH * 0.65, openW * 0.85, Math.PI, 0);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.ellipse(mouthX, mouthY + openH * 0.25, openW, openH, 0, 0, Math.PI * 2);
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.stroke();
+    } else if (this.currentEmotion === "happy") {
+      // Miệng cười to vui sướng 😄
+      const openW = rx * 0.19;
+      const openH = rx * 0.14;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY - 3, openW, 0, Math.PI);
+      ctx.fillStyle = "#4c0519";
+      ctx.fill();
+      ctx.clip();
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY + openH * 0.35, openW * 0.85, Math.PI, 0);
+      ctx.fillStyle = "#fb7185";
+      ctx.fill();
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY - 3, openW, 0, Math.PI);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.stroke();
+    } else if (this.currentEmotion === "love") {
+      // Miệng chúm chím hình số 3 cực yêu :3 😍
+      ctx.beginPath();
+      ctx.arc(mouthX - rx * 0.055, mouthY, rx * 0.065, 0, Math.PI * 0.95);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(mouthX + rx * 0.055, mouthY, rx * 0.065, Math.PI * 0.05, Math.PI);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+    } else if (this.currentEmotion === "nerd") {
+      // Miệng giáo sư AI mỉm cười + 2 răng thỏ thông thái 🤓
+      const mOpenW = rx * 0.12;
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY - 3, mOpenW, 0.1 * Math.PI, 0.9 * Math.PI);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineWidth = 1.2;
+      ctx.fillRect(mouthX - 4.5, mouthY + 1.5, 4, 4.5);
+      ctx.strokeRect(mouthX - 4.5, mouthY + 1.5, 4, 4.5);
+      ctx.fillRect(mouthX + 0.5, mouthY + 1.5, 4, 4.5);
+      ctx.strokeRect(mouthX + 0.5, mouthY + 1.5, 4, 4.5);
+    } else if (this.currentEmotion === "shocked") {
+      // Miệng há hốc hoang mang lo lắng 😧
+      const shockW = rx * 0.105;
+      const shockH = rx * 0.145;
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(mouthX, mouthY + 3, shockW, shockH, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#3b0712";
+      ctx.fill();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.stroke();
+      ctx.clip();
+      ctx.fillStyle = "#f43f5e";
+      ctx.beginPath();
+      ctx.ellipse(mouthX, mouthY + 3 + shockH * 0.6, shockW * 0.8, shockH * 0.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    } else if (this.currentEmotion === "lie") {
+      // Miệng gợn sóng bối rối nói dối 🤥
+      ctx.beginPath();
+      ctx.moveTo(mouthX - rx * 0.10, mouthY + 2);
+      ctx.bezierCurveTo(mouthX - rx * 0.04, mouthY - 3, mouthX + rx * 0.04, mouthY + 6, mouthX + rx * 0.10, mouthY + 1);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+    } else if (this.currentEmotion === "sleepy") {
+      // Miệng ngủ say ngáy khò khò 😪
+      ctx.beginPath();
+      ctx.ellipse(mouthX - 2, mouthY + 2, rx * 0.05, rx * 0.06, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#2c0b14";
+      ctx.fill();
+      ctx.lineWidth = 1.8;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.stroke();
+    } else if (this.currentEmotion === "unamused") {
+      // Miệng liếc chán nản thẳng tuột nghiêng 😒
+      ctx.beginPath();
+      ctx.moveTo(mouthX - rx * 0.11, mouthY + 1);
+      ctx.lineTo(mouthX + rx * 0.11, mouthY - 3);
+      ctx.lineWidth = 2.6;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+    } else if (this.currentEmotion === "rolling") {
+      // Miệng đảo mắt bất lực mím nhẹ 🙄
+      ctx.beginPath();
+      ctx.moveTo(mouthX - rx * 0.09, mouthY);
+      ctx.lineTo(mouthX + rx * 0.09, mouthY);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+    } else if (pullDist < 7) {
+      // Đường cong lưỡi liềm mỉm cười nhỏ xinh
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY - 4, rx * 0.103, Math.PI * 0.22, Math.PI * 0.78);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+    } else {
+      // Miệng mở chữ O khi kéo
+      const openH = Math.min(6 + pullDist * 0.35, 24);
+      const openW = Math.max(10, rx * 0.18 - pullDist * 0.05);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(mouthX, mouthY + openH * 0.25, openW, openH, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#2c0b14";
+      ctx.fill();
+      ctx.clip();
+
       ctx.fillStyle = "#fb7185";
       ctx.beginPath();
       ctx.arc(mouthX, mouthY + openH * 0.25 + openH * 0.65, openW * 0.85, Math.PI, 0);
@@ -1035,7 +1744,401 @@ class AIFaceTracker {
       ctx.stroke();
     }
 
+    // 9. VẼ PHỤ KIỆN KÍNH: Kính cận mọt sách 🤓 hoặc Kính đen ngầu 😎
+    if (this.glasses === "nerd" || this.currentEmotion === "nerd") {
+      const rimR = rx * 0.22;
+      const frameY = eyeY;
+      ctx.save();
+
+      [-1, 1].forEach((dir) => {
+        const gx = dir * eyeSpacing + px;
+        ctx.beginPath();
+        ctx.arc(gx, frameY, rimR, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.22)";
+        ctx.fill();
+        ctx.lineWidth = 3.6;
+        ctx.strokeStyle = "#27272a";
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(gx, frameY, rimR - 2.5, 0, Math.PI * 2);
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = "rgba(234, 179, 8, 0.85)";
+        ctx.stroke();
+
+        // Vệt lóa kính tri thức
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(gx, frameY, rimR - 3, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.beginPath();
+        ctx.moveTo(gx - rimR, frameY - rimR * 0.2);
+        ctx.lineTo(gx + rimR * 0.4, frameY - rimR);
+        ctx.lineTo(gx + rimR * 0.8, frameY - rimR);
+        ctx.lineTo(gx - rimR * 0.6, frameY + rimR * 0.4);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Cầu kính ở giữa
+      ctx.beginPath();
+      ctx.arc(px, frameY - 4, eyeSpacing * 0.5, Math.PI * 1.2, Math.PI * 1.8);
+      ctx.lineWidth = 3.6;
+      ctx.strokeStyle = "#27272a";
+      ctx.stroke();
+
+      // Càng kính hai bên
+      [-1, 1].forEach((dir) => {
+        const gx = dir * (eyeSpacing + rimR) + px;
+        ctx.beginPath();
+        ctx.moveTo(gx, frameY - 2);
+        ctx.lineTo(gx + dir * (rx * 0.24), frameY - 5);
+        ctx.lineWidth = 3.4;
+        ctx.strokeStyle = "#27272a";
+        ctx.stroke();
+      });
+
+      ctx.restore();
+    } else if (this.glasses === "sun" || this.currentEmotion === "cool") {
+      ctx.save();
+      const sunW = rx * 0.32;
+      const sunH = rx * 0.25;
+      const frameY = eyeY - 2;
+
+      [-1, 1].forEach((dir) => {
+        const gx = dir * (eyeSpacing * 1.05) + px;
+        ctx.save();
+        ctx.translate(gx, frameY);
+        ctx.rotate(dir * 0.05);
+
+        ctx.beginPath();
+        ctx.moveTo(-sunW * 0.5, -sunH * 0.45);
+        ctx.lineTo(sunW * 0.5, -sunH * 0.45);
+        ctx.bezierCurveTo(sunW * 0.55, sunH * 0.4, sunW * 0.25, sunH * 0.6, 0, sunH * 0.55);
+        ctx.bezierCurveTo(-sunW * 0.25, sunH * 0.6, -sunW * 0.55, sunH * 0.4, -sunW * 0.5, -sunH * 0.45);
+        ctx.closePath();
+
+        const darkGrad = ctx.createLinearGradient(0, -sunH * 0.5, 0, sunH * 0.6);
+        darkGrad.addColorStop(0, "#27272a");
+        darkGrad.addColorStop(0.5, "#18181b");
+        darkGrad.addColorStop(1, "#09090b");
+        ctx.fillStyle = darkGrad;
+        ctx.fill();
+
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = "#09090b";
+        ctx.stroke();
+
+        // Vệt bóng phản quang chéo sáng loáng
+        ctx.save();
+        ctx.clip();
+        ctx.beginPath();
+        ctx.moveTo(-sunW * 0.8, -sunH);
+        ctx.lineTo(sunW * 0.2, -sunH);
+        ctx.lineTo(-sunW * 0.2, sunH);
+        ctx.lineTo(-sunW * 1.2, sunH);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
+        ctx.fill();
+        ctx.restore();
+
+        ctx.restore();
+      });
+
+      // Cầu kính ngang
+      ctx.beginPath();
+      ctx.moveTo(-eyeSpacing * 0.45 + px, frameY - sunH * 0.3);
+      ctx.lineTo(eyeSpacing * 0.45 + px, frameY - sunH * 0.3);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#18181b";
+      ctx.lineCap = "round";
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 9.1 MŨI DÀI PINOCCHIO (🤥)
+    if (this.currentEmotion === "lie") {
+      const noseStartX = px * 0.45;
+      const noseStartY = eyeY + rx * 0.12;
+      const noseLength = rx * 0.82;
+      const noseH = rx * 0.095;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(noseStartX, noseStartY - noseH * 0.45);
+      ctx.lineTo(noseStartX + noseLength, noseStartY - noseH * 0.25);
+      ctx.arc(noseStartX + noseLength, noseStartY, noseH * 0.42, -Math.PI * 0.5, Math.PI * 0.5);
+      ctx.lineTo(noseStartX, noseStartY + noseH * 0.45);
+      ctx.closePath();
+
+      const woodGrad = ctx.createLinearGradient(noseStartX, 0, noseStartX + noseLength, 0);
+      woodGrad.addColorStop(0, "#fed7aa");
+      woodGrad.addColorStop(0.5, "#fdba74");
+      woodGrad.addColorStop(1, "#fb923c");
+      ctx.fillStyle = woodGrad;
+      ctx.fill();
+      ctx.lineWidth = 2.0;
+      ctx.strokeStyle = "#c2410c";
+      ctx.stroke();
+
+      // Đốm hồng chóp mũi
+      ctx.beginPath();
+      ctx.arc(noseStartX + noseLength - 1, noseStartY, noseH * 0.32, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(244, 63, 94, 0.5)";
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // 9.2 BÓNG NƯỚC MŨI NGỦ GẬT ANIME (😪)
+    if (this.currentEmotion === "sleepy") {
+      const bubblePulse = Math.sin(now * 0.004);
+      const bubbleR = rx * (0.16 + bubblePulse * 0.07);
+      const bubbleX = mouthX + rx * 0.13;
+      const bubbleY = eyeY + rx * 0.17;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(bubbleX, bubbleY, Math.max(3, bubbleR), 0, Math.PI * 2);
+      const bGrad = ctx.createRadialGradient(
+        bubbleX - bubbleR * 0.3,
+        bubbleY - bubbleR * 0.3,
+        1,
+        bubbleX,
+        bubbleY,
+        bubbleR
+      );
+      bGrad.addColorStop(0, "rgba(224, 242, 254, 0.95)");
+      bGrad.addColorStop(0.5, "rgba(56, 189, 248, 0.65)");
+      bGrad.addColorStop(1, "rgba(2, 132, 199, 0.8)");
+      ctx.fillStyle = bGrad;
+      ctx.fill();
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = "rgba(186, 230, 253, 0.9)";
+      ctx.stroke();
+
+      // Vệt sáng lóa bong bóng
+      ctx.beginPath();
+      ctx.arc(
+        bubbleX - bubbleR * 0.35,
+        bubbleY - bubbleR * 0.35,
+        Math.max(1, bubbleR * 0.28),
+        0,
+        Math.PI * 2
+      );
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+
+      // Chữ Zzz bay lơ lửng
+      const zProgress = (now * 0.0012) % 1;
+      ctx.font = 'bold 13px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = `rgba(59, 130, 246, ${Math.max(0, 1 - zProgress)})`;
+      ctx.fillText("Zzz", bubbleX + bubbleR + 4, bubbleY - zProgress * 22);
+      ctx.restore();
+    }
+
+    // 10. VẼ PHỤ KIỆN NÓN: Nón cao bồi 🤠 hoặc Nón lưỡi trai 🧢
+    if (this.hat === "cowboy") {
+      ctx.save();
+      const hatY = -ry + rx * 0.05 + py * 0.3;
+      ctx.translate(px * 0.3, hatY);
+
+      // Vành nón cao bồi uốn lượn cong 2 bên
+      const brimW = rx * 1.35;
+      const brimH = rx * 0.26;
+      ctx.beginPath();
+      ctx.moveTo(-brimW * 0.5, 0);
+      ctx.bezierCurveTo(-brimW * 0.35, -brimH * 0.8, brimW * 0.35, -brimH * 0.8, brimW * 0.5, 0);
+      ctx.bezierCurveTo(brimW * 0.4, brimH * 0.6, -brimW * 0.4, brimH * 0.6, -brimW * 0.5, 0);
+      ctx.closePath();
+
+      const brimGrad = ctx.createLinearGradient(0, -brimH, 0, brimH);
+      brimGrad.addColorStop(0, "#b45309");
+      brimGrad.addColorStop(0.5, "#92400e");
+      brimGrad.addColorStop(1, "#78350f");
+      ctx.fillStyle = brimGrad;
+      ctx.fill();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#451a03";
+      ctx.stroke();
+
+      // Chóp nón cao bồi có rãnh khuyết ở giữa
+      const crownW = rx * 0.68;
+      const crownH = rx * 0.55;
+      ctx.beginPath();
+      ctx.moveTo(-crownW * 0.45, -brimH * 0.3);
+      ctx.bezierCurveTo(-crownW * 0.5, -crownH * 0.8, -crownW * 0.25, -crownH * 1.05, 0, -crownH * 0.88);
+      ctx.bezierCurveTo(crownW * 0.25, -crownH * 1.05, crownW * 0.5, -crownH * 0.8, crownW * 0.45, -brimH * 0.3);
+      ctx.closePath();
+
+      const crownGrad = ctx.createLinearGradient(0, -crownH, 0, 0);
+      crownGrad.addColorStop(0, "#d97706");
+      crownGrad.addColorStop(0.6, "#b45309");
+      crownGrad.addColorStop(1, "#78350f");
+      ctx.fillStyle = crownGrad;
+      ctx.fill();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#451a03";
+      ctx.stroke();
+
+      // Đai da sẫm quấn quanh chóp
+      ctx.beginPath();
+      ctx.moveTo(-crownW * 0.46, -brimH * 0.3);
+      ctx.lineTo(crownW * 0.46, -brimH * 0.3);
+      ctx.lineTo(crownW * 0.44, -brimH * 0.3 - 7);
+      ctx.lineTo(-crownW * 0.44, -brimH * 0.3 - 7);
+      ctx.closePath();
+      ctx.fillStyle = "#292524";
+      ctx.fill();
+
+      // Ngôi sao nhỏ
+      ctx.beginPath();
+      ctx.arc(0, -brimH * 0.3 - 3.5, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = "#fbbf24";
+      ctx.fill();
+
+      ctx.restore();
+    } else if (this.hat === "cap") {
+      ctx.save();
+      const capY = -ry + rx * 0.12 + py * 0.3;
+      ctx.translate(px * 0.3, capY);
+
+      // Chóp nón tròn ôm sát đầu (Dome)
+      const domeW = rx * 0.82;
+      const domeH = rx * 0.46;
+      ctx.beginPath();
+      ctx.moveTo(-domeW * 0.5, 0);
+      ctx.bezierCurveTo(-domeW * 0.55, -domeH * 1.1, domeW * 0.55, -domeH * 1.1, domeW * 0.5, 0);
+      ctx.closePath();
+
+      const capGrad = ctx.createLinearGradient(0, -domeH, 0, 0);
+      capGrad.addColorStop(0, "#60a5fa");
+      capGrad.addColorStop(0.5, "#3b82f6");
+      capGrad.addColorStop(1, "#1d4ed8");
+      ctx.fillStyle = capGrad;
+      ctx.fill();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#1e3a8a";
+      ctx.stroke();
+
+      // Đường chỉ may giữa nón
+      ctx.beginPath();
+      ctx.moveTo(0, -domeH * 0.95);
+      ctx.lineTo(0, 0);
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+      ctx.stroke();
+
+      // Núm tròn trên đỉnh nón (Button)
+      ctx.beginPath();
+      ctx.arc(0, -domeH * 0.96, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = "#fbbf24";
+      ctx.fill();
+
+      // Vành lưỡi trai cong vươn ra đằng trước
+      const visorW = rx * 0.96;
+      const visorH = rx * 0.18;
+      ctx.beginPath();
+      ctx.moveTo(-visorW * 0.48, 0);
+      ctx.bezierCurveTo(-visorW * 0.25, visorH * 1.3, visorW * 0.25, visorH * 1.3, visorW * 0.48, 0);
+      ctx.bezierCurveTo(visorW * 0.2, visorH * 0.5, -visorW * 0.2, visorH * 0.5, -visorW * 0.48, 0);
+      ctx.closePath();
+
+      const visorGrad = ctx.createLinearGradient(0, 0, 0, visorH);
+      visorGrad.addColorStop(0, "#2563eb");
+      visorGrad.addColorStop(1, "#1e40af");
+      ctx.fillStyle = visorGrad;
+      ctx.fill();
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#1e3a8a";
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
     ctx.restore(); // Kết thúc biến dạng cục bộ
+
+    // 11. VỤN BÁNH / TRÁI TIM BAY KHI ĂN
+    if (this.crumbs && this.crumbs.length > 0) {
+      this.crumbs.forEach((c) => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, c.life);
+        ctx.fillStyle = c.col;
+        ctx.translate(c.x, c.y);
+        ctx.scale(c.scale, c.scale);
+        if (c.isHeart) {
+          ctx.beginPath();
+          ctx.arc(-2.2, -2, 2.5, Math.PI, 0);
+          ctx.arc(2.2, -2, 2.5, Math.PI, 0);
+          ctx.lineTo(0, 4.5);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, c.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+    }
+
+    // 12. HIỆU ỨNG VỤ NỔ KHI ĂN QUÁ 5 LẦN (💥 BÙÙÙM!)
+    if (this.explosionParticles && this.explosionParticles.length > 0) {
+      this.explosionParticles.forEach((p) => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.translate(p.x, p.y);
+        if (p.isStar) {
+          const r = p.r * 1.3;
+          ctx.beginPath();
+          for (let i = 0; i < 5; i++) {
+            ctx.lineTo(
+              Math.cos(((18 + i * 72) * Math.PI) / 180) * r,
+              -Math.sin(((18 + i * 72) * Math.PI) / 180) * r
+            );
+            ctx.lineTo(
+              Math.cos(((54 + i * 72) * Math.PI) / 180) * (r * 0.45),
+              -Math.sin(((54 + i * 72) * Math.PI) / 180) * (r * 0.45)
+            );
+          }
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+
+      // Vòng sóng xung kích (Shockwave) & Chữ BÙM
+      if (this.isExploding) {
+        const timeSinceExp = now - this.explosionTime;
+        if (timeSinceExp < 750) {
+          const waveProgress = timeSinceExp / 750;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(cx, cy, waveProgress * (this.width * 0.65), 0, Math.PI * 2);
+          ctx.lineWidth = 6 * (1 - waveProgress);
+          ctx.strokeStyle = `rgba(244, 63, 94, ${0.85 * (1 - waveProgress)})`;
+          ctx.stroke();
+
+          // Chữ comic 💥 BÙÙÙM!
+          const textScale = Math.sin(Math.min(1, waveProgress * 2.5) * Math.PI * 0.5);
+          ctx.font = `900 ${Math.round(28 * textScale)}px "Plus Jakarta Sans", sans-serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "#ffed4a";
+          ctx.strokeStyle = "#e11d48";
+          ctx.lineWidth = 4;
+          ctx.strokeText("💥 BÙÙÙM!", cx, cy - 10);
+          ctx.fillText("💥 BÙÙÙM!", cx, cy - 10);
+          ctx.restore();
+        }
+      }
+    }
+
     ctx.restore(); // Khôi phục ma trận gốc
   }
 
@@ -1057,20 +2160,774 @@ function initInteractiveFace() {
   aiFaceInstance = new AIFaceTracker(canvas);
 }
 
+// View Mode for Course Sessions: "mochi" (Interactive Mochi Face Mascot & Speech Bubbles) or "list" (Traditional text list)
+let currentSessionViewMode = "mochi";
+let activeModalSession = null; // { catId, trackIdx, sessionIdx }
+let mochiSyllabusInstance = null;
+
 // Switch active track inside a category page
 window.selectCategoryTrack = function (catId, trackIdx) {
+  if (mochiSyllabusInstance) {
+    mochiSyllabusInstance.destroy();
+    mochiSyllabusInstance = null;
+  }
   activeTrackIdxMap[catId] = trackIdx;
   renderMainView();
 };
 
-// Expand / Collapse all sessions in current track
+// Switch session display mode: Mochi mascot or traditional list
+window.setSessionViewMode = function (mode) {
+  if (mochiSyllabusInstance) {
+    mochiSyllabusInstance.destroy();
+    mochiSyllabusInstance = null;
+  }
+  currentSessionViewMode = mode;
+  renderMainView();
+};
+
+// Open Session Detail Modal (Centered on Screen)
+window.openSessionModal = function (catId, trackIdx, sessionIdx) {
+  const cat = SITE_DATA.categories.find((c) => c.id === catId);
+  if (!cat || !cat.tracks || !cat.tracks[trackIdx]) return;
+  const track = cat.tracks[trackIdx];
+  if (!track.sessions || !track.sessions[sessionIdx]) return;
+
+  activeModalSession = { catId, trackIdx, sessionIdx };
+  updateSessionModalContent();
+
+  const modal = document.getElementById("sessionDetailModal");
+  if (modal) {
+    modal.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+};
+
+// Close Session Detail Modal
+window.closeSessionModal = function (e) {
+  if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains("session-modal-close")) {
+    return;
+  }
+  const modal = document.getElementById("sessionDetailModal");
+  if (modal) {
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  activeModalSession = null;
+};
+
+// Navigate to previous or next session inside modal
+window.navigateModalSession = function (delta) {
+  if (!activeModalSession) return;
+  const cat = SITE_DATA.categories.find((c) => c.id === activeModalSession.catId);
+  if (!cat) return;
+  const track = cat.tracks[activeModalSession.trackIdx];
+  if (!track) return;
+
+  const newIdx = activeModalSession.sessionIdx + delta;
+  if (newIdx >= 0 && newIdx < track.sessions.length) {
+    activeModalSession.sessionIdx = newIdx;
+    updateSessionModalContent();
+  }
+};
+
+// Jump directly to specific session from navigation dots
+window.jumpToModalSession = function (sessionIdx) {
+  if (!activeModalSession) return;
+  activeModalSession.sessionIdx = sessionIdx;
+  updateSessionModalContent();
+};
+
+// Update Modal DOM Content
+function updateSessionModalContent() {
+  if (!activeModalSession) return;
+  const cat = SITE_DATA.categories.find((c) => c.id === activeModalSession.catId);
+  if (!cat) return;
+  const track = cat.tracks[activeModalSession.trackIdx];
+  if (!track) return;
+  const s = track.sessions[activeModalSession.sessionIdx];
+  if (!s) return;
+
+  const badgeEl = document.getElementById("modalSessionBadge");
+  const courseEl = document.getElementById("modalCourseName");
+  const titleEl = document.getElementById("modalSessionTitle");
+  const descEl = document.getElementById("modalSessionDesc");
+  const prevBtn = document.getElementById("modalPrevBtn");
+  const nextBtn = document.getElementById("modalNextBtn");
+  const dotsEl = document.getElementById("modalSessionDots");
+
+  if (badgeEl) badgeEl.innerHTML = `💬 ${s.num} / ${track.sessions.length} Buổi`;
+  if (courseEl) courseEl.textContent = track.title;
+  if (titleEl) titleEl.textContent = s.title;
+  if (descEl) descEl.textContent = s.desc;
+
+  if (prevBtn) {
+    prevBtn.disabled = activeModalSession.sessionIdx === 0;
+  }
+  if (nextBtn) {
+    nextBtn.disabled = activeModalSession.sessionIdx === track.sessions.length - 1;
+  }
+
+  if (dotsEl) {
+    dotsEl.innerHTML = track.sessions
+      .map(
+        (_, idx) => `
+        <button class="modal-dot-pill ${idx === activeModalSession.sessionIdx ? "active" : ""}" 
+                onclick="jumpToModalSession(${idx})" 
+                title="Buổi ${idx + 1}"
+                aria-label="Buổi ${idx + 1}">
+          ${idx + 1}
+        </button>
+      `
+      )
+      .join("");
+  }
+}
+
+// Register course from inside session modal
+window.registerCurrentSessionCourse = function () {
+  if (!activeModalSession) return;
+  const cat = SITE_DATA.categories.find((c) => c.id === activeModalSession.catId);
+  const track = cat ? cat.tracks[activeModalSession.trackIdx] : null;
+  const courseTitle = track ? track.title : "";
+  closeSessionModal();
+  prefillCourseAndScroll(courseTitle);
+};
+
+// Close modal on Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeSessionModal();
+  }
+});
+
+/* =========================================================================
+   Interactive Bé Mochi Mascot Tracker (Transparent, Spring Physics, Gaze Eyes)
+   ========================================================================= */
+class MochiSyllabusTracker {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this.statusEl = document.getElementById("mochiStatusText");
+
+    this.width = 210;
+    this.height = 200;
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    // Elastic spring physics
+    this.dispX = 0;
+    this.dispY = 0;
+    this.velX = 0;
+    this.velY = 0;
+
+    // Mouse / Touch drag
+    this.isDragging = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+    this.currentDragX = 0;
+    this.currentDragY = 0;
+
+    // Eye gaze tracking
+    this.targetGazeX = 0;
+    this.targetGazeY = 0;
+    this.gazeX = 0;
+    this.gazeY = 0;
+    this.lastMouseMoveTime = Date.now();
+
+    // Natural idle shifts
+    this.idleTargetX = 0;
+    this.idleTargetY = 0;
+    this.nextIdleShift = 0;
+
+    // Natural blinking
+    this.blinkProgress = 0;
+    this.isBlinking = false;
+    this.nextBlinkTime = Date.now() + 2500;
+    this.blinkStartTime = 0;
+
+    // Đỏ 2 má khi kéo (kéo sẽ đỏ trong 5 giây rồi hết)
+    this.blushUntil = 0;
+
+    // Trạng thái khóc (khóc khi kéo và 5 giây sau khi kéo)
+    this.cryUntil = 0;
+    this.wasCrying = false;
+
+    // Phụ kiện thời trang hoặc Cảm xúc nhân vật: "normal", "happy", "love", "cool", "playful"
+    this.currentEmotion = "normal";
+    this.glasses = "none";
+    this.hat = "none";
+
+    // Trạng thái cho ăn bánh Mochi trắng & phóng to (to lên mỗi lần ăn, quá 5 lần thì nổ)
+    this.feedCount = 0;
+    this.growthScale = 1.0;
+    this.targetGrowthScale = 1.0;
+    this.isExploding = false;
+    this.explosionTime = 0;
+    this.explosionParticles = [];
+
+    // Màu sắc Mochi đổi dần dần theo bánh vừa ăn (Smooth Color Morphing)
+    this.currentPalette = JSON.parse(JSON.stringify(MOCHI_PALETTES.white));
+    this.targetPalette = MOCHI_PALETTES.white;
+    this.currentFlavor = "white";
+
+    // Trạng thái ăn bánh và nhai nhồm nhoàm
+    this.isEating = false;
+    this.eatingStart = 0;
+    this.chewProgress = 0;
+    this.crumbs = [];
+
+    this.statusTimer = null;
+    this.rafId = null;
+
+    this.onWindowMouseMove = this.onWindowMouseMove.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onWindowMouseMoveDrag = this.onWindowMouseMoveDrag.bind(this);
+    this.onWindowMouseUp = this.onWindowMouseUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.loop = this.loop.bind(this);
+
+    this.init();
+  }
+
+  init() {
+    this.bindEvents();
+    this.resize();
+    this.rafId = requestAnimationFrame(this.loop);
+  }
+
+  bindEvents() {
+    window.addEventListener("mousemove", this.onWindowMouseMove, { passive: true });
+    window.addEventListener("resize", this.onResize, { passive: true });
+
+    this.canvas.addEventListener("mousedown", this.onMouseDown);
+    window.addEventListener("mousemove", this.onWindowMouseMoveDrag);
+    window.addEventListener("mouseup", this.onWindowMouseUp);
+
+    this.canvas.addEventListener("touchstart", this.onTouchStart, { passive: false });
+    window.addEventListener("touchmove", this.onTouchMove, { passive: false });
+    window.addEventListener("touchend", this.onTouchEnd);
+    window.addEventListener("touchcancel", this.onTouchEnd);
+  }
+
+  unbindEvents() {
+    window.removeEventListener("mousemove", this.onWindowMouseMove);
+    window.removeEventListener("resize", this.onResize);
+
+    this.canvas.removeEventListener("mousedown", this.onMouseDown);
+    window.removeEventListener("mousemove", this.onWindowMouseMoveDrag);
+    window.removeEventListener("mouseup", this.onWindowMouseUp);
+
+    this.canvas.removeEventListener("touchstart", this.onTouchStart);
+    window.removeEventListener("touchmove", this.onTouchMove);
+    window.removeEventListener("touchend", this.onTouchEnd);
+    window.removeEventListener("touchcancel", this.onTouchEnd);
+  }
+
+  destroy() {
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+    if (this.statusTimer) {
+      clearTimeout(this.statusTimer);
+      this.statusTimer = null;
+    }
+    this.unbindEvents();
+  }
+
+  onResize() {
+    this.resize();
+  }
+
+  resize() {
+    const rect = this.canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    this.width = rect.width;
+    this.height = rect.height;
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
+  }
+
+  onWindowMouseMove(e) {
+    if (this.isDragging) return;
+    this.lastMouseMoveTime = Date.now();
+    const rect = this.canvas.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    this.targetGazeX = Math.max(-1, Math.min(1, (e.clientX - centerX) / 240));
+    this.targetGazeY = Math.max(-1, Math.min(1, (e.clientY - centerY) / 180));
+  }
+
+  onMouseDown(e) {
+    if (e.button !== 0) return;
+    this.startDrag(e.clientX, e.clientY);
+  }
+
+  onWindowMouseMoveDrag(e) {
+    if (!this.isDragging) return;
+    this.currentDragX = e.clientX;
+    this.currentDragY = e.clientY;
+  }
+
+  onWindowMouseUp() {
+    if (!this.isDragging) return;
+    this.endDrag();
+  }
+
+  onTouchStart(e) {
+    if (e.touches.length > 0) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      this.startDrag(touch.clientX, touch.clientY);
+    }
+  }
+
+  onTouchMove(e) {
+    if (!this.isDragging) return;
+    if (e.touches.length > 0) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      this.currentDragX = touch.clientX;
+      this.currentDragY = touch.clientY;
+    }
+  }
+
+  onTouchEnd() {
+    if (!this.isDragging) return;
+    this.endDrag();
+  }
+
+  startDrag(clientX, clientY) {
+    this.isDragging = true;
+    this.dragStartX = clientX;
+    this.dragStartY = clientY;
+    this.currentDragX = clientX;
+    this.currentDragY = clientY;
+    this.blushUntil = Date.now() + 5000;
+    this.canvas.classList.add("is-dragging");
+    this.setStatus("Bé Mochi dẻo quánh nè! 😋");
+  }
+
+  endDrag() {
+    this.isDragging = false;
+    this.blushUntil = Math.max(this.blushUntil, Date.now() + 5000);
+    this.canvas.classList.remove("is-dragging");
+    if (navigator.vibrate) {
+      try { navigator.vibrate(20); } catch (_) {}
+    }
+    this.setStatus("Nảy tưng tưng luôn! 💖", 1500);
+  }
+
+  setStatus(text, duration = 0) {
+    if (!this.statusEl) return;
+    if (this.statusTimer) {
+      clearTimeout(this.statusTimer);
+      this.statusTimer = null;
+    }
+    this.statusEl.textContent = text;
+    if (duration > 0) {
+      this.statusTimer = setTimeout(() => {
+        if (this.statusEl) {
+          this.statusEl.textContent = "Bé Mochi đang lắng nghe bạn nè 🥰";
+        }
+      }, duration);
+    }
+  }
+
+  update() {
+    const now = Date.now();
+
+    if (now - this.lastMouseMoveTime > 1800 && !this.isDragging) {
+      if (now > this.nextIdleShift) {
+        this.idleTargetX = (Math.random() - 0.5) * 1.3;
+        this.idleTargetY = (Math.random() - 0.4) * 0.9;
+        this.nextIdleShift = now + 1600 + Math.random() * 2400;
+      }
+      this.targetGazeX = this.idleTargetX;
+      this.targetGazeY = this.idleTargetY;
+    }
+
+    this.gazeX += (this.targetGazeX - this.gazeX) * 0.12;
+    this.gazeY += (this.targetGazeY - this.gazeY) * 0.12;
+
+    if (now > this.nextBlinkTime && !this.isBlinking) {
+      this.isBlinking = true;
+      this.blinkStartTime = now;
+    }
+    if (this.isBlinking) {
+      const elapsed = now - this.blinkStartTime;
+      const blinkDuration = 180;
+      if (elapsed < blinkDuration) {
+        this.blinkProgress = Math.sin((elapsed / blinkDuration) * Math.PI);
+      } else {
+        this.blinkProgress = 0;
+        this.isBlinking = false;
+        this.nextBlinkTime = now + 2800 + Math.random() * 3400;
+      }
+    }
+
+    if (this.isDragging) {
+      const rawDx = this.currentDragX - this.dragStartX;
+      const rawDy = this.currentDragY - this.dragStartY;
+      const rawDist = Math.hypot(rawDx, rawDy);
+      const maxPull = 80;
+      const tension = maxPull * Math.tanh(rawDist / maxPull);
+      const angle = Math.atan2(rawDy, rawDx);
+
+      const targetX = Math.cos(angle) * tension;
+      const targetY = Math.sin(angle) * tension;
+
+      const prevX = this.dispX;
+      const prevY = this.dispY;
+      this.dispX += (targetX - this.dispX) * 0.45;
+      this.dispY += (targetY - this.dispY) * 0.45;
+      this.velX = (this.dispX - prevX) * 0.85;
+      this.velY = (this.dispY - prevY) * 0.85;
+    } else {
+      const springK = 0.12;
+      const damping = 0.83;
+      const ax = -springK * this.dispX;
+      const ay = -springK * this.dispY;
+      this.velX = (this.velX + ax) * damping;
+      this.velY = (this.velY + ay) * damping;
+      this.dispX += this.velX;
+      this.dispY += this.velY;
+
+      if (Math.hypot(this.dispX, this.dispY) < 0.12 && Math.hypot(this.velX, this.velY) < 0.12) {
+        this.dispX = 0;
+        this.dispY = 0;
+        this.velX = 0;
+        this.velY = 0;
+      }
+    }
+  }
+
+  draw() {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // TRANSPARENT BACKGROUND (Không khung nền, chỉ hiện nền của web)
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.scale(this.dpr, this.dpr);
+
+    const cx = this.width / 2;
+    const cy = this.height / 2 - 4;
+
+    const pullDist = Math.hypot(this.dispX, this.dispY);
+    const pullAngle = Math.atan2(this.dispY, this.dispX);
+    const stretch = 1 + (pullDist / 80) * 0.46;
+    const squash = 1 / Math.sqrt(stretch);
+
+    // Body: Soft white dough sphere (Tự động phóng to theo kích thước màn hình / di động)
+    const rx = Math.min(this.width * 0.38, 86);
+    const ry = rx * 0.94;
+
+    // Soft Contact Shadow beneath Mochi
+    const shadowY = cy + ry + 4 + (this.dispY * 0.22);
+    const shadowRx = (rx * 0.88) * (pullDist > 0.01 ? (1 / Math.sqrt(stretch)) : 1);
+    const shadowRy = (rx * 0.19) * (pullDist > 0.01 ? stretch : 1);
+    const shadowGrad = ctx.createRadialGradient(cx + (this.dispX * 0.22), shadowY, 2, cx + (this.dispX * 0.22), shadowY, shadowRx);
+    shadowGrad.addColorStop(0, "rgba(100, 116, 139, 0.32)");
+    shadowGrad.addColorStop(0.5, "rgba(100, 116, 139, 0.12)");
+    shadowGrad.addColorStop(1, "rgba(100, 116, 139, 0)");
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath();
+    ctx.ellipse(cx + (this.dispX * 0.22), shadowY, shadowRx, shadowRy, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Elastic transformations
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(this.dispX * 0.0015 + this.gazeX * 0.04);
+
+    if (pullDist > 0.01) {
+      ctx.translate(this.dispX * 0.58, this.dispY * 0.58);
+      ctx.rotate(pullAngle);
+      ctx.scale(stretch, squash);
+      ctx.rotate(-pullAngle);
+    }
+
+    const px = this.gazeX * 7.5;
+    const py = this.gazeY * 5.5;
+
+    ctx.beginPath();
+    ctx.moveTo(0, -ry);
+    ctx.bezierCurveTo(rx * 0.95, -ry * 0.95, rx * 1.05, -ry * 0.1, rx * 1.03, 14);
+    ctx.bezierCurveTo(rx * 0.98, ry * 0.82, rx * 0.55, ry * 1.02, 0, ry * 1.02);
+    ctx.bezierCurveTo(-rx * 0.55, ry * 1.02, -rx * 0.98, ry * 0.82, -rx * 1.03, 14);
+    ctx.bezierCurveTo(-rx * 1.05, -ry * 0.1, -rx * 0.95, -ry * 0.95, 0, -ry);
+    ctx.closePath();
+
+    // Soft 3D Lighting
+    const lightX = -22 + px * 0.45;
+    const lightY = -26 + py * 0.45;
+    const bodyGrad = ctx.createRadialGradient(lightX, lightY, 10, 0, 8, rx * 1.15);
+    bodyGrad.addColorStop(0, "#ffffff");
+    bodyGrad.addColorStop(0.55, "#ffffff");
+    bodyGrad.addColorStop(0.82, "#f6f7fc");
+    bodyGrad.addColorStop(0.96, "#e8ecf8");
+    bodyGrad.addColorStop(1, "#dce2f2");
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(203, 213, 225, 0.7)";
+    ctx.lineWidth = 1.3;
+    ctx.stroke();
+
+    // Rosy Blush Cheeks (Đỏ rực 2 má khi kéo và 5 giây sau sẽ hết)
+    const nowTime = Date.now();
+    const remainingBlush = this.blushUntil - nowTime;
+    let blushFactor = 0;
+    if (remainingBlush > 0) {
+      blushFactor = remainingBlush > 800 ? 1.0 : remainingBlush / 800;
+    }
+
+    [-1, 1].forEach((dir) => {
+      const blushX = dir * (rx * 0.62) + px * 0.5;
+      const blushY = rx * 0.1 + py * 0.5;
+      ctx.save();
+      ctx.translate(blushX, blushY);
+      ctx.rotate(dir * 0.22);
+      const bW = rx * 0.19 + blushFactor * 5;
+      const bH = rx * 0.10 + blushFactor * 4;
+      const blushGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, bW);
+      if (blushFactor > 0.01) {
+        // Đỏ 2 má khi kéo
+        blushGrad.addColorStop(0, `rgba(244, 63, 94, ${0.45 + blushFactor * 0.5})`);
+        blushGrad.addColorStop(0.5, `rgba(251, 113, 133, ${0.25 + blushFactor * 0.45})`);
+        blushGrad.addColorStop(1, "rgba(244, 63, 94, 0)");
+      } else {
+        blushGrad.addColorStop(0, "rgba(244, 114, 182, 0.72)");
+        blushGrad.addColorStop(0.5, "rgba(244, 114, 182, 0.38)");
+        blushGrad.addColorStop(1, "rgba(244, 114, 182, 0)");
+      }
+      ctx.fillStyle = blushGrad;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, bW, bH, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Vạch ngượng ngùng anime đáng yêu khi đỏ má
+      if (blushFactor > 0.15) {
+        ctx.strokeStyle = `rgba(225, 29, 72, ${blushFactor * 0.75})`;
+        ctx.lineWidth = 1.6;
+        ctx.lineCap = "round";
+        for (let i = -1; i <= 1; i++) {
+          ctx.beginPath();
+          ctx.moveTo(i * 4 - 2, -4);
+          ctx.lineTo(i * 4 + 2, 4);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    });
+
+    // Big 3D Expressive Gaze Eyes
+    const eyeSpacing = rx * 0.35;
+    const eyeY = rx * 0.07 + py;
+    const outerEyeW = rx * 0.26;
+    const outerEyeH = (rx * 0.28) * (1 - this.blinkProgress * 0.95);
+
+    [-1, 1].forEach((dir) => {
+      const eyeX = dir * eyeSpacing + px;
+
+      if (this.blinkProgress > 0.65 || outerEyeH < 3) {
+        ctx.beginPath();
+        ctx.arc(eyeX, eyeY - 2, rx * 0.17, Math.PI * 0.15, Math.PI * 0.85);
+        ctx.lineWidth = 2.8;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.ellipse(eyeX, eyeY, outerEyeW, outerEyeH, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "#f5f6fb";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(218, 224, 238, 0.85)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(eyeX, eyeY, outerEyeW - 0.5, outerEyeH - 0.5, 0, 0, Math.PI * 2);
+        ctx.clip();
+
+        const pupilOffsetX = this.gazeX * (rx * 0.095);
+        const pupilOffsetY = this.gazeY * (rx * 0.075);
+        const pupilX = eyeX + pupilOffsetX;
+        const pupilY = eyeY + pupilOffsetY;
+        const pupilR = rx * 0.145;
+
+        const pupilGrad = ctx.createRadialGradient(pupilX - 2, pupilY - 2, 1, pupilX, pupilY, pupilR);
+        pupilGrad.addColorStop(0, "#28273d");
+        pupilGrad.addColorStop(0.7, "#1c1b2b");
+        pupilGrad.addColorStop(1, "#12111d");
+
+        ctx.beginPath();
+        ctx.arc(pupilX, pupilY, pupilR, 0, Math.PI * 2);
+        ctx.fillStyle = pupilGrad;
+        ctx.fill();
+
+        // Primary catchlight
+        ctx.beginPath();
+        ctx.arc(pupilX - (rx * 0.036), pupilY - (rx * 0.04), rx * 0.049, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+
+        // Secondary catchlight
+        ctx.beginPath();
+        ctx.arc(pupilX + (rx * 0.04), pupilY + (rx * 0.04), rx * 0.02, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+        ctx.fill();
+
+        ctx.restore();
+      }
+    });
+
+    // Cute smiling mouth ◡
+    const mouthX = px * 0.45;
+    const mouthY = rx * 0.35 + py * 0.45;
+
+    if (pullDist < 7) {
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY - 4, rx * 0.103, Math.PI * 0.22, Math.PI * 0.78);
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.lineCap = "round";
+      ctx.stroke();
+    } else {
+      const openH = Math.min(5 + pullDist * 0.32, 22);
+      const openW = Math.max(9, rx * 0.19 - pullDist * 0.05);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(mouthX, mouthY + openH * 0.25, openW, openH, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#2c0b14";
+      ctx.fill();
+      ctx.clip();
+
+      ctx.fillStyle = "#fb7185";
+      ctx.beginPath();
+      ctx.arc(mouthX, mouthY + openH * 0.25 + openH * 0.65, openW * 0.85, Math.PI, 0);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.ellipse(mouthX, mouthY + openH * 0.25, openW, openH, 0, 0, Math.PI * 2);
+      ctx.lineWidth = 2.0;
+      ctx.strokeStyle = "#1e1e2d";
+      ctx.stroke();
+    }
+
+    ctx.restore();
+    ctx.restore();
+  }
+
+  loop() {
+    this.update();
+    this.draw();
+    this.rafId = requestAnimationFrame(this.loop);
+  }
+}
+
+function initMochiCourseTracker() {
+  if (mochiSyllabusInstance) {
+    mochiSyllabusInstance.destroy();
+    mochiSyllabusInstance = null;
+  }
+  const canvas = document.getElementById("mochiCourseCanvas");
+  if (!canvas) return;
+  mochiSyllabusInstance = new MochiSyllabusTracker(canvas);
+}
+
+// Render Interactive Bé Mochi Mascot & Floating Speech Bubbles
+function renderInteractiveMochiSyllabus(cat, track, activeIdx) {
+  const sessions = track.sessions || [];
+  const total = sessions.length;
+  const half = Math.ceil(total / 2);
+
+  const leftSessions = sessions.slice(0, half);
+  const rightSessions = sessions.slice(half);
+
+  const formatBadgeNum = (num) => {
+    let s = num || "";
+    if (s.includes(",")) {
+      const numbers = s.match(/\d+/g);
+      if (numbers && numbers.length > 1) {
+        return `Buổi ${numbers[0]}-${numbers[numbers.length - 1]}`;
+      }
+    }
+    return s;
+  };
+
+  const leftBubblesHtml = leftSessions
+    .map((s, idx) => {
+      const realIdx = idx;
+      const displayNum = formatBadgeNum(s.num);
+      const delay = ((idx * 0.35) % 2.5).toFixed(1);
+      return `
+        <button class="mochi-speech-bubble bubble-left" 
+                style="animation-delay: -${delay}s;" 
+                onclick="openSessionModal('${cat.id}', ${activeIdx}, ${realIdx})"
+                title="Xem chi tiết ${s.num}: ${s.title}"
+                aria-label="Xem chi tiết ${s.num}: ${s.title}">
+          <span class="bubble-icon">💬</span>
+          <span class="bubble-text">${displayNum}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  const rightBubblesHtml = rightSessions
+    .map((s, idx) => {
+      const realIdx = half + idx;
+      const displayNum = formatBadgeNum(s.num);
+      const delay = (((idx + half) * 0.4) % 2.5).toFixed(1);
+      return `
+        <button class="mochi-speech-bubble bubble-right" 
+                style="animation-delay: -${delay}s;" 
+                onclick="openSessionModal('${cat.id}', ${activeIdx}, ${realIdx})"
+                title="Xem chi tiết ${s.num}: ${s.title}"
+                aria-label="Xem chi tiết ${s.num}: ${s.title}">
+          <span class="bubble-icon">💬</span>
+          <span class="bubble-text">${displayNum}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  return `
+    <div class="mochi-interactive-stage">
+      <!-- Cột bóng nói chuyện bên trái -->
+      <div class="mochi-bubbles-col mochi-bubbles-left">
+        ${leftBubblesHtml}
+      </div>
+
+      <!-- Trung tâm: Khuôn mặt Bé Mochi tương tác (Không khung nền, chỉ hiện nền của web) -->
+      <div class="mochi-character-box">
+        <canvas id="mochiCourseCanvas" class="mochi-canvas"></canvas>
+      </div>
+
+      <!-- Cột bóng nói chuyện bên phải -->
+      <div class="mochi-bubbles-col mochi-bubbles-right">
+        ${rightBubblesHtml}
+      </div>
+    </div>
+  `;
+}
+
+// Expand / Collapse all sessions in current track (for list mode)
 window.toggleAllSessions = function (expand) {
   document.querySelectorAll(".session-item").forEach((el) => {
     el.classList.toggle("expanded", expand);
   });
 };
 
-// Render Department Page (Compact with Sub-Course Tabs & Accordion Sessions)
+// Render Department Page (Compact with Sub-Course Tabs, Interactive Mochi & Accordion Sessions)
 function renderDepartmentPage(cat) {
   const activeIdx = activeTrackIdxMap[cat.id] || 0;
   const track = cat.tracks[activeIdx] || cat.tracks[0];
@@ -1175,14 +3032,17 @@ function renderDepartmentPage(cat) {
           </div>
         </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:10px;">
-          <button type="button" class="quick-pill" onclick="toggleAllSessions(true)">Mở tất cả buổi</button>
-          <button type="button" class="quick-pill" onclick="toggleAllSessions(false)">Thu gọn</button>
+        <!-- Interactive Mochi Header -->
+        <div class="mochi-syllabus-header-bar">
+          <div class="hero-pill" style="margin:0; font-size:0.84rem; background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(6, 182, 212, 0.1)); border: 1px solid rgba(99, 102, 241, 0.25); color: var(--primary);">
+            ✨ Trợ Lý Mochi (Tương tác)
+          </div>
+          <div class="mochi-hint-pill">
+            <span class="mochi-hint-sparkle">💬</span> Chạm bóng nói để xem chi tiết buổi học
+          </div>
         </div>
 
-        <div class="sessions-grid">
-          ${sessionsHtml}
-        </div>
+        ${renderInteractiveMochiSyllabus(cat, track, activeIdx)}
       </div>
     </section>
   `;
@@ -1196,6 +3056,9 @@ function renderMainView() {
   const matchedCat = SITE_DATA.categories.find((c) => c.id === currentTab);
   if (matchedCat) {
     appRoot.innerHTML = renderDepartmentPage(matchedCat);
+    setTimeout(() => {
+      initMochiCourseTracker();
+    }, 20);
     return;
   }
 
@@ -1661,7 +3524,12 @@ function loadAdminCustomData() {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadAdminCustomData();
-  renderMainView();
+  const hash = (window.location.hash || "").replace("#", "");
+  if (hash && SITE_DATA.categories.some((c) => c.id === hash)) {
+    navigateTo(hash, false);
+  } else {
+    renderMainView();
+  }
   updateFeeCalculator();
   initContactForm();
   initThemeToggle();
