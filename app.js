@@ -3770,6 +3770,24 @@ function initThemeToggle() {
   });
 }
 
+// Cấu hình thông tin liên hệ & từ khóa SEO mặc định của Website
+const DEFAULT_SITE_SETTINGS = {
+  brandName: "KHÓA HỌC ỨNG DỤNG AI",
+  phone: "0916172524",
+  zalo: "0916172524",
+  email: "hocviendohoa2@gmail.com",
+  address: "Tân An, Long An",
+  metaKeywords: "khóa học tạo web với ai, khóa học ứng dụng ai, khóa học trí tuệ nhân tạo theo yêu cầu, khóa học edit video theo yêu cầu, khóa học illustrator theo yêu cầu, khóa học photoshop theo yêu cầu",
+  seoKeywords: [
+    { text: "Khóa học ứng dụng ai", cat: "home" },
+    { text: "Khóa học tạo web với ai", cat: "web" },
+    { text: "Khóa học trí tuệ nhân tạo theo yêu cầu", cat: "ai" },
+    { text: "Khóa học edit video theo yêu cầu", cat: "edit-video" },
+    { text: "Khóa học illustrator theo yêu cầu", cat: "illustrator" },
+    { text: "Khóa học photoshop theo yêu cầu", cat: "photoshop" }
+  ]
+};
+
 // Cấu hình mặc định cho Form Đăng Ký & Bộ Tính Học Phí
 const DEFAULT_REGISTRATION_CONFIG = {
   badgeTitle: "📬 Đăng Ký Nhận Giáo Án",
@@ -3786,7 +3804,7 @@ const DEFAULT_REGISTRATION_CONFIG = {
     { id: "web", name: "Tạo Web", icon: "🌐", value: "Khóa học ứng dụng AI - Tạo Web với AI", checked: false }
   ],
   calcCourses: [
-    { id: "custom-personal", name: "Khóa học Theo Yêu Cầu - Cá Nhân (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
+    { id: "custom-personal", name: "Khóa học Theo Yêu Cầu - Tự Thiết Kế (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
     { id: "custom-business", name: "Khóa học Theo Yêu Cầu - Doanh Nghiệp (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
     { id: "custom-express", name: "Khóa học Theo Yêu Cầu - Cấp Tốc (6 Buổi)", sessions: 6, online: 2400000, offline: 3000000 },
     { id: "ps-basic", name: "Khóa học Photoshop theo yêu cầu - Cơ Bản (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
@@ -3801,6 +3819,20 @@ const DEFAULT_REGISTRATION_CONFIG = {
     { id: "video-capcut", name: "Khóa học Edit Video theo yêu cầu - CapCut (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
     { id: "web-ai", name: "Khóa học ứng dụng AI - Tạo Web AI (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 }
   ]
+};
+
+// Đưa ra scope toàn cục để trang Quản trị (admin.html) và toàn web sử dụng đồng bộ làm Mặc Định
+window.SITE_DATA = SITE_DATA;
+window.SEO_CONFIG = SEO_CONFIG;
+window.DEFAULT_SITE_SETTINGS = DEFAULT_SITE_SETTINGS;
+window.DEFAULT_REGISTRATION_CONFIG = DEFAULT_REGISTRATION_CONFIG;
+
+// Hàm khôi phục toàn bộ nội dung web về mặc định gốc
+window.resetWebToDefaults = function () {
+  localStorage.removeItem("CUSTOM_SITE_SETTINGS");
+  localStorage.removeItem("CUSTOM_SEO_CONFIG");
+  localStorage.removeItem("CUSTOM_SITE_DATA");
+  localStorage.removeItem("CUSTOM_REGISTRATION_CONFIG");
 };
 
 // Bản đồ link ảnh Google Drive CDN chính thức

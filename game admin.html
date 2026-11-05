@@ -600,6 +600,9 @@
         📥 Nhập File JSON
         <input type="file" accept=".json" style="display:none;" onchange="importClassesJson(event)" />
       </label>
+      <button type="button" class="btn btn-hot" onclick="resetDefaultClassrooms()" title="Lấy lại toàn bộ 7 lớp học mặc định từ Game">
+        🔄 Đặt Mặc Định 7 Lớp Game
+      </button>
       <button type="button" class="btn btn-success" onclick="saveAllClassrooms()">
         💾 Lưu Tất Cả Lớp Học
       </button>
@@ -1045,40 +1048,6 @@
         studentNames: [],
         themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
         propType: "ringed_planets"
-      },
-      {
-        id: "class-web-ai",
-        name: "Lớp Học Tạo Website Chuyên Nghiệp Với AI",
-        icon: "🌐",
-        subject: "Xây dựng Website chuẩn SEO Google với AI, Wix, Gemini & 3D WebGL",
-        teacherGender: "male",
-        teacherName: "Giảng Viên Web",
-        teacherAccessory: "glasses",
-        teacherGreeting: "Chào các Developer! Xem bài giảng trực tiếp ở nút Xem Video phía trên nhé! 💻",
-        downloadAction: "video",
-        downloadLabel: "🎬 Xem Video Tạo Web AI",
-        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
-        studentCount: 3,
-        studentNames: [],
-        themePalette: { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe" },
-        propType: "code_torus"
-      },
-      {
-        id: "class-music-suno",
-        name: "Lớp Học Sáng Tác Âm Nhạc Với Suno AI & Canva",
-        icon: "🎵",
-        subject: "Tự tay sáng tác bài hát AI đa phong cách & thiết kế bìa Album",
-        teacherGender: "female",
-        teacherName: "Giảng Viên Âm Nhạc",
-        teacherAccessory: "crown",
-        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Xem video sáng tác nhạc ở nút phía trên nha! 🎶",
-        downloadAction: "video",
-        downloadLabel: "🎬 Xem Video Suno AI",
-        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
-        studentCount: 3,
-        studentNames: [],
-        themePalette: { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1" },
-        propType: "music_crystals"
       }
     ];
 
@@ -1198,6 +1167,50 @@
           changed = true;
         }
       }
+
+      // Loại bỏ 2 lớp theo yêu cầu: Quy trình tạo video AI & Sáng tác âm nhạc với Suno AI
+      const beforeFilterCount = classrooms.length;
+      classrooms = classrooms.filter(c => 
+        c.id !== "class-web-ai" && 
+        c.id !== "class-music-suno" && 
+        !(c.name && c.name.toLowerCase().includes("quy trình tạo video ai")) &&
+        !(c.name && c.name.toLowerCase().includes("tạo website chuyên nghiệp")) &&
+        !(c.name && c.name.toLowerCase().includes("sáng tác âm nhạc"))
+      );
+      if (classrooms.length !== beforeFilterCount) {
+        changed = true;
+      }
+
+      // Đảm bảo toàn bộ 7 lớp học mặc định đang có trong game đều có mặt đầy đủ trong Game Admin
+      DEFAULT_CLASSROOMS.forEach(defClass => {
+        const existIdx = classrooms.findIndex(c => c.id === defClass.id || (c.name && c.name.toLowerCase() === defClass.name.toLowerCase()));
+        if (existIdx === -1) {
+          classrooms.push(JSON.parse(JSON.stringify(defClass)));
+          changed = true;
+        } else {
+          const current = classrooms[existIdx];
+          if (!current.downloadAction && defClass.downloadAction) {
+            current.downloadAction = defClass.downloadAction;
+            changed = true;
+          }
+          if (!current.downloadLabel && defClass.downloadLabel) {
+            current.downloadLabel = defClass.downloadLabel;
+            changed = true;
+          }
+          if (!current.downloadUrl && defClass.downloadUrl) {
+            current.downloadUrl = defClass.downloadUrl;
+            changed = true;
+          }
+          if (!current.themePalette && defClass.themePalette) {
+            current.themePalette = JSON.parse(JSON.stringify(defClass.themePalette));
+            changed = true;
+          }
+          if (!current.propType && defClass.propType) {
+            current.propType = defClass.propType;
+            changed = true;
+          }
+        }
+      });
 
       classrooms.forEach(c => {
         if (c.downloadUrl && c.downloadUrl.includes("viJt_DXTfw8")) {
@@ -1538,13 +1551,13 @@
     };
 
     window.resetDefaultClassrooms = function () {
-      if (confirm("Khôi phục lại 6 lớp học mặc định ban đầu? Các lớp tự tạo sẽ được đặt lại.")) {
+      if (confirm("Khôi phục toàn bộ danh sách lớp học về mặc định ban đầu của Game (đầy đủ 7 lớp học)? Các lớp tự tạo sẽ được đặt lại.")) {
         classrooms = JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
         selectedIdx = 0;
         localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classrooms));
         renderClassListSidebar();
         loadSelectedToEditor();
-        showAdminToast("🔄 Đã khôi phục danh sách lớp học mặc định!");
+        showAdminToast("🔄 Đã khôi phục toàn bộ 7 lớp học mặc định từ Game!");
       }
     };
 

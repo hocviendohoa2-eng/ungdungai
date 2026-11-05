@@ -1563,40 +1563,6 @@
         studentNames: [],
         themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
         propType: "ringed_planets"
-      },
-      {
-        id: "class-web-ai",
-        name: "Lớp Học Tạo Website Chuyên Nghiệp Với AI",
-        icon: "🌐",
-        subject: "Xây dựng Website chuẩn SEO Google với AI, Wix, Gemini & 3D WebGL",
-        teacherGender: "male",
-        teacherName: "Giảng Viên Web",
-        teacherAccessory: "glasses",
-        teacherGreeting: "Chào các Developer! Xem bài giảng trực tiếp ở nút Xem Video phía trên nhé! 💻",
-        downloadAction: "video",
-        downloadLabel: "🎬 Xem Video Tạo Web AI",
-        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
-        studentCount: 3,
-        studentNames: [],
-        themePalette: { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe" },
-        propType: "code_torus"
-      },
-      {
-        id: "class-music-suno",
-        name: "Lớp Học Sáng Tác Âm Nhạc Với Suno AI & Canva",
-        icon: "🎵",
-        subject: "Tự tay sáng tác bài hát AI đa phong cách & thiết kế bìa Album",
-        teacherGender: "female",
-        teacherName: "Giảng Viên Âm Nhạc",
-        teacherAccessory: "crown",
-        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Xem video sáng tác nhạc ở nút phía trên nha! 🎶",
-        downloadAction: "video",
-        downloadLabel: "🎬 Xem Video Suno AI",
-        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
-        studentCount: 3,
-        studentNames: [],
-        themePalette: { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1" },
-        propType: "music_crystals"
       }
     ];
 
@@ -1784,6 +1750,50 @@
           changed = true;
         }
       }
+
+      // Loại bỏ 2 lớp theo yêu cầu: Quy trình tạo video AI & Sáng tác âm nhạc với Suno AI
+      const beforeFilterCount = classroomsList.length;
+      classroomsList = classroomsList.filter(c => 
+        c.id !== "class-web-ai" && 
+        c.id !== "class-music-suno" && 
+        !(c.name && c.name.toLowerCase().includes("quy trình tạo video ai")) &&
+        !(c.name && c.name.toLowerCase().includes("tạo website chuyên nghiệp")) &&
+        !(c.name && c.name.toLowerCase().includes("sáng tác âm nhạc"))
+      );
+      if (classroomsList.length !== beforeFilterCount) {
+        changed = true;
+      }
+
+      // Đảm bảo toàn bộ 7 lớp học mặc định đang có trong game đều có mặt đầy đủ
+      DEFAULT_CLASSROOMS.forEach(defClass => {
+        const existIdx = classroomsList.findIndex(c => c.id === defClass.id || (c.name && c.name.toLowerCase() === defClass.name.toLowerCase()));
+        if (existIdx === -1) {
+          classroomsList.push(JSON.parse(JSON.stringify(defClass)));
+          changed = true;
+        } else {
+          const current = classroomsList[existIdx];
+          if (!current.downloadAction && defClass.downloadAction) {
+            current.downloadAction = defClass.downloadAction;
+            changed = true;
+          }
+          if (!current.downloadLabel && defClass.downloadLabel) {
+            current.downloadLabel = defClass.downloadLabel;
+            changed = true;
+          }
+          if (!current.downloadUrl && defClass.downloadUrl) {
+            current.downloadUrl = defClass.downloadUrl;
+            changed = true;
+          }
+          if (!current.themePalette && defClass.themePalette) {
+            current.themePalette = JSON.parse(JSON.stringify(defClass.themePalette));
+            changed = true;
+          }
+          if (!current.propType && defClass.propType) {
+            current.propType = defClass.propType;
+            changed = true;
+          }
+        }
+      });
 
       // 5. Cập nhật mọi lớp học có YouTube URL hoặc link hỏng
       classroomsList.forEach(c => {

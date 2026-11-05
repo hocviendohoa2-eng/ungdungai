@@ -1135,21 +1135,22 @@
     function initCMSData() {
       // 1. Settings chung
       const savedSettings = localStorage.getItem("CUSTOM_SITE_SETTINGS");
-      currentSettings = savedSettings ? JSON.parse(savedSettings) : {
+      currentSettings = savedSettings ? JSON.parse(savedSettings) : (typeof DEFAULT_SITE_SETTINGS !== "undefined" ? JSON.parse(JSON.stringify(DEFAULT_SITE_SETTINGS)) : {
         brandName: "KHÓA HỌC ỨNG DỤNG AI",
         phone: "0916172524",
         zalo: "0916172524",
         email: "hocviendohoa2@gmail.com",
         address: "Tân An, Long An",
+        metaKeywords: "khóa học tạo web với ai, khóa học ứng dụng ai, khóa học trí tuệ nhân tạo theo yêu cầu, khóa học edit video theo yêu cầu, khóa học illustrator theo yêu cầu, khóa học photoshop theo yêu cầu",
         seoKeywords: [
-          { text: "Khóa học tạo web với ai", cat: "web" },
           { text: "Khóa học ứng dụng ai", cat: "home" },
+          { text: "Khóa học tạo web với ai", cat: "web" },
           { text: "Khóa học trí tuệ nhân tạo theo yêu cầu", cat: "ai" },
           { text: "Khóa học edit video theo yêu cầu", cat: "edit-video" },
           { text: "Khóa học illustrator theo yêu cầu", cat: "illustrator" },
           { text: "Khóa học photoshop theo yêu cầu", cat: "photoshop" }
         ]
-      };
+      });
 
       document.getElementById("cfgBrandName").value = currentSettings.brandName || "";
       document.getElementById("cfgPhone").value = currentSettings.phone || "";
@@ -1201,6 +1202,7 @@
         calcTitle: "Tra Cứu Học Phí Khóa Học",
         submitBtnText: "🚀 Gửi Đăng Ký Về Mail (Submit)",
         interestCourses: [
+          { id: "custom", name: "Theo Yêu Cầu", icon: "🎯", value: "Khóa học Theo yêu cầu riêng (1 kèm 1)", checked: false },
           { id: "ps", name: "Photoshop", icon: "🎨", value: "Khóa học Photoshop theo yêu cầu", checked: true },
           { id: "ill", name: "Illustrator", icon: "✒️", value: "Khóa học Illustrator theo yêu cầu", checked: false },
           { id: "ai", name: "Trí Tuệ Nhân Tạo (AI)", icon: "🤖", value: "Khóa học Trí tuệ nhân tạo theo yêu cầu", checked: false },
@@ -1208,6 +1210,9 @@
           { id: "web", name: "Tạo Web", icon: "🌐", value: "Khóa học ứng dụng AI - Tạo Web với AI", checked: false }
         ],
         calcCourses: [
+          { id: "custom-personal", name: "Khóa học Theo Yêu Cầu - Tự Thiết Kế (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
+          { id: "custom-business", name: "Khóa học Theo Yêu Cầu - Doanh Nghiệp (10 Buổi)", sessions: 10, online: 3500000, offline: 4500000 },
+          { id: "custom-express", name: "Khóa học Theo Yêu Cầu - Cấp Tốc (6 Buổi)", sessions: 6, online: 2400000, offline: 3000000 },
           { id: "ps-basic", name: "Khóa học Photoshop theo yêu cầu - Cơ Bản (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
           { id: "ps-ads", name: "Khóa học Photoshop theo yêu cầu - Quảng cáo & AI (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
           { id: "ps-wedding", name: "Khóa học Photoshop theo yêu cầu - Ảnh Cưới Studio (8 Buổi)", sessions: 8, online: 2800000, offline: 3600000 },
