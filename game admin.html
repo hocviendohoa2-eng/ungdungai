@@ -600,8 +600,8 @@
         📥 Nhập File JSON
         <input type="file" accept=".json" style="display:none;" onchange="importClassesJson(event)" />
       </label>
-      <button type="button" class="btn btn-hot" onclick="resetDefaultClassrooms()" title="Lấy lại toàn bộ 7 lớp học mặc định từ Game">
-        🔄 Đặt Mặc Định 7 Lớp Game
+      <button type="button" class="btn btn-hot" onclick="resetDefaultClassrooms()" title="Lấy lại toàn bộ 4 lớp học mặc định từ Game">
+        🔄 Đặt Mặc Định 4 Lớp Game
       </button>
       <button type="button" class="btn btn-success" onclick="saveAllClassrooms()">
         💾 Lưu Tất Cả Lớp Học
@@ -941,7 +941,7 @@
         teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học Gemini AI nhé! 🎬",
         downloadAction: "video",
         downloadLabel: "🎬 Xem Video Gemini AI",
-        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
+        downloadUrl: "https://www.youtube.com/watch?v=_8hFwgrgUv0&t=4010s",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff" },
@@ -958,7 +958,7 @@
         teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học ChatGPT nhé! 🎬",
         downloadAction: "video",
         downloadLabel: "🎬 Xem Video ChatGPT",
-        downloadUrl: "https://www.youtube.com/watch?v=DQacCB9tDaw",
+        downloadUrl: "https://www.youtube.com/watch?v=YV_uIv9Q6is&t=2011s",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
@@ -975,7 +975,7 @@
         teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Cô để học Claude AI nhé! 🎬",
         downloadAction: "video",
         downloadLabel: "🎬 Xem Video Claude AI",
-        downloadUrl: "https://www.youtube.com/watch?v=A598ESCoC70",
+        downloadUrl: "https://www.youtube.com/watch?v=kn_6-0cwLiI&t=2424s",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3" },
@@ -997,57 +997,6 @@
         studentNames: [],
         themePalette: { bgTop: "#cffafe", bgMid: "#e0e7ff", bgBot: "#fce7f3" },
         propType: "floating_hearts"
-      },
-      {
-        id: "class-photoshop-ai",
-        name: "Lớp Học Thiết Kế Photoshop & Ghép Ảnh AI",
-        icon: "🎨",
-        subject: "Cắt ghép tách nền AI, Retouch ảnh cưới Studio & thiết kế Poster",
-        teacherGender: "female",
-        teacherName: "Giảng Viên Đồ Họa",
-        teacherAccessory: "beret",
-        teacherGreeting: "Chào các bạn! Tải bộ Brush & Giáo trình Photoshop ở nút Download phía trên nha! 🎨",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Giáo Trình Photoshop",
-        downloadUrl: "https://zalo.me/0916172524",
-        studentCount: 3,
-        studentNames: [],
-        themePalette: { bgTop: "#ffe4e6", bgMid: "#fecdd3", bgBot: "#fef3c7" },
-        propType: "floating_hearts"
-      },
-      {
-        id: "class-illustrator-vector",
-        name: "Lớp Học Illustrator Vector & Vẽ Minh Họa",
-        icon: "✒️",
-        subject: "Thiết kế Logo, Nhận diện thương hiệu, chuẩn in CMYK & Concept Art",
-        teacherGender: "female",
-        teacherName: "Giảng Viên Vector",
-        teacherAccessory: "bow",
-        teacherGreeting: "Hôm nay chúng ta học vẽ Mascot! Nhấn nút Download phía trên để tải file mẫu nhé! ✨",
-        downloadAction: "link",
-        downloadLabel: "📥 Download File Vector Mẫu",
-        downloadUrl: "https://zalo.me/0916172524",
-        studentCount: 3,
-        studentNames: [],
-        themePalette: { bgTop: "#fef3c7", bgMid: "#fde68a", bgBot: "#fbcfe8" },
-        propType: "golden_stars"
-      },
-      {
-        id: "class-video-capcut",
-        name: "Lớp Học Edit Video CapCut & Kỹ Xảo AI Veo 3",
-        icon: "🎬",
-        subject: "Dựng Video TikTok, Reels, YouTube Shorts triệu view kết hợp AI",
-        teacherGender: "male",
-        teacherName: "Giảng Viên Video",
-        teacherAccessory: "headset",
-        teacherGreeting: "Action! 🎬 Nhấn nút Download phía trên để lấy kho hiệu ứng Video nhé!",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Kho Hiệu Ứng Video",
-        downloadUrl: "https://zalo.me/0916172524",
-        studentCount: 3,
-        studentNames: [],
-        themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
-        propType: "ringed_planets"
       }
     ];
 
@@ -1062,171 +1011,75 @@
 
     function migrateAdminClassroomsData() {
       let changed = false;
-      let gemini = classrooms.find(c => c.id === "class-ai-gemini" || (c.name || "").toLowerCase().includes("gemini"));
-      if (gemini) {
-        if (gemini.name === "Lớp Học Trí Tuệ Nhân Tạo Gemini & Prompt") {
-          gemini.name = "Gemini AI Tối Ưu Công Việc";
-          changed = true;
-        }
-        if ((gemini.downloadLabel || "").includes("Download") || !gemini.downloadLabel) {
-          gemini.downloadLabel = "🎬 Xem Video Gemini AI";
-          changed = true;
-        }
-        if (gemini.downloadAction !== "video") {
-          gemini.downloadAction = "video";
-          changed = true;
-        }
-        if (!gemini.downloadUrl || !isYouTubeUrl(gemini.downloadUrl)) {
-          gemini.downloadUrl = "https://www.youtube.com/watch?v=jV1vkHv4zq8";
-          changed = true;
-        }
-        gemini.teacherGreeting = "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học Gemini AI nhé! 🎬";
-      }
 
-      let chatgpt = classrooms.find(c => c.id === "class-ai-chatgpt" || (c.name || "").toLowerCase().includes("chatgpt"));
-      if (!chatgpt) {
-        chatgpt = {
-          id: "class-ai-chatgpt",
-          name: "ChatGPT Trong Công Việc",
-          icon: "👽",
-          subject: "Khai thác tối đa ChatGPT Plus, GPTs, viết prompt chuyên sâu & xử lý công việc",
-          teacherGender: "male",
-          teacherName: "Giảng Viên ChatGPT",
-          teacherAccessory: "glasses",
-          teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học ChatGPT nhé! 🎬",
-          downloadAction: "video",
-          downloadLabel: "🎬 Xem Video ChatGPT",
-          downloadUrl: "https://www.youtube.com/watch?v=DQacCB9tDaw",
-          studentCount: 3,
-          studentNames: [],
-          themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
-          propType: "code_torus"
-        };
-        const geminiIdx = classrooms.findIndex(c => c.id === "class-ai-gemini" || (c.name || "").toLowerCase().includes("gemini"));
-        if (geminiIdx >= 0) {
-          classrooms.splice(geminiIdx + 1, 0, chatgpt);
-        } else {
-          classrooms.unshift(chatgpt);
-        }
-        changed = true;
-      } else {
-        if ((chatgpt.downloadLabel || "").includes("Download") || !chatgpt.downloadLabel) {
-          chatgpt.downloadLabel = "🎬 Xem Video ChatGPT";
-          changed = true;
-        }
-        chatgpt.downloadAction = "video";
-        if (!chatgpt.downloadUrl || !isYouTubeUrl(chatgpt.downloadUrl) || chatgpt.downloadUrl.includes("viJt_DXTfw8")) {
-          chatgpt.downloadUrl = "https://www.youtube.com/watch?v=DQacCB9tDaw";
-          changed = true;
-        }
-      }
-
-      let claude = classrooms.find(c => c.id === "class-ai-claude" || (c.name || "").toLowerCase().includes("claude"));
-      if (!claude) {
-        claude = {
-          id: "class-ai-claude",
-          name: "Claude AI Toàn Tập",
-          icon: "✒️",
-          subject: "Làm chủ Claude 3.5 Sonnet, Artifacts, viết code & tự động hóa công việc",
-          teacherGender: "female",
-          teacherName: "Giảng Viên Claude",
-          teacherAccessory: "bow",
-          teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Cô để học Claude AI nhé! 🎬",
-          downloadAction: "video",
-          downloadLabel: "🎬 Xem Video Claude AI",
-          downloadUrl: "https://www.youtube.com/watch?v=A598ESCoC70",
-          studentCount: 3,
-          studentNames: [],
-          themePalette: { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3" },
-          propType: "stars_octa"
-        };
-        const gptIdx = classrooms.findIndex(c => c.id === "class-ai-chatgpt" || (c.name || "").toLowerCase().includes("chatgpt"));
-        if (gptIdx >= 0) {
-          classrooms.splice(gptIdx + 1, 0, claude);
-        } else {
-          classrooms.splice(1, 0, claude);
-        }
-        changed = true;
-      } else {
-        if ((claude.downloadLabel || "").includes("Download") || !claude.downloadLabel) {
-          claude.downloadLabel = "🎬 Xem Video Claude AI";
-          changed = true;
-        }
-        claude.downloadAction = "video";
-        if (!claude.downloadUrl || !isYouTubeUrl(claude.downloadUrl) || claude.downloadUrl.includes("y6fA6-FvjM8")) {
-          claude.downloadUrl = "https://www.youtube.com/watch?v=A598ESCoC70";
-          changed = true;
-        }
-      }
-
-      let canva = classrooms.find(c => c.id === "class-canva-free" || (c.name || "").toLowerCase().includes("canva"));
-      if (canva) {
-        canva.icon = "💖";
-        if (canva.downloadLabel?.includes("Download") || canva.downloadLabel?.includes("🎦")) {
-          canva.downloadLabel = "💖 Đăng Ký Canva Pro Free";
-          changed = true;
-        }
-      }
-
-      // Loại bỏ 2 lớp theo yêu cầu: Quy trình tạo video AI & Sáng tác âm nhạc với Suno AI
+      // 1. Chỉ giữ lại đúng 4 khóa học theo yêu cầu
+      const allowedIds = ["class-ai-gemini", "class-ai-chatgpt", "class-ai-claude", "class-canva-free"];
       const beforeFilterCount = classrooms.length;
-      classrooms = classrooms.filter(c => 
-        c.id !== "class-web-ai" && 
-        c.id !== "class-music-suno" && 
-        !(c.name && c.name.toLowerCase().includes("quy trình tạo video ai")) &&
-        !(c.name && c.name.toLowerCase().includes("tạo website chuyên nghiệp")) &&
-        !(c.name && c.name.toLowerCase().includes("sáng tác âm nhạc"))
-      );
+      classrooms = classrooms.filter(c => allowedIds.includes(c.id));
       if (classrooms.length !== beforeFilterCount) {
         changed = true;
       }
 
-      // Đảm bảo toàn bộ 7 lớp học mặc định đang có trong game đều có mặt đầy đủ trong Game Admin
+      // 2. Cập nhật Gemini AI
+      let gemini = classrooms.find(c => c.id === "class-ai-gemini");
+      if (!gemini) {
+        const defGemini = DEFAULT_CLASSROOMS.find(c => c.id === "class-ai-gemini");
+        if (defGemini) classrooms.unshift(JSON.parse(JSON.stringify(defGemini)));
+        changed = true;
+      } else {
+        gemini.name = "Gemini AI Tối Ưu Công Việc";
+        gemini.downloadAction = "video";
+        gemini.downloadLabel = "🎬 Xem Video Gemini AI";
+        gemini.downloadUrl = "https://www.youtube.com/watch?v=_8hFwgrgUv0&t=4010s";
+        gemini.teacherGreeting = "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học Gemini AI nhé! 🎬";
+      }
+
+      // 3. Cập nhật ChatGPT AI
+      let chatgpt = classrooms.find(c => c.id === "class-ai-chatgpt");
+      if (!chatgpt) {
+        const defGpt = DEFAULT_CLASSROOMS.find(c => c.id === "class-ai-chatgpt");
+        if (defGpt) classrooms.splice(1, 0, JSON.parse(JSON.stringify(defGpt)));
+        changed = true;
+      } else {
+        chatgpt.name = "ChatGPT Trong Công Việc";
+        chatgpt.downloadAction = "video";
+        chatgpt.downloadLabel = "🎬 Xem Video ChatGPT";
+        chatgpt.downloadUrl = "https://www.youtube.com/watch?v=YV_uIv9Q6is&t=2011s";
+      }
+
+      // 4. Cập nhật Claude AI
+      let claude = classrooms.find(c => c.id === "class-ai-claude");
+      if (!claude) {
+        const defClaude = DEFAULT_CLASSROOMS.find(c => c.id === "class-ai-claude");
+        if (defClaude) classrooms.splice(2, 0, JSON.parse(JSON.stringify(defClaude)));
+        changed = true;
+      } else {
+        claude.name = "Claude AI Toàn Tập";
+        claude.downloadAction = "video";
+        claude.downloadLabel = "🎬 Xem Video Claude AI";
+        claude.downloadUrl = "https://www.youtube.com/watch?v=kn_6-0cwLiI&t=2424s";
+      }
+
+      // 5. Cập nhật Canva Pro Free
+      let canva = classrooms.find(c => c.id === "class-canva-free");
+      if (!canva) {
+        const defCanva = DEFAULT_CLASSROOMS.find(c => c.id === "class-canva-free");
+        if (defCanva) classrooms.push(JSON.parse(JSON.stringify(defCanva)));
+        changed = true;
+      } else {
+        canva.icon = "💖";
+        canva.name = "Đăng Ký Canva Pro Free";
+        canva.downloadAction = "form";
+        canva.downloadLabel = "💖 Đăng Ký Canva Pro Free";
+        canva.downloadUrl = "https://zalo.me/0916172524";
+      }
+
+      // Đảm bảo toàn bộ 4 lớp học mặc định đều có mặt đầy đủ
       DEFAULT_CLASSROOMS.forEach(defClass => {
-        const existIdx = classrooms.findIndex(c => c.id === defClass.id || (c.name && c.name.toLowerCase() === defClass.name.toLowerCase()));
+        const existIdx = classrooms.findIndex(c => c.id === defClass.id);
         if (existIdx === -1) {
           classrooms.push(JSON.parse(JSON.stringify(defClass)));
           changed = true;
-        } else {
-          const current = classrooms[existIdx];
-          if (!current.downloadAction && defClass.downloadAction) {
-            current.downloadAction = defClass.downloadAction;
-            changed = true;
-          }
-          if (!current.downloadLabel && defClass.downloadLabel) {
-            current.downloadLabel = defClass.downloadLabel;
-            changed = true;
-          }
-          if (!current.downloadUrl && defClass.downloadUrl) {
-            current.downloadUrl = defClass.downloadUrl;
-            changed = true;
-          }
-          if (!current.themePalette && defClass.themePalette) {
-            current.themePalette = JSON.parse(JSON.stringify(defClass.themePalette));
-            changed = true;
-          }
-          if (!current.propType && defClass.propType) {
-            current.propType = defClass.propType;
-            changed = true;
-          }
-        }
-      });
-
-      classrooms.forEach(c => {
-        if (c.downloadUrl && c.downloadUrl.includes("viJt_DXTfw8")) {
-          c.downloadUrl = "https://www.youtube.com/watch?v=DQacCB9tDaw";
-          changed = true;
-        }
-        if (c.downloadUrl && c.downloadUrl.includes("y6fA6-FvjM8")) {
-          c.downloadUrl = "https://www.youtube.com/watch?v=A598ESCoC70";
-          changed = true;
-        }
-        if (isYouTubeUrl(c.downloadUrl || c.videoUrl)) {
-          c.downloadAction = "video";
-          if ((c.downloadLabel || "").includes("Download")) {
-            c.downloadLabel = c.downloadLabel.replace("Download", "Xem Video").replace("📥", "🎬");
-            changed = true;
-          }
         }
       });
 
@@ -1551,13 +1404,13 @@
     };
 
     window.resetDefaultClassrooms = function () {
-      if (confirm("Khôi phục toàn bộ danh sách lớp học về mặc định ban đầu của Game (đầy đủ 7 lớp học)? Các lớp tự tạo sẽ được đặt lại.")) {
+      if (confirm("Khôi phục toàn bộ danh sách lớp học về mặc định ban đầu của Game (đầy đủ 4 lớp học)? Các lớp tự tạo sẽ được đặt lại.")) {
         classrooms = JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
         selectedIdx = 0;
         localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classrooms));
         renderClassListSidebar();
         loadSelectedToEditor();
-        showAdminToast("🔄 Đã khôi phục toàn bộ 7 lớp học mặc định từ Game!");
+        showAdminToast("🔄 Đã khôi phục toàn bộ 4 lớp học mặc định từ Game!");
       }
     };
 
