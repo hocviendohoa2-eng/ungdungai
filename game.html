@@ -207,7 +207,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      margin-bottom: 6px;
       pointer-events: auto;
       z-index: 25;
       width: max-content;
@@ -1327,16 +1328,14 @@
     <div class="cinema-theater-box">
       <!-- Cinema Top Bar -->
       <div class="cinema-bar-top">
-        <div class="cinema-tag-wrap">
-          <span class="cinema-title-sub" id="cinemaCourseTitle">🤖 Gemini AI Tối Ưu Công Việc</span>
-        </div>
+        <button type="button" class="btn-cinema-close" onclick="closeCinemaVideo()" title="Đóng khung video và quay lại bình thường">
+          ✕ Đóng
+        </button>
+        <span id="cinemaCourseTitle" style="display:none;"></span>
         <div class="cinema-btn-group">
           <a id="cinemaYoutubeExtLink" href="#" target="_blank" rel="noopener" class="btn-cinema-action" title="Mở trên YouTube">
             ↗️ Mở YouTube
           </a>
-          <button type="button" class="btn-cinema-close" onclick="closeCinemaVideo()" title="Đóng khung video và quay lại bình thường">
-            ✕ Đóng Video
-          </button>
         </div>
       </div>
 
@@ -1774,7 +1773,7 @@
         const targetZ = Math.min(20.5, Math.max(14.0, 6.7 / aspect));
         const targetY = isHudVisible ? -0.95 : -0.1;
         camera.position.set(0, targetY, targetZ);
-        sceneBounds = { x: 2.35, y: 3.1, z: 1.4 };
+        sceneBounds = { x: 2.35, y: 3.8, z: 1.4 };
       } else {
         camera.position.set(0, 0.25, 11.4);
         sceneBounds = { x: 4.8, y: 2.9, z: 1.8 };
@@ -1808,7 +1807,7 @@
 
         const instructor = mochiEntities[0];
         if (isMobilePortrait) {
-          instructor.homePosition.set(0, 1.05, 0.2);
+          instructor.homePosition.set(0, 0.22, 0.2);
         } else {
           instructor.homePosition.set(-0.2, 0.25, 0.4);
         }
@@ -1819,16 +1818,16 @@
           if (isMobilePortrait) {
             if (count === 3) {
               const mobileSlots = [
-                new THREE.Vector3(-1.58, -0.75, 0.1),
-                new THREE.Vector3(1.58, -0.75, 0.1),
-                new THREE.Vector3(0, -1.78, 0.25)
+                new THREE.Vector3(-1.55, -1.35, 0.1),
+                new THREE.Vector3(1.55, -1.35, 0.1),
+                new THREE.Vector3(0, -2.45, 0.25)
               ];
               st.homePosition.copy(mobileSlots[idx]);
             } else {
               const angle = Math.PI + ((idx + 0.5) / count) * Math.PI;
               st.homePosition.set(
                 Math.cos(angle) * 1.75,
-                0.2 + Math.sin(angle) * 1.95,
+                -0.45 + Math.sin(angle) * 1.85,
                 0.15
               );
             }
@@ -3313,7 +3312,7 @@
 
       // 1. Sinh ra 1 "Mochi Giảng Viên" (Màu trắng giống hệt Trang Chủ)
       const instructorPos = isMobilePortrait
-        ? new THREE.Vector3(0, 1.05, 0.2)
+        ? new THREE.Vector3(0, 0.22, 0.2)
         : new THREE.Vector3(-0.2, 0.25, 0.4);
 
       const instructorMochi = createMochiCharacter({
@@ -3338,16 +3337,16 @@
         let studentPos;
         if (isMobilePortrait && count === 3) {
           const mobileSlots = [
-            new THREE.Vector3(-1.58, -0.75, 0.1),
-            new THREE.Vector3(1.58, -0.75, 0.1),
-            new THREE.Vector3(0, -1.78, 0.25)
+            new THREE.Vector3(-1.55, -1.35, 0.1),
+            new THREE.Vector3(1.55, -1.35, 0.1),
+            new THREE.Vector3(0, -2.45, 0.25)
           ];
           studentPos = mobileSlots[i];
         } else if (isMobilePortrait) {
           const angle = Math.PI + ((i + 0.5) / count) * Math.PI;
           studentPos = new THREE.Vector3(
             Math.cos(angle) * 1.75,
-            0.2 + Math.sin(angle) * 1.95,
+            -0.45 + Math.sin(angle) * 1.85,
             0.15
           );
         } else {
@@ -4054,7 +4053,7 @@
             const clampedX = Math.max(halfW + 8, Math.min(screenW - halfW - 8, rawScreenX));
             const clampedY = isCinemaWatchingMode
               ? Math.max(60, Math.min(screenH - 90, rawScreenY + 15))
-              : Math.max(158, Math.min(screenH - 120, rawScreenY));
+              : Math.max(isMobilePortrait ? 215 : 158, Math.min(screenH - 120, rawScreenY));
             instructorAnchor.style.left = `${Math.round(clampedX)}px`;
             instructorAnchor.style.top = `${Math.round(clampedY)}px`;
           }
