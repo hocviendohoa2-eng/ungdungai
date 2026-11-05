@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>Lớp Học Mochi 3D | Tương Tác Khóa Học Online</title>
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1HRW4vE9oSS_FnoU5rU1dsLcqL5Z9gnUc" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -951,6 +952,163 @@
         padding: 4px 9px;
       }
     }
+
+    /* ==================== CINEMA THEATER VIDEO OVERLAY ==================== */
+    body.cinema-mode #labelsOverlay,
+    body.cinema-mode #hudPanel,
+    body.cinema-mode #floatingFeedDock,
+    body.cinema-mode #hudLauncherBar {
+      display: none !important;
+    }
+
+    .mochi-cinema-overlay {
+      position: fixed;
+      top: 52px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 6px 14px 0 14px;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px) scale(0.98);
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                  visibility 0.3s;
+    }
+    .mochi-cinema-overlay.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: none; /* Cho phép tương tác chạm/kéo thả trực tiếp các nhân vật Mochi phía dưới */
+    }
+
+    .cinema-theater-box {
+      width: 100%;
+      max-width: 680px;
+      background: rgba(15, 12, 34, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 18px;
+      border: 1.5px solid rgba(139, 92, 246, 0.55);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.65),
+                  0 0 30px rgba(99, 102, 241, 0.32),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      pointer-events: auto;
+    }
+
+    .cinema-bar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 14px;
+      background: rgba(24, 18, 54, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cinema-title-sub {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cinema-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-cinema-action {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 5px 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+    .btn-cinema-action:hover {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      color: #ffffff;
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.6);
+    }
+
+    .btn-cinema-close {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border: none;
+      color: #ffffff;
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 5px 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-cinema-close:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.55);
+    }
+
+    .cinema-screen-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 50%; /* 16:9 Aspect Ratio / compact */
+      background: #000000;
+    }
+    .cinema-screen-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      .mochi-cinema-overlay {
+        top: 50px;
+        padding: 4px 6px 0 6px;
+      }
+      .cinema-theater-box {
+        max-width: 100%;
+        border-radius: 14px;
+      }
+      .cinema-bar-top {
+        padding: 6px 10px;
+      }
+      .cinema-title-sub {
+        font-size: 0.82rem;
+      }
+      .cinema-screen-wrap {
+        padding-top: 54%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1001,7 +1159,7 @@
     </button>
   </div>
 
-  <!-- 4. NHÃN 3D TRÊN ĐẦU MOCHI GIẢNG VIÊN (NÚT DOWNLOAD) & CÁC BẠN HỌC VIÊN -->
+  <!-- 4. NHÃN 3D TRÊN ĐẦU MOCHI GIẢNG VIÊN (NÚT XEM VIDEO) & CÁC BẠN HỌC VIÊN -->
   <div id="labelsOverlay">
     <div class="instructor-head-anchor" id="instructorHeadAnchor">
       <a id="instructorDownloadBtn"
@@ -1010,11 +1168,11 @@
          target="_blank"
          rel="noopener"
          onclick="handleDownloadCourseClick(event)">
-        <span class="dl-icon-badge">📥</span>
-        <span id="instructorDownloadText">Download Khóa Học</span>
+        <span class="dl-icon-badge" id="instructorDownloadIcon">🎬</span>
+        <span id="instructorDownloadText">Xem Video</span>
       </a>
       <div class="instructor-speech-bubble" id="instructorSpeechBubble">
-        Chào các bạn! Bấm nút bên trên để tải tài liệu nhé! ✨
+        Chào các bạn! Bấm nút bên trên để xem video bài học nhé! 🎬
       </div>
     </div>
 
@@ -1164,6 +1322,37 @@
   <!-- Toast thông báo -->
   <div class="game-toast" id="gameToast">🎉 Đã vào lớp học mới!</div>
 
+  <!-- 8. KHUNG XEM VIDEO TRỰC TIẾP (CINEMA SCREEN VỚI YOUTUBE PLAYER) -->
+  <div class="mochi-cinema-overlay" id="mochiCinemaOverlay">
+    <div class="cinema-theater-box">
+      <!-- Cinema Top Bar -->
+      <div class="cinema-bar-top">
+        <div class="cinema-tag-wrap">
+          <span class="cinema-title-sub" id="cinemaCourseTitle">🤖 Gemini AI Tối Ưu Công Việc</span>
+        </div>
+        <div class="cinema-btn-group">
+          <a id="cinemaYoutubeExtLink" href="#" target="_blank" rel="noopener" class="btn-cinema-action" title="Mở trên YouTube">
+            ↗️ Mở YouTube
+          </a>
+          <button type="button" class="btn-cinema-close" onclick="closeCinemaVideo()" title="Đóng khung video và quay lại bình thường">
+            ✕ Đóng Video
+          </button>
+        </div>
+      </div>
+
+      <!-- Cinema Screen / Video Iframe -->
+      <div class="cinema-screen-wrap">
+        <iframe id="cinemaVideoIframe"
+                src=""
+                title="YouTube Video Player"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
   <!-- 7. THREE.JS + CANNON.JS + GSAP 3D ENGINE -->
   <div id="canvasContainer"></div>
 
@@ -1258,32 +1447,66 @@
     const DEFAULT_CLASSROOMS = [
       {
         id: "class-ai-gemini",
-        name: "Lớp Học Trí Tuệ Nhân Tạo Gemini & Prompt",
+        name: "Gemini AI Tối Ưu Công Việc",
         icon: "🤖",
         subject: "Làm chủ Google Gemini, NotebookLM, tạo ảnh & tự động hóa công việc",
         teacherGender: "male",
         teacherName: "Giảng Viên AI",
         teacherAccessory: "gradhat",
-        teacherGreeting: "Chào các bạn! Bấm nút Download phía trên để tải Giáo Án AI nhé! 🎓",
-        downloadAction: "link",
-        downloadLabel: "📥 Download Khóa Học AI",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học Gemini AI nhé! 🎬",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Gemini AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff" },
         propType: "ai_cubes"
       },
       {
+        id: "class-ai-chatgpt",
+        name: "ChatGPT Trong Công Việc",
+        icon: "👽",
+        subject: "Khai thác tối đa ChatGPT Plus, GPTs, viết prompt chuyên sâu & xử lý công việc",
+        teacherGender: "male",
+        teacherName: "Giảng Viên ChatGPT",
+        teacherAccessory: "glasses",
+        teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học ChatGPT nhé! 🎬",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video ChatGPT",
+        downloadUrl: "https://www.youtube.com/watch?v=DQacCB9tDaw",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
+        propType: "code_torus"
+      },
+      {
+        id: "class-ai-claude",
+        name: "Claude AI Toàn Tập",
+        icon: "✒️",
+        subject: "Làm chủ Claude 3.5 Sonnet, Artifacts, viết code & tự động hóa công việc",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Claude",
+        teacherAccessory: "bow",
+        teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Cô để học Claude AI nhé! 🎬",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Claude AI",
+        downloadUrl: "https://www.youtube.com/watch?v=A598ESCoC70",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3" },
+        propType: "stars_octa"
+      },
+      {
         id: "class-canva-free",
         name: "Đăng Ký Canva Pro Free",
-        icon: "🎬",
+        icon: "💖",
         subject: "Nhận tài khoản Canva Pro Full tính năng & kho Template thiết kế VIP",
         teacherGender: "male",
         teacherName: "Giảng Viên Canva",
         teacherAccessory: "headset",
         teacherGreeting: "Nhấn nút để Đăng Ký Canva Pro Free nhé ✨",
         downloadAction: "form",
-        downloadLabel: "🎦 Đăng Ký Canva Pro Free",
+        downloadLabel: "💖 Đăng Ký Canva Pro Free",
         downloadUrl: "https://zalo.me/0916172524",
         studentCount: 3,
         studentNames: [],
@@ -1298,10 +1521,10 @@
         teacherGender: "female",
         teacherName: "Giảng Viên Đồ Họa",
         teacherAccessory: "beret",
-        teacherGreeting: "Chào các bạn! Tải bộ Brush & Giáo trình Photoshop ở nút Download phía trên nha! 🎨",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Giáo Trình Photoshop",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Chào các bạn! Bấm nút Xem Video phía trên để học Photoshop nha! 🎨",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Photoshop",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ffe4e6", bgMid: "#fecdd3", bgBot: "#fef3c7" },
@@ -1315,10 +1538,10 @@
         teacherGender: "female",
         teacherName: "Giảng Viên Vector",
         teacherAccessory: "bow",
-        teacherGreeting: "Hôm nay chúng ta học vẽ Mascot! Nhấn nút Download phía trên để tải file mẫu nhé! ✨",
-        downloadAction: "link",
-        downloadLabel: "📥 Download File Vector Mẫu",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Hôm nay chúng ta học vẽ Mascot! Nhấn nút Xem Video phía trên để xem bài giảng nhé! ✨",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Illustrator",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#fef3c7", bgMid: "#fde68a", bgBot: "#fbcfe8" },
@@ -1332,10 +1555,10 @@
         teacherGender: "male",
         teacherName: "Giảng Viên Video",
         teacherAccessory: "headset",
-        teacherGreeting: "Action! 🎬 Nhấn nút Download phía trên để lấy kho hiệu ứng Video nhé!",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Kho Hiệu Ứng Video",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Action! 🎬 Nhấn nút Xem Video phía trên để học làm Video triệu view nhé!",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video CapCut AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
@@ -1349,10 +1572,10 @@
         teacherGender: "male",
         teacherName: "Giảng Viên Web",
         teacherAccessory: "glasses",
-        teacherGreeting: "Chào các Developer! Source code & bài giảng ở ngay nút Download phía trên nhé! 💻",
-        downloadAction: "link",
-        downloadLabel: "📥 Download Source Code Web",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Chào các Developer! Xem bài giảng trực tiếp ở nút Xem Video phía trên nhé! 💻",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Tạo Web AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe" },
@@ -1366,10 +1589,10 @@
         teacherGender: "female",
         teacherName: "Giảng Viên Âm Nhạc",
         teacherAccessory: "crown",
-        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Tải bộ Prompt nhạc ở nút phía trên nha! 🎶",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Bộ Prompt Nhạc Suno",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Xem video sáng tác nhạc ở nút phía trên nha! 🎶",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Suno AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1" },
@@ -1405,6 +1628,189 @@
       updateResponsiveCameraAndLayout();
     };
 
+    let isCinemaWatchingMode = false;
+
+    function isYouTubeUrl(url) {
+      if (!url) return false;
+      const u = url.toLowerCase();
+      return u.includes("youtube.com") || u.includes("youtu.be");
+    }
+
+    function getYouTubeEmbedUrl(url) {
+      if (!url) return "";
+      let raw = url.trim();
+      let videoId = "";
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = raw.match(regExp);
+      if (match && match[2] && match[2].length === 11) {
+        videoId = match[2];
+      } else if (raw.includes("youtube.com/shorts/")) {
+        const parts = raw.split("youtube.com/shorts/");
+        if (parts[1]) videoId = parts[1].split(/[?#&]/)[0];
+      } else if (/^[a-zA-Z0-9_-]{11}$/.test(raw)) {
+        videoId = raw;
+      }
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0`;
+      }
+      if (raw.includes("youtube.com/embed/")) {
+        const sep = raw.includes("?") ? "&" : "?";
+        return raw + (raw.includes("autoplay=") ? "" : sep + "autoplay=1&playsinline=1&rel=0");
+      }
+      return raw;
+    }
+
+    function isClassroomVideoAction(c) {
+      if (!c) return false;
+      if (c.downloadAction === "video") return true;
+      if (c.downloadAction === "form") return false;
+      const label = (c.downloadLabel || "").toLowerCase();
+      const url = (c.downloadUrl || c.videoUrl || "").toLowerCase();
+      if (label.includes("xem video") || label.includes("video")) return true;
+      if (isYouTubeUrl(url)) return true;
+      const name = (c.name || "").toLowerCase();
+      if (name.includes("gemini") || name.includes("chatgpt") || name.includes("claude")) return true;
+      return false;
+    }
+
+    function migrateClassroomsData() {
+      let changed = false;
+      // 1. Cập nhật Gemini AI: Đổi thành "Xem Video" & link YouTube
+      let gemini = classroomsList.find(c => c.id === "class-ai-gemini" || (c.name || "").toLowerCase().includes("gemini"));
+      if (gemini) {
+        if (gemini.name === "Lớp Học Trí Tuệ Nhân Tạo Gemini & Prompt") {
+          gemini.name = "Gemini AI Tối Ưu Công Việc";
+          changed = true;
+        }
+        if ((gemini.downloadLabel || "").includes("Download") || !gemini.downloadLabel) {
+          gemini.downloadLabel = "🎬 Xem Video Gemini AI";
+          changed = true;
+        }
+        if (gemini.downloadAction !== "video") {
+          gemini.downloadAction = "video";
+          changed = true;
+        }
+        if (!gemini.downloadUrl || !isYouTubeUrl(gemini.downloadUrl)) {
+          gemini.downloadUrl = "https://www.youtube.com/watch?v=jV1vkHv4zq8";
+          changed = true;
+        }
+        gemini.teacherGreeting = "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học Gemini AI nhé! 🎬";
+      }
+
+      // 2. Đảm bảo có ChatGPT Trong Công Việc
+      let chatgpt = classroomsList.find(c => c.id === "class-ai-chatgpt" || (c.name || "").toLowerCase().includes("chatgpt"));
+      if (!chatgpt) {
+        chatgpt = {
+          id: "class-ai-chatgpt",
+          name: "ChatGPT Trong Công Việc",
+          icon: "👽",
+          subject: "Khai thác tối đa ChatGPT Plus, GPTs, viết prompt chuyên sâu & xử lý công việc",
+          teacherGender: "male",
+          teacherName: "Giảng Viên ChatGPT",
+          teacherAccessory: "glasses",
+          teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học ChatGPT nhé! 🎬",
+          downloadAction: "video",
+          downloadLabel: "🎬 Xem Video ChatGPT",
+          downloadUrl: "https://www.youtube.com/watch?v=DQacCB9tDaw",
+          studentCount: 3,
+          studentNames: [],
+          themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
+          propType: "code_torus"
+        };
+        const geminiIdx = classroomsList.findIndex(c => c.id === "class-ai-gemini" || (c.name || "").toLowerCase().includes("gemini"));
+        if (geminiIdx >= 0) {
+          classroomsList.splice(geminiIdx + 1, 0, chatgpt);
+        } else {
+          classroomsList.unshift(chatgpt);
+        }
+        changed = true;
+      } else {
+        if ((chatgpt.downloadLabel || "").includes("Download") || !chatgpt.downloadLabel) {
+          chatgpt.downloadLabel = "🎬 Xem Video ChatGPT";
+          changed = true;
+        }
+        chatgpt.downloadAction = "video";
+        if (!chatgpt.downloadUrl || !isYouTubeUrl(chatgpt.downloadUrl) || chatgpt.downloadUrl.includes("viJt_DXTfw8")) {
+          chatgpt.downloadUrl = "https://www.youtube.com/watch?v=DQacCB9tDaw";
+          changed = true;
+        }
+      }
+
+      // 3. Đảm bảo có Claude AI Toàn Tập
+      let claude = classroomsList.find(c => c.id === "class-ai-claude" || (c.name || "").toLowerCase().includes("claude"));
+      if (!claude) {
+        claude = {
+          id: "class-ai-claude",
+          name: "Claude AI Toàn Tập",
+          icon: "✒️",
+          subject: "Làm chủ Claude 3.5 Sonnet, Artifacts, viết code & tự động hóa công việc",
+          teacherGender: "female",
+          teacherName: "Giảng Viên Claude",
+          teacherAccessory: "bow",
+          teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Cô để học Claude AI nhé! 🎬",
+          downloadAction: "video",
+          downloadLabel: "🎬 Xem Video Claude AI",
+          downloadUrl: "https://www.youtube.com/watch?v=A598ESCoC70",
+          studentCount: 3,
+          studentNames: [],
+          themePalette: { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3" },
+          propType: "stars_octa"
+        };
+        const gptIdx = classroomsList.findIndex(c => c.id === "class-ai-chatgpt" || (c.name || "").toLowerCase().includes("chatgpt"));
+        if (gptIdx >= 0) {
+          classroomsList.splice(gptIdx + 1, 0, claude);
+        } else {
+          classroomsList.splice(1, 0, claude);
+        }
+        changed = true;
+      } else {
+        if ((claude.downloadLabel || "").includes("Download") || !claude.downloadLabel) {
+          claude.downloadLabel = "🎬 Xem Video Claude AI";
+          changed = true;
+        }
+        claude.downloadAction = "video";
+        if (!claude.downloadUrl || !isYouTubeUrl(claude.downloadUrl) || claude.downloadUrl.includes("y6fA6-FvjM8")) {
+          claude.downloadUrl = "https://www.youtube.com/watch?v=A598ESCoC70";
+          changed = true;
+        }
+      }
+
+      // 4. Canva Pro Free
+      let canva = classroomsList.find(c => c.id === "class-canva-free" || (c.name || "").toLowerCase().includes("canva"));
+      if (canva) {
+        canva.icon = "💖";
+        if (canva.downloadLabel?.includes("Download") || canva.downloadLabel?.includes("🎦")) {
+          canva.downloadLabel = "💖 Đăng Ký Canva Pro Free";
+          changed = true;
+        }
+      }
+
+      // 5. Cập nhật mọi lớp học có YouTube URL hoặc link hỏng
+      classroomsList.forEach(c => {
+        if (c.downloadUrl && c.downloadUrl.includes("viJt_DXTfw8")) {
+          c.downloadUrl = "https://www.youtube.com/watch?v=DQacCB9tDaw";
+          changed = true;
+        }
+        if (c.downloadUrl && c.downloadUrl.includes("y6fA6-FvjM8")) {
+          c.downloadUrl = "https://www.youtube.com/watch?v=A598ESCoC70";
+          changed = true;
+        }
+        if (isYouTubeUrl(c.downloadUrl || c.videoUrl)) {
+          c.downloadAction = "video";
+          if ((c.downloadLabel || "").includes("Download")) {
+            c.downloadLabel = c.downloadLabel.replace("Download", "Xem Video").replace("📥", "🎬");
+            changed = true;
+          }
+        }
+      });
+
+      if (changed) {
+        try {
+          localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classroomsList));
+        } catch (_) {}
+      }
+    }
+
     function loadClassroomsFromStorage() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY_CLASSES);
@@ -1412,6 +1818,7 @@
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length > 0) {
             classroomsList = parsed;
+            migrateClassroomsData();
             return;
           }
         }
@@ -1494,12 +1901,13 @@
     scene.add(environmentPropsGroup);
     let floatingPropsList = [];
     let sceneBounds = { x: 4.5, y: 3.2, z: 2.0 };
+    let isMobilePortrait = false;
 
     function updateResponsiveCameraAndLayout() {
       const w = window.innerWidth;
       const h = window.innerHeight;
       const aspect = w / Math.max(h, 1);
-      const isMobilePortrait = aspect < 0.85;
+      isMobilePortrait = aspect < 0.85;
 
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
@@ -1516,6 +1924,31 @@
       }
 
       if (mochiEntities.length > 0) {
+        const N = mochiEntities.length;
+        const startY = isMobilePortrait ? -2.45 : -2.25;
+        const depthZ = 0.55;
+        const totalSpan = isMobilePortrait ? 3.0 : 4.4;
+        const step = N > 1 ? totalSpan / (N - 1) : 0;
+        const startX = -(totalSpan / 2);
+
+        // Xếp tất cả nhân vật ngồi thẳng hàng theo chiều ngang phía trước màn hình (giữ nguyên kích thước 1.0)
+        let xSlots = [];
+        if (N === 4) {
+          xSlots = isMobilePortrait
+            ? [-1.35, -0.45, 0.45, 1.35]
+            : [-2.1, -0.7, 0.7, 2.1];
+        } else {
+          for (let i = 0; i < N; i++) xSlots.push(N === 1 ? 0 : startX + i * step);
+        }
+
+        mochiEntities.forEach((m, idx) => {
+          if (!m.cinemaPosition) m.cinemaPosition = new THREE.Vector3();
+          const posX = xSlots[idx] !== undefined ? xSlots[idx] : (startX + idx * step);
+          if (!isCinemaWatchingMode || m.cinemaPosition.lengthSq() === 0) {
+            m.cinemaPosition.set(posX, startY, depthZ);
+          }
+        });
+
         const instructor = mochiEntities[0];
         if (isMobilePortrait) {
           instructor.homePosition.set(0, 1.05, 0.2);
@@ -1567,8 +2000,12 @@
 
       const cx = W / 2;
       const cy = H / 2 + 12;
-      const rx = 148 * (mochi.growthScale || 1.0);
-      const ry = rx * 0.94;
+
+      const isWatching = mochi.isWatchingVideo;
+      const sitSquashX = isWatching ? 1.06 : 1.0;
+      const sitSquashY = isWatching ? 0.94 : 1.0;
+      const rx = 148 * (mochi.growthScale || 1.0) * sitSquashX;
+      const ry = rx * 0.94 * (sitSquashY / sitSquashX);
 
       const isCrying = now < mochi.cryUntil || mochi.currentEmotion === "cry";
       const isChewing = mochi.isEating && (now - mochi.eatingStart) > 200 && (now - mochi.eatingStart) < 1850;
@@ -1579,12 +2016,12 @@
       const py = mochi.gazeY * 9;
 
       // 1. Bóng đổ mềm phía dưới bánh Mochi
-      const shadowY = cy + ry + 10;
-      const shadowRx = rx * 0.85;
-      const shadowRy = rx * 0.17;
+      const shadowY = cy + ry + (isWatching ? 4 : 10);
+      const shadowRx = rx * 0.88;
+      const shadowRy = rx * (isWatching ? 0.22 : 0.17);
       const shadowGrad = ctx.createRadialGradient(cx, shadowY, 4, cx, shadowY, shadowRx);
-      shadowGrad.addColorStop(0, "rgba(155, 145, 190, 0.42)");
-      shadowGrad.addColorStop(0.55, "rgba(155, 145, 190, 0.16)");
+      shadowGrad.addColorStop(0, "rgba(155, 145, 190, 0.44)");
+      shadowGrad.addColorStop(0.55, "rgba(155, 145, 190, 0.18)");
       shadowGrad.addColorStop(1, "rgba(155, 145, 190, 0)");
       ctx.fillStyle = shadowGrad;
       ctx.beginPath();
@@ -1607,27 +2044,62 @@
       const rgbStr = (arr) => `rgb(${Math.round(arr[0])}, ${Math.round(arr[1])}, ${Math.round(arr[2])})`;
       const rgbaStr = (arr) => `rgba(${Math.round(arr[0])}, ${Math.round(arr[1])}, ${Math.round(arr[2])}, ${arr[3]})`;
 
-      const lightX = -rx * 0.32 + px * 0.45;
-      const lightY = -ry * 0.38 + py * 0.45;
-      const bodyGrad = ctx.createRadialGradient(lightX, lightY, rx * 0.15, 0, 12, rx * 1.15);
-      bodyGrad.addColorStop(0, rgbStr(p.c0));
-      bodyGrad.addColorStop(0.52, rgbStr(p.c1));
-      bodyGrad.addColorStop(0.80, rgbStr(p.c2));
-      bodyGrad.addColorStop(0.95, rgbStr(p.c3));
-      bodyGrad.addColorStop(1, rgbStr(p.c4));
-      ctx.fillStyle = bodyGrad;
-      ctx.fill();
+      if (isWatching) {
+        // Ánh sáng cinema từ màn hình phía trước chiếu lên đầu và vai
+        const bodyGrad = ctx.createRadialGradient(0, -ry * 0.45, rx * 0.15, 0, 10, rx * 1.15);
+        bodyGrad.addColorStop(0, rgbStr(p.c0));
+        bodyGrad.addColorStop(0.52, rgbStr(p.c1));
+        bodyGrad.addColorStop(0.80, rgbStr(p.c2));
+        bodyGrad.addColorStop(0.95, rgbStr(p.c3));
+        bodyGrad.addColorStop(1, rgbStr(p.c4));
+        ctx.fillStyle = bodyGrad;
+        ctx.fill();
 
-      ctx.strokeStyle = rgbaStr(p.stroke);
-      ctx.lineWidth = 2.2;
-      ctx.stroke();
+        ctx.strokeStyle = rgbaStr(p.stroke);
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
 
-      // Ambient Rim Light giống hệt trang chủ
-      const rimGrad = ctx.createRadialGradient(rx * 0.55, ry * 0.55, 18, rx * 0.55, ry * 0.55, rx * 0.75);
-      rimGrad.addColorStop(0, rgbaStr(p.rim));
-      rimGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
-      ctx.fillStyle = rimGrad;
-      ctx.fill();
+        // Cinema Screen Top Rim Light
+        const cinemaGlow = ctx.createRadialGradient(0, -ry * 0.85, 12, 0, -ry * 0.85, rx * 0.85);
+        cinemaGlow.addColorStop(0, "rgba(255, 255, 255, 0.55)");
+        cinemaGlow.addColorStop(0.4, "rgba(199, 210, 254, 0.28)");
+        cinemaGlow.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = cinemaGlow;
+        ctx.fill();
+
+        // Đường gờ lưng mềm mại đáng yêu
+        ctx.strokeStyle = "rgba(160, 140, 185, 0.22)";
+        ctx.lineWidth = 2.4;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(0, ry * 0.15);
+        ctx.lineTo(0, ry * 0.55);
+        ctx.stroke();
+      } else {
+        const lightX = -rx * 0.32 + px * 0.45;
+        const lightY = -ry * 0.38 + py * 0.45;
+        const bodyGrad = ctx.createRadialGradient(lightX, lightY, rx * 0.15, 0, 12, rx * 1.15);
+        bodyGrad.addColorStop(0, rgbStr(p.c0));
+        bodyGrad.addColorStop(0.52, rgbStr(p.c1));
+        bodyGrad.addColorStop(0.80, rgbStr(p.c2));
+        bodyGrad.addColorStop(0.95, rgbStr(p.c3));
+        bodyGrad.addColorStop(1, rgbStr(p.c4));
+        ctx.fillStyle = bodyGrad;
+        ctx.fill();
+
+        ctx.strokeStyle = rgbaStr(p.stroke);
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+
+        // Ambient Rim Light giống hệt trang chủ
+        const rimGrad = ctx.createRadialGradient(rx * 0.55, ry * 0.55, 18, rx * 0.55, ry * 0.55, rx * 0.75);
+        rimGrad.addColorStop(0, rgbaStr(p.rim));
+        rimGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = rimGrad;
+        ctx.fill();
+      }
+
+      if (!isWatching) {
 
       // 3. Vệt má hồng phúng phính + gạch chéo /// đáng yêu khi đỏ mặt
       const remainingBlush = mochi.blushUntil - now;
@@ -2062,130 +2534,241 @@
         ctx.fillText("Zzz", bubbleX + bubbleR + 6, bubbleY - zProgress * 30);
         ctx.restore();
       }
+      } // Kết thúc if (!isWatching)
 
-      // 10. Vẽ 10 Phụ kiện Giảng Viên trên đầu Mochi
+      // 10. Vẽ Phụ kiện Giảng Viên trên đầu Mochi
       if (mochi.isInstructor) {
         const acc = mochi.teacherAccessory || "gradhat";
         const hatY = -ry + rx * 0.04;
         ctx.save();
-        ctx.translate(px * 0.25, hatY);
+        ctx.translate(isWatching ? 0 : px * 0.25, hatY);
 
-        if (acc === "gradhat") {
-          ctx.fillStyle = "#1e1b4b";
-          ctx.beginPath();
-          ctx.moveTo(0, -42);
-          ctx.lineTo(88, -16);
-          ctx.lineTo(0, 10);
-          ctx.lineTo(-88, -16);
-          ctx.closePath();
-          ctx.fill();
-          ctx.strokeStyle = "#312e81";
-          ctx.lineWidth = 3;
-          ctx.stroke();
-
-          ctx.strokeStyle = "#facc15";
-          ctx.lineWidth = 4;
-          ctx.beginPath();
-          ctx.moveTo(0, -16);
-          ctx.lineTo(58, -2);
-          ctx.lineTo(64, 26);
-          ctx.stroke();
-        } else if (acc === "bow") {
-          ctx.fillStyle = "#f43f5e";
-          ctx.strokeStyle = "#be123c";
-          ctx.lineWidth = 2.5;
-          [-1, 1].forEach((d) => {
+        if (isWatching) {
+          // Phụ kiện nhìn từ phía sau khi xoay lưng cùng xem video
+          if (acc === "gradhat") {
+            ctx.fillStyle = "#1e1b4b";
             ctx.beginPath();
-            ctx.moveTo(0, -6);
-            ctx.bezierCurveTo(d * 48, -36, d * 52, 18, 0, -2);
+            ctx.moveTo(0, -38);
+            ctx.lineTo(88, -14);
+            ctx.lineTo(0, 10);
+            ctx.lineTo(-88, -14);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#312e81";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Nút vàng tâm nón
+            ctx.fillStyle = "#facc15";
+            ctx.beginPath();
+            ctx.arc(0, -14, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Tua rua vàng rủ xuống lưng
+            ctx.strokeStyle = "#facc15";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, -14);
+            ctx.lineTo(34, 4);
+            ctx.lineTo(38, 34);
+            ctx.stroke();
+            ctx.fillStyle = "#eab308";
+            ctx.beginPath();
+            ctx.arc(38, 36, 5, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (acc === "bow") {
+            ctx.fillStyle = "#f43f5e";
+            ctx.strokeStyle = "#be123c";
+            ctx.lineWidth = 2.5;
+            [-1, 1].forEach((d) => {
+              ctx.beginPath();
+              ctx.moveTo(0, -6);
+              ctx.bezierCurveTo(d * 48, -36, d * 52, 18, 0, -2);
+              ctx.fill();
+              ctx.stroke();
+            });
+            ctx.beginPath();
+            ctx.arc(0, -5, 11, 0, Math.PI * 2);
+            ctx.fillStyle = "#fb7185";
             ctx.fill();
             ctx.stroke();
-          });
-          ctx.beginPath();
-          ctx.arc(0, -5, 11, 0, Math.PI * 2);
-          ctx.fillStyle = "#fb7185";
-          ctx.fill();
-          ctx.stroke();
-        } else if (acc === "beret") {
-          ctx.fillStyle = "#ec4899";
-          ctx.strokeStyle = "#9d174d";
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.ellipse(-8, -12, 68, 24, -0.12, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-        } else if (acc === "crown") {
-          ctx.fillStyle = "#fbbf24";
-          ctx.strokeStyle = "#b45309";
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.moveTo(-42, 4);
-          ctx.lineTo(-48, -32);
-          ctx.lineTo(-20, -12);
-          ctx.lineTo(0, -40);
-          ctx.lineTo(20, -12);
-          ctx.lineTo(48, -32);
-          ctx.lineTo(42, 4);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-        } else if (acc === "cowboy") {
-          ctx.fillStyle = "#b45309";
-          ctx.strokeStyle = "#451a03";
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.ellipse(0, 0, 92, 18, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(0, -6, 44, Math.PI, 0);
-          ctx.fillStyle = "#d97706";
-          ctx.fill();
-          ctx.stroke();
-        } else if (acc === "cap") {
-          ctx.fillStyle = "#3b82f6";
-          ctx.strokeStyle = "#1e3a8a";
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.arc(0, 2, 54, Math.PI, 0);
-          ctx.fill();
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.ellipse(18, 2, 58, 12, 0.08, 0, Math.PI);
-          ctx.fillStyle = "#1d4ed8";
-          ctx.fill();
-          ctx.stroke();
-        } else if (acc === "halo") {
-          ctx.strokeStyle = "#facc15";
-          ctx.lineWidth = 7;
-          ctx.beginPath();
-          ctx.ellipse(0, -28, 56, 14, 0, 0, Math.PI * 2);
-          ctx.stroke();
-        } else if (acc === "catears") {
-          [-1, 1].forEach((d) => {
-            ctx.fillStyle = "#fbcfe8";
-            ctx.strokeStyle = "#f472b6";
-            ctx.lineWidth = 3;
+          } else if (acc === "beret") {
+            ctx.fillStyle = "#ec4899";
+            ctx.strokeStyle = "#9d174d";
+            ctx.lineWidth = 2.5;
             ctx.beginPath();
-            ctx.moveTo(d * 32, 8);
-            ctx.lineTo(d * 62, -36);
-            ctx.lineTo(d * 78, 22);
+            ctx.ellipse(0, -10, 68, 22, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "crown") {
+            ctx.fillStyle = "#d97706";
+            ctx.strokeStyle = "#78350f";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 44, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "cowboy") {
+            ctx.fillStyle = "#b45309";
+            ctx.strokeStyle = "#451a03";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 92, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "cap") {
+            ctx.fillStyle = "#1d4ed8";
+            ctx.strokeStyle = "#1e3a8a";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(0, 2, 52, Math.PI, 0);
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "halo") {
+            ctx.strokeStyle = "#facc15";
+            ctx.lineWidth = 7;
+            ctx.beginPath();
+            ctx.ellipse(0, -28, 56, 14, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          } else if (acc === "catears") {
+            [-1, 1].forEach((d) => {
+              ctx.fillStyle = "#fbcfe8";
+              ctx.strokeStyle = "#f472b6";
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(d * 32, 8);
+              ctx.lineTo(d * 62, -36);
+              ctx.lineTo(d * 78, 22);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            });
+          } else if (acc === "headset") {
+            ctx.strokeStyle = "#0ea5e9";
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(0, ry * 0.9, rx * 1.02, Math.PI * 1.08, Math.PI * 1.92);
+            ctx.stroke();
+          }
+        } else {
+          // Phụ kiện nhìn phía trước (chế độ bình thường)
+          if (acc === "gradhat") {
+            ctx.fillStyle = "#1e1b4b";
+            ctx.beginPath();
+            ctx.moveTo(0, -42);
+            ctx.lineTo(88, -16);
+            ctx.lineTo(0, 10);
+            ctx.lineTo(-88, -16);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#312e81";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.strokeStyle = "#facc15";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, -16);
+            ctx.lineTo(58, -2);
+            ctx.lineTo(64, 26);
+            ctx.stroke();
+          } else if (acc === "bow") {
+            ctx.fillStyle = "#f43f5e";
+            ctx.strokeStyle = "#be123c";
+            ctx.lineWidth = 2.5;
+            [-1, 1].forEach((d) => {
+              ctx.beginPath();
+              ctx.moveTo(0, -6);
+              ctx.bezierCurveTo(d * 48, -36, d * 52, 18, 0, -2);
+              ctx.fill();
+              ctx.stroke();
+            });
+            ctx.beginPath();
+            ctx.arc(0, -5, 11, 0, Math.PI * 2);
+            ctx.fillStyle = "#fb7185";
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "beret") {
+            ctx.fillStyle = "#ec4899";
+            ctx.strokeStyle = "#9d174d";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.ellipse(-8, -12, 68, 24, -0.12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "crown") {
+            ctx.fillStyle = "#fbbf24";
+            ctx.strokeStyle = "#b45309";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(-42, 4);
+            ctx.lineTo(-48, -32);
+            ctx.lineTo(-20, -12);
+            ctx.lineTo(0, -40);
+            ctx.lineTo(20, -12);
+            ctx.lineTo(48, -32);
+            ctx.lineTo(42, 4);
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
-          });
-        } else if (acc === "headset") {
-          ctx.strokeStyle = "#0ea5e9";
-          ctx.lineWidth = 8;
-          ctx.beginPath();
-          ctx.arc(0, ry * 0.9, rx * 1.02, Math.PI * 1.08, Math.PI * 1.92);
-          ctx.stroke();
+          } else if (acc === "cowboy") {
+            ctx.fillStyle = "#b45309";
+            ctx.strokeStyle = "#451a03";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 92, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(0, -6, 44, Math.PI, 0);
+            ctx.fillStyle = "#d97706";
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "cap") {
+            ctx.fillStyle = "#3b82f6";
+            ctx.strokeStyle = "#1e3a8a";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(0, 2, 54, Math.PI, 0);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.ellipse(18, 2, 58, 12, 0.08, 0, Math.PI);
+            ctx.fillStyle = "#1d4ed8";
+            ctx.fill();
+            ctx.stroke();
+          } else if (acc === "halo") {
+            ctx.strokeStyle = "#facc15";
+            ctx.lineWidth = 7;
+            ctx.beginPath();
+            ctx.ellipse(0, -28, 56, 14, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          } else if (acc === "catears") {
+            [-1, 1].forEach((d) => {
+              ctx.fillStyle = "#fbcfe8";
+              ctx.strokeStyle = "#f472b6";
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(d * 32, 8);
+              ctx.lineTo(d * 62, -36);
+              ctx.lineTo(d * 78, 22);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            });
+          } else if (acc === "headset") {
+            ctx.strokeStyle = "#0ea5e9";
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(0, ry * 0.9, rx * 1.02, Math.PI * 1.08, Math.PI * 1.92);
+            ctx.stroke();
+          }
         }
         ctx.restore();
       }
 
       // 11. Ngôi sao choáng váng khi 2 Mochi va đập mạnh (💫)
-      if (isDizzy) {
+      if (isDizzy && !isWatching) {
         for (let i = 0; i < 3; i++) {
           const ang = now * 0.006 + (i * Math.PI * 2) / 3;
           const sx = Math.cos(ang) * (rx * 0.65);
@@ -2356,6 +2939,8 @@
         palette: JSON.parse(JSON.stringify(palette)),
         baseScale,
         homePosition: position.clone(),
+        cinemaPosition: position.clone(),
+        isWatchingVideo: false,
         floatPhase: Math.random() * Math.PI * 2,
         rootGroup,
         visualGroup,
@@ -2453,17 +3038,19 @@
       // Dùng GSAP tạo hiệu ứng Squash and Stretch (nén dẹp trục Y, phình to trục X, rồi nảy lại kích thước ban đầu)
       if (withSquashStretch) {
         gsap.killTweensOf(mochi.visualGroup.scale);
+        const targetScale = 1.0;
+
         const tl = gsap.timeline();
         tl.to(mochi.visualGroup.scale, {
-          x: 1.32, // Phình to theo trục X
-          y: 0.68, // Nén dẹp theo trục Y
-          z: 1.0,
+          x: targetScale * 1.32,
+          y: targetScale * 0.68,
+          z: targetScale,
           duration: 0.14,
           ease: "power2.out"
         }).to(mochi.visualGroup.scale, {
-          x: 1.0,
-          y: 1.0,
-          z: 1.0,
+          x: targetScale,
+          y: targetScale,
+          z: targetScale,
           duration: 0.78,
           ease: "elastic.out(1.18, 0.3)"
         });
@@ -2572,10 +3159,14 @@
         );
         world.addConstraint(mouseConstraint);
 
-        mochi.cryUntil = Date.now() + 4500;
-        mochi.blushUntil = Date.now() + 5000;
-        applyEmotionToMochi(mochi, "cry", true);
-        updateHudStatus(`Huhu... đừng kéo má ${mochi.name} mà, đau quá à! 😭`);
+        if (!isCinemaWatchingMode) {
+          mochi.cryUntil = Date.now() + 4500;
+          mochi.blushUntil = Date.now() + 5000;
+          applyEmotionToMochi(mochi, "cry", true);
+          updateHudStatus(`Huhu... đừng kéo má ${mochi.name} mà, đau quá à! 😭`);
+        } else {
+          updateHudStatus(`🎬 Đang trượt ${mochi.name} theo chiều ngang để xem video tiện hơn! ✨`);
+        }
       }
     }
 
@@ -2591,10 +3182,21 @@
       if (mouseConstraint && draggedMochi) {
         raycaster.setFromCamera(pointerNDC, camera);
         if (raycaster.ray.intersectPlane(dragPlane, dragIntersectPoint)) {
-          const clampedX = Math.max(-sceneBounds.x, Math.min(sceneBounds.x, dragIntersectPoint.x));
-          const clampedY = Math.max(-sceneBounds.y, Math.min(sceneBounds.y, dragIntersectPoint.y));
-          const clampedZ = Math.max(-sceneBounds.z, Math.min(sceneBounds.z, dragIntersectPoint.z));
-          jointBody.position.set(clampedX, clampedY, clampedZ);
+          const clampedX = Math.max(-sceneBounds.x * 0.95, Math.min(sceneBounds.x * 0.95, dragIntersectPoint.x));
+          if (isCinemaWatchingMode) {
+            // Cho phép người dùng chỉnh vị trí nhân vật linh hoạt, mượt mà khi xem video
+            const clampedY = Math.min(-0.85, Math.max(-sceneBounds.y * 0.95, dragIntersectPoint.y));
+            const fixedZ = (draggedMochi.cinemaPosition && draggedMochi.cinemaPosition.z) || 0.55;
+            jointBody.position.set(clampedX, clampedY, fixedZ);
+            draggedMochi.body.position.set(clampedX, clampedY, fixedZ);
+            draggedMochi.body.velocity.set(0, 0, 0);
+            draggedMochi.body.angularVelocity.set(0, 0, 0);
+            draggedMochi.rootGroup.position.set(clampedX, clampedY, fixedZ);
+          } else {
+            const clampedY = Math.max(-sceneBounds.y, Math.min(sceneBounds.y, dragIntersectPoint.y));
+            const clampedZ = Math.max(-sceneBounds.z, Math.min(sceneBounds.z, dragIntersectPoint.z));
+            jointBody.position.set(clampedX, clampedY, clampedZ);
+          }
         }
       }
     }
@@ -2609,12 +3211,22 @@
         draggedMochi = null;
         container.classList.remove("is-dragging");
 
-        releasedMochi.cryUntil = Date.now() + 1400;
-        recoveryTimeout = setTimeout(() => {
-          releasedMochi.cryUntil = 0;
-          applyEmotionToMochi(releasedMochi, "normal", true);
-          updateHudStatus("Hết đau rồi, lại tươi cười với bạn nè! 🥰");
-        }, 1450);
+        if (isCinemaWatchingMode) {
+          // Lưu lại vị trí người dùng vừa kéo / chỉnh nhân vật để tiện xem video
+          releasedMochi.cinemaPosition.copy(releasedMochi.rootGroup.position);
+          if (releasedMochi.body) {
+            releasedMochi.body.position.copy(releasedMochi.rootGroup.position);
+            releasedMochi.body.velocity.set(0, 0, 0);
+            releasedMochi.body.angularVelocity.set(0, 0, 0);
+          }
+        } else {
+          releasedMochi.cryUntil = Date.now() + 1400;
+          recoveryTimeout = setTimeout(() => {
+            releasedMochi.cryUntil = 0;
+            applyEmotionToMochi(releasedMochi, "normal", true);
+            updateHudStatus("Hết đau rồi, lại tươi cười với bạn nè! 🥰");
+          }, 1450);
+        }
       }
     }
 
@@ -2840,7 +3452,7 @@
 
       createClassroom3DEnvironment(classroom, variationSeed);
 
-      const isMobilePortrait = (window.innerWidth / Math.max(window.innerHeight, 1)) < 0.85;
+      isMobilePortrait = (window.innerWidth / Math.max(window.innerHeight, 1)) < 0.85;
 
       // 1. Sinh ra 1 "Mochi Giảng Viên" (Màu trắng giống hệt Trang Chủ)
       const instructorPos = isMobilePortrait
@@ -2949,56 +3561,206 @@
 
       const dlBtn = document.getElementById("instructorDownloadBtn");
       const dlText = document.getElementById("instructorDownloadText");
+      const dlIcon = document.getElementById("instructorDownloadIcon") || dlBtn?.querySelector(".dl-icon-badge");
       const roleTag = document.getElementById("instructorRoleTag");
       const speechEl = document.getElementById("instructorSpeechBubble");
 
-      const isForm = isClassroomFormAction(classroom);
+      const isVideo = isClassroomVideoAction(classroom);
+      const isForm = !isVideo && isClassroomFormAction(classroom);
 
       if (dlBtn) {
-        if (isForm) {
+        if (isVideo) {
           dlBtn.href = "javascript:void(0);";
           dlBtn.removeAttribute("target");
-          dlBtn.title = "Bấm để mở ô đăng ký khóa học";
+          dlBtn.title = "Bấm để mở video xem trực tiếp cùng Mochi!";
+          if (dlIcon) dlIcon.textContent = isCinemaWatchingMode ? "🍿" : "🎬";
+        } else if (isForm) {
+          dlBtn.href = "javascript:void(0);";
+          dlBtn.removeAttribute("target");
+          dlBtn.title = "Bấm để mở ô đăng ký nhận tài khoản Canva Pro";
+          if (dlIcon) dlIcon.textContent = "💖";
         } else {
           dlBtn.href = classroom.downloadUrl || "https://zalo.me/0916172524";
           dlBtn.setAttribute("target", "_blank");
           dlBtn.title = "Bấm để mở link tải: " + (classroom.downloadUrl || "");
+          if (dlIcon) dlIcon.textContent = "📥";
         }
       }
       if (dlText) {
-        dlText.textContent = classroom.downloadLabel || (isForm ? "🎦 Đăng Ký Canva Pro Free" : "📥 Download Khóa Học");
+        if (isCinemaWatchingMode && isVideo) {
+          dlText.textContent = "🎬 Đang Xem Video (Bấm để Đóng)";
+        } else {
+          dlText.textContent = classroom.downloadLabel || (isVideo ? "🎬 Xem Video" : (isForm ? "💖 Đăng Ký Canva Pro Free" : "📥 Download Khóa Học"));
+        }
       }
       if (roleTag) {
         roleTag.style.display = "none";
       }
       if (speechEl) {
-        speechEl.textContent = classroom.teacherGreeting || (isForm ? "Nhấn nút để Đăng Ký Canva Pro Free nhé! ✨" : "Click nút trên đầu mình để tải khóa học nhé! ✨");
+        if (isCinemaWatchingMode && isVideo) {
+          speechEl.textContent = "Suỵt! Cả lớp đang chăm chú xem video cùng bạn nhé! 🍿🎬";
+        } else {
+          speechEl.textContent = classroom.teacherGreeting || (isVideo ? "Bấm nút trên đầu Thầy để xem video khóa học nhé! 🎬" : (isForm ? "Nhấn nút để Đăng Ký Canva Pro Free nhé! ✨" : "Click nút trên đầu mình để tải khóa học nhé! ✨"));
+        }
       }
     }
 
+    window.openCinemaVideo = function (classroom) {
+      const cls = classroom || currentClassroom;
+      if (!cls) return;
+
+      isCinemaWatchingMode = true;
+      document.body.classList.add("cinema-mode");
+
+      // Xếp tất cả nhân vật ngồi thẳng hàng theo chiều ngang (giữ nguyên kích thước 1.0 như lúc chưa xem video)
+      const N = mochiEntities.length;
+      const startY = isMobilePortrait ? -2.45 : -2.25;
+      const depthZ = 0.55;
+      const totalSpan = isMobilePortrait ? 3.0 : 4.4;
+      const step = N > 1 ? totalSpan / (N - 1) : 0;
+      const startX = -(totalSpan / 2);
+
+      let xSlots = [];
+      if (N === 4) {
+        xSlots = isMobilePortrait
+          ? [-1.35, -0.45, 0.45, 1.35]
+          : [-2.1, -0.7, 0.7, 2.1];
+      } else {
+        for (let i = 0; i < N; i++) xSlots.push(N === 1 ? 0 : startX + i * step);
+      }
+
+      // Giữ nguyên kích thước nhân vật như lúc chưa xem video (scale = 1.0), xoay lưng ngồi xem video
+      mochiEntities.forEach((m, idx) => {
+        const posX = xSlots[idx] !== undefined ? xSlots[idx] : (startX + idx * step);
+        m.cinemaPosition.set(posX, startY, depthZ);
+        m.isWatchingVideo = true;
+
+        if (m.body) {
+          m.body.position.copy(m.cinemaPosition);
+          m.body.velocity.set(0, 0, 0);
+          m.body.angularVelocity.set(0, 0, 0);
+        }
+        if (m.rootGroup) {
+          m.rootGroup.position.copy(m.cinemaPosition);
+          m.rootGroup.rotation.set(0, 0, 0);
+        }
+
+        // Kích thước các nhân vật như lúc chưa xem video không thay đổi kích thước (scale = 1.0)
+        gsap.killTweensOf(m.visualGroup.scale);
+        gsap.to(m.visualGroup.scale, {
+          x: 1.0,
+          y: 1.0,
+          z: 1.0,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+
+      // Cài đặt khung Video YouTube
+      const overlay = document.getElementById("mochiCinemaOverlay");
+      const iframe = document.getElementById("cinemaVideoIframe");
+      const titleEl = document.getElementById("cinemaCourseTitle");
+      const extLink = document.getElementById("cinemaYoutubeExtLink");
+
+      const rawUrl = cls.downloadUrl || cls.videoUrl || "https://www.youtube.com/watch?v=jV1vkHv4zq8";
+      const embedUrl = getYouTubeEmbedUrl(rawUrl);
+
+      if (titleEl) titleEl.textContent = cls.name || "Khóa Học Video Trực Tiếp";
+      if (extLink) extLink.href = rawUrl;
+      if (iframe) iframe.src = embedUrl;
+
+      if (overlay) overlay.classList.add("active");
+
+      // Cập nhật trạng thái nút và bong bóng thoại
+      updateClassroomUIElements(cls);
+      showGameToast(`🎬 Các bạn Mochi đã ngồi xem video cùng bạn!`);
+    };
+
+    window.closeCinemaVideo = function () {
+      isCinemaWatchingMode = false;
+      document.body.classList.remove("cinema-mode");
+
+      const overlay = document.getElementById("mochiCinemaOverlay");
+      const iframe = document.getElementById("cinemaVideoIframe");
+      if (iframe) iframe.src = "";
+      if (overlay) overlay.classList.remove("active");
+
+      // Mochi quay lại mỉm cười với học viên & giữ nguyên kích thước 1.0
+      mochiEntities.forEach((m, idx) => {
+        gsap.killTweensOf(m.visualGroup.scale);
+        m.isWatchingVideo = false;
+        applyEmotionToMochi(m, "happy", false);
+        gsap.to(m.visualGroup.scale, {
+          x: 1.0,
+          y: 1.0,
+          z: 1.0,
+          duration: 0.35,
+          ease: "power2.out"
+        });
+      });
+
+      updateClassroomUIElements(currentClassroom);
+      const speechEl = document.getElementById("instructorSpeechBubble");
+      if (speechEl) {
+        speechEl.textContent = "Video hay quá phải không các bạn! Cần hỏi gì cứ nhắn Thầy nhé! 🥰✨";
+      }
+      showGameToast("✨ Mochi đã quay lại và mỉm cười với bạn!");
+    };
+
+    window.promptChangeCinemaVideo = function () {
+      const currentUrl = currentClassroom?.downloadUrl || currentClassroom?.videoUrl || "";
+      const newUrl = prompt("Nhập link YouTube mới bạn muốn xem trực tiếp (URL):", currentUrl);
+      if (newUrl && newUrl.trim()) {
+        const cleanUrl = newUrl.trim();
+        if (currentClassroom) {
+          currentClassroom.downloadUrl = cleanUrl;
+          currentClassroom.videoUrl = cleanUrl;
+          currentClassroom.downloadAction = "video";
+          try {
+            localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classroomsList));
+          } catch (_) {}
+        }
+        openCinemaVideo(currentClassroom);
+      }
+    };
+
     window.handleDownloadCourseClick = function (e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       if (!currentClassroom) return;
+
       const instructor = mochiEntities[0];
       if (instructor) {
         applyEmotionToMochi(instructor, "love", true);
       }
 
-      if (isClassroomFormAction(currentClassroom)) {
-        if (e) {
-          e.preventDefault();
-          e.stopPropagation();
+      // 1. Chế độ Xem Video YouTube Trực Tiếp & Mochi xoay lưng cùng xem
+      if (isClassroomVideoAction(currentClassroom)) {
+        if (isCinemaWatchingMode) {
+          closeCinemaVideo();
+        } else {
+          openCinemaVideo(currentClassroom);
         }
+        return;
+      }
+
+      // 2. Chế độ Hiện Ô Đăng Ký (Canva Pro)
+      if (isClassroomFormAction(currentClassroom)) {
         openCourseRegistrationModal(currentClassroom);
         return;
       }
 
+      // 3. Chế độ Mở Link
       const targetUrl = currentClassroom.downloadUrl || "https://zalo.me/0916172524";
-      showGameToast(`📥 Đang mở link tải khóa học: ${currentClassroom.name}`);
+      showGameToast(`🔗 Đang mở link: ${currentClassroom.name}`);
 
       if (!targetUrl || targetUrl === "#") {
-        if (e) e.preventDefault();
-        alert("Lớp học này chưa gắn link tải. Bạn có thể gắn link trong trang Quản Trị (game admin.html)!");
+        alert("Lớp học này chưa gắn link. Bạn có thể gắn link trong trang Quản Trị (game admin.html)!");
+        return;
       }
+      window.open(targetUrl, "_blank");
     };
 
     // =========================================================================
@@ -3216,9 +3978,17 @@
     window.switchClassroomById = function (classId) {
       const found = classroomsList.find((c) => c.id === classId);
       if (!found) return;
+      const wasWatching = isCinemaWatchingMode;
       setupClassroomScene(found, false);
       populateClassroomUI();
       showGameToast(`🏫 Đã vào: ${found.name}`);
+      if (wasWatching) {
+        if (isClassroomVideoAction(found)) {
+          openCinemaVideo(found);
+        } else {
+          closeCinemaVideo();
+        }
+      }
     };
 
     window.selectClassroomFromModal = function (classId) {
@@ -3371,19 +4141,28 @@
           });
         }
 
-        // Lực trôi lơ lửng Không Trọng Lực
+        // Lực trôi lơ lửng Không Trọng Lực & chuyển động khi xem video
         if (mochi !== draggedMochi) {
-          const driftX = Math.sin(timeSec * 1.1 + mochi.floatPhase) * 0.25;
-          const driftY = Math.cos(timeSec * 1.3 + mochi.floatPhase) * 0.25;
+          if (isCinemaWatchingMode) {
+            // Khi xem video: Ngồi yên bất động thẳng hàng theo chiều ngang, không trôi dạt
+            body.velocity.set(0, 0, 0);
+            body.angularVelocity.set(0, 0, 0);
+            body.position.copy(mochi.cinemaPosition || mochi.homePosition);
+          } else {
+            const driftX = Math.sin(timeSec * 1.1 + mochi.floatPhase) * 0.25;
+            const driftY = Math.cos(timeSec * 1.3 + mochi.floatPhase) * 0.25;
 
-          const pullToHomeX = (mochi.homePosition.x - body.position.x) * 0.65;
-          const pullToHomeY = (mochi.homePosition.y - body.position.y) * 0.65;
-          const pullToHomeZ = (mochi.homePosition.z - body.position.z) * 0.9;
+            const targetPos = mochi.homePosition;
+            const stiffness = 0.65;
+            const pullToHomeX = (targetPos.x - body.position.x) * stiffness;
+            const pullToHomeY = (targetPos.y - body.position.y) * stiffness;
+            const pullToHomeZ = (targetPos.z - body.position.z) * 0.9;
 
-          body.applyForce(
-            new CANNON.Vec3(driftX + pullToHomeX, driftY + pullToHomeY, pullToHomeZ),
-            body.position
-          );
+            body.applyForce(
+              new CANNON.Vec3(driftX + pullToHomeX, driftY + pullToHomeY, pullToHomeZ),
+              body.position
+            );
+          }
         }
 
         if (body.position.x > sceneBounds.x) { body.position.x = sceneBounds.x; body.velocity.x *= -0.7; }
@@ -3394,7 +4173,7 @@
         if (body.position.z < -1.2) { body.position.z = -1.2; body.velocity.z *= -0.7; }
 
         mochi.rootGroup.position.copy(body.position);
-        mochi.rootGroup.rotation.z = -body.velocity.x * 0.05;
+        mochi.rootGroup.rotation.z = isCinemaWatchingMode ? 0 : -body.velocity.x * 0.05;
 
         // Vẽ khuôn mặt Mochi chuẩn trang chủ lên CanvasTexture
         drawHomepageMochiCanvas(mochi, nowMs);
@@ -3416,7 +4195,9 @@
           if (instructorAnchor) {
             const halfW = Math.min(135, screenW * 0.45);
             const clampedX = Math.max(halfW + 8, Math.min(screenW - halfW - 8, rawScreenX));
-            const clampedY = Math.max(158, Math.min(screenH - 120, rawScreenY));
+            const clampedY = isCinemaWatchingMode
+              ? Math.max(60, Math.min(screenH - 90, rawScreenY + 15))
+              : Math.max(158, Math.min(screenH - 120, rawScreenY));
             instructorAnchor.style.left = `${Math.round(clampedX)}px`;
             instructorAnchor.style.top = `${Math.round(clampedY)}px`;
           }

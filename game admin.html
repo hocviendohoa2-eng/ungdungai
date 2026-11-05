@@ -723,23 +723,39 @@
 
           <div class="form-grid-2">
             <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="color:#38bdf8;">📥 Tên Nút Hiển Thị Trên Đầu Giảng Viên *</label>
-              <input type="text" id="inpDownloadLabel" class="form-input" placeholder="Ví dụ: 🎦 Đăng Ký Canva Pro Free hoặc 📥 Download Khóa Học" oninput="syncEditorToMemory()" />
+              <label class="form-label" style="color:#38bdf8;">🎬 Tên Nút Hiển Thị Trên Đầu Giảng Viên *</label>
+              <input type="text" id="inpDownloadLabel" class="form-input" placeholder="Ví dụ: 🎬 Xem Video Gemini AI hoặc 💖 Đăng Ký Canva Pro Free" oninput="syncEditorToMemory()" />
               <div class="form-help">Hiển thị nổi bật ngay trên đỉnh đầu Mochi Giảng Viên khi vào học.</div>
             </div>
 
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="color:#fbbf24;">⚡ Hành Động Khi Nhấn Nút *</label>
               <select id="inpDownloadAction" class="form-select" onchange="onActionTypeChange(); syncEditorToMemory();">
+                <option value="video">🎬 Xem Video Trực Tiếp (Khung Video YouTube & Mochi xoay lưng xem)</option>
                 <option value="form">📝 Hiện Ô Đăng Ký (Gửi về mail hocviendohoa2@gmail.com)</option>
                 <option value="link">🔗 Mở Link Tải Cài Sẵn (URL)</option>
               </select>
-              <div class="form-help">Chọn giữa mở link tải trực tiếp hoặc hiện popup ô đăng ký.</div>
+              <div class="form-help">Chọn giữa xem video YouTube trực tiếp, mở ô đăng ký hoặc mở link URL.</div>
             </div>
           </div>
 
-          <!-- Chế độ 1: Ô Đăng Ký (Gửi về hocviendohoa2@gmail.com) -->
-          <div id="actionFormConfigBox" style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.35); border-radius:14px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px;">
+          <!-- Chế độ 1: Xem Video YouTube Trực Tiếp -->
+          <div id="actionVideoConfigBox" style="background:rgba(99, 102, 241, 0.12); border:1px solid rgba(139, 92, 246, 0.4); border-radius:14px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px; margin-bottom:12px;">
+            <span style="font-size:1.5rem; line-height:1;">🎬</span>
+            <div style="flex:1;">
+              <div style="font-weight:800; font-size:0.88rem; color:#a5b4fc; margin-bottom:4px; display:flex; align-items:center; gap:8px;">
+                <span>Đang bật: Xem Video Trực Tiếp (Cinema Theater)</span>
+                <span style="background:rgba(99,102,241,0.25); color:#c7d2fe; font-size:0.72rem; padding:2px 8px; border-radius:999px;">YouTube Embed</span>
+              </div>
+              <div style="font-size:0.8rem; color:#cbd5e1; line-height:1.45;">
+                Khi học viên bấm vào nút <strong style="color:#fde047;">Xem Video</strong> trên đầu Giảng Viên, các bạn Mochi sẽ tự động 
+                <strong>ngồi xoay lưng về màn hình</strong> và xuất hiện khung video YouTube sắc nét để học viên xem bài giảng trực tiếp ngay trong lớp học 3D!
+              </div>
+            </div>
+          </div>
+
+          <!-- Chế độ 2: Ô Đăng Ký (Gửi về hocviendohoa2@gmail.com) -->
+          <div id="actionFormConfigBox" style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.35); border-radius:14px; padding:14px 16px; display:none; align-items:flex-start; gap:12px; margin-bottom:12px;">
             <span style="font-size:1.5rem; line-height:1;">📬</span>
             <div style="flex:1;">
               <div style="font-weight:800; font-size:0.88rem; color:#34d399; margin-bottom:4px; display:flex; align-items:center; gap:8px;">
@@ -754,11 +770,11 @@
             </div>
           </div>
 
-          <!-- Chế độ 2: Mở link URL -->
+          <!-- Nhập URL (Link YouTube hoặc Link tải) -->
           <div id="actionLinkConfigBox" class="form-group" style="margin-bottom:0;">
-            <label class="form-label" style="color:#f43f5e;">🔗 Link Tải Khóa Học Cài Sẵn (URL) *</label>
-            <input type="url" id="inpDownloadUrl" class="form-input" placeholder="https://drive.google.com/... hoặc https://zalo.me/..." oninput="syncEditorToMemory()" />
-            <div class="form-help">Khi học viên click vào nút trên đầu Giảng viên sẽ tự động dẫn thẳng về link này.</div>
+            <label class="form-label" id="lblDownloadUrl" style="color:#f43f5e; font-weight:800;">🎬 Link Video YouTube Xem Trực Tiếp / Link Tải Khóa Học (URL) *</label>
+            <input type="url" id="inpDownloadUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=... hoặc https://youtu.be/..." oninput="syncEditorToMemory()" />
+            <div class="form-help" id="helpDownloadUrl">💡 Dán link YouTube tại đây để học viên bấm vào xem trực tiếp trong game (Thầy & các bạn Mochi sẽ tự thu nhỏ ngồi phía trước xem cùng bạn). Bạn cũng có thể dán link Drive/Zalo để tải tài liệu.</div>
           </div>
         </div>
       </div>
@@ -913,32 +929,66 @@
     const DEFAULT_CLASSROOMS = [
       {
         id: "class-ai-gemini",
-        name: "Lớp Học Trí Tuệ Nhân Tạo Gemini & Prompt",
+        name: "Gemini AI Tối Ưu Công Việc",
         icon: "🤖",
         subject: "Làm chủ Google Gemini, NotebookLM, tạo ảnh & tự động hóa công việc",
         teacherGender: "male",
         teacherName: "Giảng Viên AI",
         teacherAccessory: "gradhat",
-        teacherGreeting: "Chào các bạn! Bấm nút Download phía trên để tải Giáo Án AI nhé! 🎓",
-        downloadAction: "link",
-        downloadLabel: "📥 Download Khóa Học AI",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học Gemini AI nhé! 🎬",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Gemini AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff" },
         propType: "ai_cubes"
       },
       {
+        id: "class-ai-chatgpt",
+        name: "ChatGPT Trong Công Việc",
+        icon: "👽",
+        subject: "Khai thác tối đa ChatGPT Plus, GPTs, viết prompt chuyên sâu & xử lý công việc",
+        teacherGender: "male",
+        teacherName: "Giảng Viên ChatGPT",
+        teacherAccessory: "glasses",
+        teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học ChatGPT nhé! 🎬",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video ChatGPT",
+        downloadUrl: "https://www.youtube.com/watch?v=DQacCB9tDaw",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
+        propType: "code_torus"
+      },
+      {
+        id: "class-ai-claude",
+        name: "Claude AI Toàn Tập",
+        icon: "✒️",
+        subject: "Làm chủ Claude 3.5 Sonnet, Artifacts, viết code & tự động hóa công việc",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Claude",
+        teacherAccessory: "bow",
+        teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Cô để học Claude AI nhé! 🎬",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Claude AI",
+        downloadUrl: "https://www.youtube.com/watch?v=A598ESCoC70",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3" },
+        propType: "stars_octa"
+      },
+      {
         id: "class-canva-free",
         name: "Đăng Ký Canva Pro Free",
-        icon: "🎬",
+        icon: "💖",
         subject: "Nhận tài khoản Canva Pro Full tính năng & kho Template thiết kế VIP",
         teacherGender: "male",
         teacherName: "Giảng Viên Canva",
         teacherAccessory: "headset",
         teacherGreeting: "Nhấn nút để Đăng Ký Canva Pro Free nhé ✨",
         downloadAction: "form",
-        downloadLabel: "🎦 Đăng Ký Canva Pro Free",
+        downloadLabel: "💖 Đăng Ký Canva Pro Free",
         downloadUrl: "https://zalo.me/0916172524",
         studentCount: 3,
         studentNames: [],
@@ -953,10 +1003,10 @@
         teacherGender: "female",
         teacherName: "Giảng Viên Đồ Họa",
         teacherAccessory: "beret",
-        teacherGreeting: "Chào các bạn! Tải bộ Brush & Giáo trình Photoshop ở nút Download phía trên nha! 🎨",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Giáo Trình Photoshop",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Chào các bạn! Bấm nút Xem Video phía trên để học Photoshop nha! 🎨",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Photoshop",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ffe4e6", bgMid: "#fecdd3", bgBot: "#fef3c7" },
@@ -970,10 +1020,10 @@
         teacherGender: "female",
         teacherName: "Giảng Viên Vector",
         teacherAccessory: "bow",
-        teacherGreeting: "Hôm nay chúng ta học vẽ Mascot! Nhấn nút Download phía trên để tải file mẫu nhé! ✨",
-        downloadAction: "link",
-        downloadLabel: "📥 Download File Vector Mẫu",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Hôm nay chúng ta học vẽ Mascot! Nhấn nút Xem Video phía trên để xem bài giảng nhé! ✨",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Illustrator",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#fef3c7", bgMid: "#fde68a", bgBot: "#fbcfe8" },
@@ -987,10 +1037,10 @@
         teacherGender: "male",
         teacherName: "Giảng Viên Video",
         teacherAccessory: "headset",
-        teacherGreeting: "Action! 🎬 Nhấn nút Download phía trên để lấy kho hiệu ứng Video nhé!",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Kho Hiệu Ứng Video",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Action! 🎬 Nhấn nút Xem Video phía trên để học làm Video triệu view nhé!",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video CapCut AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
@@ -1004,10 +1054,10 @@
         teacherGender: "male",
         teacherName: "Giảng Viên Web",
         teacherAccessory: "glasses",
-        teacherGreeting: "Chào các Developer! Source code & bài giảng ở ngay nút Download phía trên nhé! 💻",
-        downloadAction: "link",
-        downloadLabel: "📥 Download Source Code Web",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Chào các Developer! Xem bài giảng trực tiếp ở nút Xem Video phía trên nhé! 💻",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Tạo Web AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe" },
@@ -1021,10 +1071,10 @@
         teacherGender: "female",
         teacherName: "Giảng Viên Âm Nhạc",
         teacherAccessory: "crown",
-        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Tải bộ Prompt nhạc ở nút phía trên nha! 🎶",
-        downloadAction: "link",
-        downloadLabel: "📥 Tải Bộ Prompt Nhạc Suno",
-        downloadUrl: "https://zalo.me/0916172524",
+        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Xem video sáng tác nhạc ở nút phía trên nha! 🎶",
+        downloadAction: "video",
+        downloadLabel: "🎬 Xem Video Suno AI",
+        downloadUrl: "https://www.youtube.com/watch?v=jV1vkHv4zq8",
         studentCount: 3,
         studentNames: [],
         themePalette: { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1" },
@@ -1035,6 +1085,145 @@
     let classrooms = [];
     let selectedIdx = 0;
 
+    function isYouTubeUrl(url) {
+      if (!url) return false;
+      const u = url.toLowerCase();
+      return u.includes("youtube.com") || u.includes("youtu.be");
+    }
+
+    function migrateAdminClassroomsData() {
+      let changed = false;
+      let gemini = classrooms.find(c => c.id === "class-ai-gemini" || (c.name || "").toLowerCase().includes("gemini"));
+      if (gemini) {
+        if (gemini.name === "Lớp Học Trí Tuệ Nhân Tạo Gemini & Prompt") {
+          gemini.name = "Gemini AI Tối Ưu Công Việc";
+          changed = true;
+        }
+        if ((gemini.downloadLabel || "").includes("Download") || !gemini.downloadLabel) {
+          gemini.downloadLabel = "🎬 Xem Video Gemini AI";
+          changed = true;
+        }
+        if (gemini.downloadAction !== "video") {
+          gemini.downloadAction = "video";
+          changed = true;
+        }
+        if (!gemini.downloadUrl || !isYouTubeUrl(gemini.downloadUrl)) {
+          gemini.downloadUrl = "https://www.youtube.com/watch?v=jV1vkHv4zq8";
+          changed = true;
+        }
+        gemini.teacherGreeting = "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học Gemini AI nhé! 🎬";
+      }
+
+      let chatgpt = classrooms.find(c => c.id === "class-ai-chatgpt" || (c.name || "").toLowerCase().includes("chatgpt"));
+      if (!chatgpt) {
+        chatgpt = {
+          id: "class-ai-chatgpt",
+          name: "ChatGPT Trong Công Việc",
+          icon: "👽",
+          subject: "Khai thác tối đa ChatGPT Plus, GPTs, viết prompt chuyên sâu & xử lý công việc",
+          teacherGender: "male",
+          teacherName: "Giảng Viên ChatGPT",
+          teacherAccessory: "glasses",
+          teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Thầy để học ChatGPT nhé! 🎬",
+          downloadAction: "video",
+          downloadLabel: "🎬 Xem Video ChatGPT",
+          downloadUrl: "https://www.youtube.com/watch?v=DQacCB9tDaw",
+          studentCount: 3,
+          studentNames: [],
+          themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
+          propType: "code_torus"
+        };
+        const geminiIdx = classrooms.findIndex(c => c.id === "class-ai-gemini" || (c.name || "").toLowerCase().includes("gemini"));
+        if (geminiIdx >= 0) {
+          classrooms.splice(geminiIdx + 1, 0, chatgpt);
+        } else {
+          classrooms.unshift(chatgpt);
+        }
+        changed = true;
+      } else {
+        if ((chatgpt.downloadLabel || "").includes("Download") || !chatgpt.downloadLabel) {
+          chatgpt.downloadLabel = "🎬 Xem Video ChatGPT";
+          changed = true;
+        }
+        chatgpt.downloadAction = "video";
+        if (!chatgpt.downloadUrl || !isYouTubeUrl(chatgpt.downloadUrl) || chatgpt.downloadUrl.includes("viJt_DXTfw8")) {
+          chatgpt.downloadUrl = "https://www.youtube.com/watch?v=DQacCB9tDaw";
+          changed = true;
+        }
+      }
+
+      let claude = classrooms.find(c => c.id === "class-ai-claude" || (c.name || "").toLowerCase().includes("claude"));
+      if (!claude) {
+        claude = {
+          id: "class-ai-claude",
+          name: "Claude AI Toàn Tập",
+          icon: "✒️",
+          subject: "Làm chủ Claude 3.5 Sonnet, Artifacts, viết code & tự động hóa công việc",
+          teacherGender: "female",
+          teacherName: "Giảng Viên Claude",
+          teacherAccessory: "bow",
+          teacherGreeting: "Chào bạn! Bấm nút Xem Video trên đầu Cô để học Claude AI nhé! 🎬",
+          downloadAction: "video",
+          downloadLabel: "🎬 Xem Video Claude AI",
+          downloadUrl: "https://www.youtube.com/watch?v=A598ESCoC70",
+          studentCount: 3,
+          studentNames: [],
+          themePalette: { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3" },
+          propType: "stars_octa"
+        };
+        const gptIdx = classrooms.findIndex(c => c.id === "class-ai-chatgpt" || (c.name || "").toLowerCase().includes("chatgpt"));
+        if (gptIdx >= 0) {
+          classrooms.splice(gptIdx + 1, 0, claude);
+        } else {
+          classrooms.splice(1, 0, claude);
+        }
+        changed = true;
+      } else {
+        if ((claude.downloadLabel || "").includes("Download") || !claude.downloadLabel) {
+          claude.downloadLabel = "🎬 Xem Video Claude AI";
+          changed = true;
+        }
+        claude.downloadAction = "video";
+        if (!claude.downloadUrl || !isYouTubeUrl(claude.downloadUrl) || claude.downloadUrl.includes("y6fA6-FvjM8")) {
+          claude.downloadUrl = "https://www.youtube.com/watch?v=A598ESCoC70";
+          changed = true;
+        }
+      }
+
+      let canva = classrooms.find(c => c.id === "class-canva-free" || (c.name || "").toLowerCase().includes("canva"));
+      if (canva) {
+        canva.icon = "💖";
+        if (canva.downloadLabel?.includes("Download") || canva.downloadLabel?.includes("🎦")) {
+          canva.downloadLabel = "💖 Đăng Ký Canva Pro Free";
+          changed = true;
+        }
+      }
+
+      classrooms.forEach(c => {
+        if (c.downloadUrl && c.downloadUrl.includes("viJt_DXTfw8")) {
+          c.downloadUrl = "https://www.youtube.com/watch?v=DQacCB9tDaw";
+          changed = true;
+        }
+        if (c.downloadUrl && c.downloadUrl.includes("y6fA6-FvjM8")) {
+          c.downloadUrl = "https://www.youtube.com/watch?v=A598ESCoC70";
+          changed = true;
+        }
+        if (isYouTubeUrl(c.downloadUrl || c.videoUrl)) {
+          c.downloadAction = "video";
+          if ((c.downloadLabel || "").includes("Download")) {
+            c.downloadLabel = c.downloadLabel.replace("Download", "Xem Video").replace("📥", "🎬");
+            changed = true;
+          }
+        }
+      });
+
+      if (changed) {
+        try {
+          localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classrooms));
+        } catch (_) {}
+      }
+    }
+
     function loadClassrooms() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY_CLASSES);
@@ -1042,6 +1231,7 @@
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length > 0) {
             classrooms = parsed;
+            migrateAdminClassroomsData();
             return;
           }
         }
@@ -1080,12 +1270,22 @@
 
     function onActionTypeChange() {
       const selAction = document.getElementById("inpDownloadAction");
+      const videoBox = document.getElementById("actionVideoConfigBox");
       const formBox = document.getElementById("actionFormConfigBox");
       const linkBox = document.getElementById("actionLinkConfigBox");
+      const lblUrl = document.getElementById("lblDownloadUrl");
+      const helpUrl = document.getElementById("helpDownloadUrl");
       if (!selAction) return;
-      const isForm = selAction.value === "form";
-      if (formBox) formBox.style.display = isForm ? "flex" : "none";
-      if (linkBox) linkBox.style.display = isForm ? "none" : "block";
+      const val = selAction.value;
+      if (videoBox) videoBox.style.display = val === "video" ? "flex" : "none";
+      if (formBox) formBox.style.display = val === "form" ? "flex" : "none";
+      if (linkBox) linkBox.style.display = val === "form" ? "none" : "block";
+      if (lblUrl) {
+        lblUrl.textContent = val === "video" ? "🎬 Link Video YouTube Xem Trực Tiếp (URL) *" : "🔗 Link Tải Khóa Học Cài Sẵn (URL) *";
+      }
+      if (helpUrl) {
+        helpUrl.textContent = val === "video" ? "Dán link YouTube (https://www.youtube.com/watch?v=... hoặc https://youtu.be/...) để phát video trực tiếp cho học viên." : "Khi học viên click nút trên đầu Giảng Viên sẽ tự động mở link này.";
+      }
     }
 
     function loadSelectedToEditor() {
@@ -1096,13 +1296,16 @@
       document.getElementById("inpClassName").value = c.name || "";
       document.getElementById("inpStudentCount").value = c.studentCount || 3;
       document.getElementById("inpClassSubject").value = c.subject || "";
-      document.getElementById("inpDownloadLabel").value = c.downloadLabel || "📥 Download Khóa Học";
+      document.getElementById("inpDownloadLabel").value = c.downloadLabel || "🎬 Xem Video";
       document.getElementById("inpDownloadUrl").value = c.downloadUrl || "";
 
       let action = c.downloadAction;
       if (!action) {
         const text = ((c.downloadLabel || "") + " " + (c.name || "")).toLowerCase();
-        action = (text.includes("đăng ký") || text.includes("dang ky") || text.includes("canva")) ? "form" : "link";
+        const url = (c.downloadUrl || "").toLowerCase();
+        if (url.includes("youtube") || url.includes("youtu.be") || text.includes("video")) action = "video";
+        else if (text.includes("đăng ký") || text.includes("dang ky") || text.includes("canva")) action = "form";
+        else action = "link";
       }
       const selAction = document.getElementById("inpDownloadAction");
       if (selAction) {
@@ -1128,10 +1331,10 @@
       c.name = document.getElementById("inpClassName").value.trim();
       c.studentCount = Math.max(1, Math.min(10, parseInt(document.getElementById("inpStudentCount").value, 10) || 3));
       c.subject = document.getElementById("inpClassSubject").value.trim();
-      c.downloadLabel = document.getElementById("inpDownloadLabel").value.trim() || "📥 Download Khóa Học";
+      c.downloadLabel = document.getElementById("inpDownloadLabel").value.trim() || "🎬 Xem Video";
       
       const selAction = document.getElementById("inpDownloadAction");
-      c.downloadAction = selAction ? selAction.value : "link";
+      c.downloadAction = selAction ? selAction.value : "video";
       c.downloadUrl = document.getElementById("inpDownloadUrl").value.trim();
 
       c.teacherGender = document.getElementById("inpTeacherGender").value;
@@ -1161,10 +1364,19 @@
       const classNameEl = document.getElementById("previewClassName");
 
       const text = ((c.downloadLabel || "") + " " + (c.name || "")).toLowerCase();
-      const isForm = c.downloadAction === "form" || (!c.downloadAction && (text.includes("đăng ký") || text.includes("canva")));
+      const url = (c.downloadUrl || "").toLowerCase();
+      const isVideo = c.downloadAction === "video" || (!c.downloadAction && (text.includes("video") || url.includes("youtu")));
+      const isForm = !isVideo && (c.downloadAction === "form" || (!c.downloadAction && (text.includes("đăng ký") || text.includes("canva"))));
 
       if (dlBtn) {
-        if (isForm) {
+        if (isVideo) {
+          dlBtn.href = "javascript:void(0);";
+          dlBtn.title = "Chế độ: Bấm để mở video xem trực tiếp (Mochi xoay lưng cùng xem)";
+          dlBtn.onclick = function(e) {
+            e.preventDefault();
+            alert(`🎬 [XEM TRƯỚC VIDEO TRONG GAME]\n• Khóa học: ${c.name || "Khóa Học Video"}\n• Link Video: ${c.downloadUrl || "Chưa gắn link"}\n• Khi học viên click vào trong game, các bạn Mochi sẽ tự động ngồi xoay lưng về màn hình và xuất hiện khung video YouTube để xem trực tiếp!`);
+          };
+        } else if (isForm) {
           dlBtn.href = "javascript:void(0);";
           dlBtn.title = "Chế độ: Bấm để mở ô đăng ký (Gửi về mail hocviendohoa2@gmail.com)";
           dlBtn.onclick = function(e) {
@@ -1177,7 +1389,7 @@
           dlBtn.onclick = null;
         }
       }
-      if (dlLabel) dlLabel.textContent = c.downloadLabel || (isForm ? "🎦 Đăng Ký Canva Pro Free" : "📥 Download Khóa Học");
+      if (dlLabel) dlLabel.textContent = c.downloadLabel || (isVideo ? "🎬 Xem Video" : (isForm ? "💖 Đăng Ký Canva Pro Free" : "📥 Download Khóa Học"));
       if (rolePill) {
         rolePill.style.display = "none";
       }
