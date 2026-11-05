@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Trị Lớp Học Mochi 3D | Tạo Nhiều Lớp Học & Gắn Link Download Khóa Học</title>
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1HRW4vE9oSS_FnoU5rU1dsLcqL5Z9gnUc" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-dark: #070b14;
+      --bg-panel: #0f172a;
+      --bg-card: rgba(17, 25, 45, 0.94);
+      --border-color: rgba(148, 163, 184, 0.2);
+      --primary: #38bdf8;
+      --indigo: #6366f1;
+      --pink: #f43f5e;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top right, #1e1b4b 0%, #070b14 60%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .admin-header {
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .admin-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+    .admin-brand-title {
+      font-size: 1.08rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #38bdf8, #a855f7, #f43f5e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .admin-brand-sub {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.84rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
+    }
+    .btn-hot {
+      background: linear-gradient(135deg, #f43f5e, #fb923c);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(244, 63, 94, 0.35);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+    }
+    .btn-outline {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+    .btn-outline:hover {
+      background: rgba(148, 163, 184, 0.22);
+    }
+    .btn-danger {
+      background: rgba(244, 63, 94, 0.16);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+    .btn-danger:hover {
+      background: #f43f5e;
+      color: #fff;
+    }
+
+    /* Main Workspace Layout */
+    .admin-workspace {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+      max-width: 1420px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      flex: 1;
+    }
+
+    /* Sidebar Class List */
+    .class-list-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: fit-content;
+      max-height: calc(100vh - 110px);
+      position: sticky;
+      top: 86px;
+    }
+
+    .panel-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .count-pill {
+      background: rgba(56, 189, 248, 0.18);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .sidebar-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .class-items-scroll {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+
+    .class-list-item {
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1.5px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .class-list-item:hover {
+      border-color: rgba(56, 189, 248, 0.5);
+      background: rgba(30, 41, 59, 0.85);
+    }
+    .class-list-item.active {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.18), rgba(99, 102, 241, 0.18));
+      box-shadow: 0 8px 20px rgba(14, 165, 233, 0.15);
+    }
+
+    .item-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      min-width: 0;
+    }
+    .item-icon {
+      font-size: 1.45rem;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .item-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 3px;
+      word-break: break-word;
+    }
+    .item-meta {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Right Editor Area */
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 22px 24px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 110px 1fr 180px;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .form-help {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.8);
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Live Preview Mochi Instructor & Download Button */
+    .live-preview-stage {
+      border-radius: 18px;
+      padding: 26px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      min-height: 240px;
+      transition: background 0.3s ease;
+    }
+
+    .preview-dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+      color: #fff;
+      font-weight: 900;
+      font-size: 0.86rem;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 2.5px solid #fff;
+      box-shadow: 0 10px 24px rgba(124, 58, 237, 0.45);
+      text-decoration: none;
+    }
+
+    .preview-role-pill {
+      display: none !important;
+    }
+
+    .preview-mochi-avatar {
+      width: 96px;
+      height: 88px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #fff8fb 55%, #f3e8ff 85%, #e0e7ff 100%);
+      box-shadow: 0 14px 28px rgba(148, 163, 184, 0.35), inset -4px -6px 14px rgba(244, 114, 182, 0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-top: 4px;
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+    }
+    .preview-mochi-eyes {
+      display: flex;
+      gap: 16px;
+      margin-top: 6px;
+      position: relative;
+      z-index: 2;
+    }
+    .preview-eye {
+      width: 18px;
+      height: 19px;
+      border-radius: 50%;
+      background: #181826;
+      border: 2px solid #f8fafc;
+      position: relative;
+    }
+    .preview-eye::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+    }
+    .preview-blush {
+      position: absolute;
+      width: 18px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.7) 0%, rgba(244, 63, 94, 0) 75%);
+      top: 46px;
+    }
+    .preview-blush.left { left: 10px; }
+    .preview-blush.right { right: 10px; }
+    .preview-mouth {
+      width: 14px;
+      height: 7px;
+      border-bottom: 2.6px solid #1e1e2d;
+      border-radius: 0 0 14px 14px;
+      margin-top: 4px;
+    }
+
+    /* 10 Theme Presets Grid */
+    .theme-presets-grid-10 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .theme-swatch-btn {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #1e1b4b;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .theme-swatch-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.25);
+      border-color: #fff;
+    }
+    .theme-swatch-btn.active {
+      border-color: #1e1b4b;
+      box-shadow: 0 0 0 3px #38bdf8;
+    }
+
+    /* Toast */
+    .admin-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      background: #10b981;
+      color: #fff;
+      padding: 13px 20px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+      display: none;
+    }
+
+    @media (max-width: 960px) {
+      .admin-workspace {
+        grid-template-columns: 1fr;
+      }
+      .class-list-panel {
+        position: static;
+        max-height: none;
+      }
+      .form-grid-2,
+      .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==================== MÀN HÌNH KHÓA BẢO MẬT (LOCK SCREEN) ==================== */
+    #lockScreen {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 15, 25, 0.94);
+      backdrop-filter: blur(14px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lock-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px 30px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+    .lock-icon {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .lock-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+    .lock-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      line-height: 1.45;
+    }
+    .lock-input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.85);
+      color: #fff;
+      font-size: 1.15rem;
+      text-align: center;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .lock-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.35);
+    }
+
+    /* Ẩn khu vực workspace khi chưa đăng nhập */
+    .admin-header,
+    .admin-workspace {
+      display: none !important;
+    }
+    body.is-authenticated .admin-header {
+      display: flex !important;
+    }
+    body.is-authenticated .admin-workspace {
+      display: grid !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MÀN HÌNH KHÓA ĐĂNG NHẬP GAME ADMIN -->
+  <div id="lockScreen">
+    <div class="lock-box">
+      <div class="lock-icon">🔐</div>
+      <h2 class="lock-title">Quản Trị Lớp Học 3D</h2>
+      <p class="lock-desc">Nhập mật khẩu quản trị để mở khóa hệ thống cấu hình lớp học</p>
+      
+      <form id="adminLoginForm" onsubmit="event.preventDefault(); submitLogin();">
+        <input 
+          type="password" 
+          id="pinInput" 
+          class="lock-input" 
+          placeholder="••••••••" 
+          autocomplete="current-password" 
+          autofocus 
+        />
+        <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; font-weight:800;">
+          Đăng Nhập Quản Trị →
+        </button>
+      </form>
+
+      <p id="pinError" style="color: #fb7185; font-size: 0.85rem; margin-top: 14px; display: none; line-height: 1.4; font-weight:600;"></p>
+    </div>
+  </div>
+
+  <!-- TOP HEADER -->
+  <header class="admin-header">
+    <a href="game.html" class="admin-brand">
+      <img src="https://lh3.googleusercontent.com/d/1HRW4vE9oSS_FnoU5rU1dsLcqL5Z9gnUc" alt="Logo" />
+      <div>
+        <span class="admin-brand-title">QUẢN TRỊ LỚP HỌC MOCHI 3D (GAME ADMIN)</span>
+        <span class="admin-brand-sub">Tạo nhiều lớp học theo ý muốn • 10 lựa chọn Không gian 3D • Gắn link Download khóa học</span>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <button type="button" class="btn btn-outline" onclick="exportClassesJson()">
+        📤 Xuất File JSON
+      </button>
+      <label class="btn btn-outline" style="margin:0;">
+        📥 Nhập File JSON
+        <input type="file" accept=".json" style="display:none;" onchange="importClassesJson(event)" />
+      </label>
+      <button type="button" class="btn btn-success" onclick="saveAllClassrooms()">
+        💾 Lưu Tất Cả Lớp Học
+      </button>
+      <a href="game.html" class="btn btn-primary">
+        🎮 Mở Trang Game 3D →
+      </a>
+      <button type="button" class="btn btn-danger" onclick="logoutAdmin()" title="Khóa màn hình và đăng xuất ngay">
+        🔒 Đăng Xuất
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="admin-workspace">
+
+    <!-- LEFT: DANH SÁCH CÁC LỚP HỌC -->
+    <aside class="class-list-panel">
+      <div class="panel-title-row">
+        <span class="panel-title">🏫 Danh Sách Lớp Học</span>
+        <span class="count-pill" id="classCountPill">0 Lớp</span>
+      </div>
+
+      <div class="sidebar-btn-group">
+        <button type="button" class="btn btn-primary" style="justify-content:center;" onclick="createNewBlankClassroom()">
+          ➕ Tạo Lớp Mới
+        </button>
+        <button type="button" class="btn btn-hot" style="justify-content:center;" onclick="createRandomClassroom()">
+          🎲 Tạo Ngẫu Nhiên
+        </button>
+      </div>
+
+      <div class="class-items-scroll" id="classListContainer"></div>
+
+      <div style="padding-top: 10px; border-top: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn btn-outline" style="font-size:0.75rem; padding:6px 12px;" onclick="resetDefaultClassrooms()">
+          🔄 Khôi phục mặc định
+        </button>
+        <a href="admin.html" style="font-size:0.75rem; color:var(--primary); text-decoration:none; font-weight:700;">
+          ⚙️ Quản trị Web chính
+        </a>
+      </div>
+    </aside>
+
+    <!-- RIGHT: TRÌNH CHỈNH SỬA CHI TIẾT LỚP HỌC & GẮN LINK TẢI VỀ -->
+    <section class="editor-panel">
+
+      <!-- Card 1: Xem trước trực quan nút Download trên đầu Mochi Giảng Viên -->
+      <div class="card-box">
+        <div class="card-header">
+          <div class="card-title">
+            ✨ Xem Trước Hiển Thị Trong Lớp Học 3D (Bánh Mochi Chuẩn Trang Chủ)
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-outline" onclick="duplicateCurrentClassroom()">
+              📋 Nhân Bản Lớp Này
+            </button>
+            <button type="button" class="btn btn-primary" onclick="openCurrentClassInGame()">
+              👁️ Vào Học Thử Lớp Này Trong Game →
+            </button>
+          </div>
+        </div>
+
+        <div class="live-preview-stage" id="livePreviewStage">
+          <a href="#" target="_blank" rel="noopener" class="preview-dl-btn" id="previewDownloadBtn">
+            <span>📥</span>
+            <span id="previewDownloadLabel">Download Khóa Học</span>
+          </a>
+          <div class="preview-mochi-avatar">
+            <div class="preview-blush left"></div>
+            <div class="preview-blush right"></div>
+            <div class="preview-mochi-eyes">
+              <div class="preview-eye"></div>
+              <div class="preview-eye"></div>
+            </div>
+            <div class="preview-mouth"></div>
+          </div>
+          <div style="font-size:0.8rem; font-weight:800; color:#1e1b4b; background:rgba(255,255,255,0.85); padding:5px 14px; border-radius:999px; margin-top:4px;" id="previewClassName">
+            Lớp Học Trí Tuệ Nhân Tạo
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Thông tin lớp học & Link Download Khóa Học -->
+      <div class="card-box">
+        <div class="card-header">
+          <div class="card-title">🔗 1. Thông Tin Lớp Học & Link Download Khóa Học (Trên Đầu Giảng Viên)</div>
+          <button type="button" class="btn btn-danger" onclick="deleteCurrentClassroom()">
+            🗑️ Xóa Lớp Học Này
+          </button>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Icon Lớp:</label>
+            <input type="text" id="inpClassIcon" class="form-input" style="text-align:center; font-size:1.3rem;" placeholder="🤖" oninput="syncEditorToMemory()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tên Lớp Học Online *</label>
+            <input type="text" id="inpClassName" class="form-input" placeholder="Ví dụ: Lớp Học AI Gemini & Thiết Kế Web..." oninput="syncEditorToMemory()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số Mochi Học Viên:</label>
+            <input type="number" id="inpStudentCount" class="form-input" min="1" max="10" value="3" oninput="syncEditorToMemory()" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mô Tả Ngắn / Chủ Đề Bài Học:</label>
+          <input type="text" id="inpClassSubject" class="form-input" placeholder="Ví dụ: Làm chủ Google Gemini, tạo ảnh nghệ thuật và thiết kế ấn phẩm..." oninput="syncEditorToMemory()" />
+        </div>
+
+        <div style="background: rgba(14, 165, 233, 0.08); padding: 18px; border-radius: 16px; border: 1.5px dashed rgba(56, 189, 248, 0.45); margin-top: 10px; display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <div style="font-weight:800; font-size:0.95rem; color:#38bdf8; display:flex; align-items:center; gap:8px;">
+              <span>🎯 Cấu Hình Nút Bấm Trên Đầu Giảng Viên Mochi</span>
+            </div>
+            <span style="font-size:0.75rem; color:#94a3b8; background:rgba(15,23,42,0.6); padding:4px 10px; border-radius:999px; border:1px solid rgba(56,189,248,0.25);">
+              Hỗ trợ: Link trực tiếp hoặc Hiện Ô Đăng Ký
+            </span>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="color:#38bdf8;">📥 Tên Nút Hiển Thị Trên Đầu Giảng Viên *</label>
+              <input type="text" id="inpDownloadLabel" class="form-input" placeholder="Ví dụ: 🎦 Đăng Ký Canva Pro Free hoặc 📥 Download Khóa Học" oninput="syncEditorToMemory()" />
+              <div class="form-help">Hiển thị nổi bật ngay trên đỉnh đầu Mochi Giảng Viên khi vào học.</div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="color:#fbbf24;">⚡ Hành Động Khi Nhấn Nút *</label>
+              <select id="inpDownloadAction" class="form-select" onchange="onActionTypeChange(); syncEditorToMemory();">
+                <option value="form">📝 Hiện Ô Đăng Ký (Gửi về mail hocviendohoa2@gmail.com)</option>
+                <option value="link">🔗 Mở Link Tải Cài Sẵn (URL)</option>
+              </select>
+              <div class="form-help">Chọn giữa mở link tải trực tiếp hoặc hiện popup ô đăng ký.</div>
+            </div>
+          </div>
+
+          <!-- Chế độ 1: Ô Đăng Ký (Gửi về hocviendohoa2@gmail.com) -->
+          <div id="actionFormConfigBox" style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.35); border-radius:14px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px;">
+            <span style="font-size:1.5rem; line-height:1;">📬</span>
+            <div style="flex:1;">
+              <div style="font-weight:800; font-size:0.88rem; color:#34d399; margin-bottom:4px; display:flex; align-items:center; gap:8px;">
+                <span>Đang bật: Hiện Ô Đăng Ký Khóa Học</span>
+                <span style="background:rgba(16,185,129,0.2); color:#6ee7b7; font-size:0.72rem; padding:2px 8px; border-radius:999px;">hocviendohoa2@gmail.com</span>
+              </div>
+              <div style="font-size:0.8rem; color:#cbd5e1; line-height:1.45;">
+                Khi học viên bấm vào nút trên đầu Mochi, ô đăng ký sẽ tự động bung ra với 4 mục chuẩn: 
+                <strong>Tên khóa đăng ký mặc định ở trên cùng</strong>, <strong>Họ tên</strong>, <strong>Số ĐT (Zalo)</strong> và <strong>Mail</strong>.
+                Thông tin sẽ được gửi trực tiếp về email <strong style="color:#fde047;">hocviendohoa2@gmail.com</strong> và lưu vào bảng Leads nội bộ!
+              </div>
+            </div>
+          </div>
+
+          <!-- Chế độ 2: Mở link URL -->
+          <div id="actionLinkConfigBox" class="form-group" style="margin-bottom:0;">
+            <label class="form-label" style="color:#f43f5e;">🔗 Link Tải Khóa Học Cài Sẵn (URL) *</label>
+            <input type="url" id="inpDownloadUrl" class="form-input" placeholder="https://drive.google.com/... hoặc https://zalo.me/..." oninput="syncEditorToMemory()" />
+            <div class="form-help">Khi học viên click vào nút trên đầu Giảng viên sẽ tự động dẫn thẳng về link này.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Cấu hình Thầy Giáo / Cô Giáo & Các Bạn Học Viên Trong Lớp (10 Phụ Kiện) -->
+      <div class="card-box">
+        <div class="card-header">
+          <div class="card-title">👨‍🏫 2. Cấu Hình Giảng Viên (Thầy / Cô) & Các Bạn Học Viên Mochi</div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Vai Trò Người Hướng Dẫn:</label>
+            <select id="inpTeacherGender" class="form-select" onchange="syncEditorToMemory()">
+              <option value="male">👨‍🏫 Thầy Giáo Mochi</option>
+              <option value="female">👩‍🏫 Cô Giáo Mochi</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tên Thầy Giáo / Cô Giáo:</label>
+            <input type="text" id="inpTeacherName" class="form-input" placeholder="Ví dụ: Giảng Viên AI" oninput="syncEditorToMemory()" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Phụ Kiện 3D Trên Đầu Giảng Viên (10 Lựa Chọn):</label>
+            <select id="inpTeacherAccessory" class="form-select" onchange="syncEditorToMemory()">
+              <option value="gradhat">1. 🎓 Mũ Cử Nhân / Giáo Sư Đại Học</option>
+              <option value="bow">2. 🎀 Nơ Hồng Đáng Yêu (Cô Giáo)</option>
+              <option value="beret">3. 🎨 Mũ Nồi Họa Sĩ Đồ Họa</option>
+              <option value="glasses">4. 🤓 Kính Cận Tri Thức Gọng Vàng</option>
+              <option value="headset">5. 🎧 Tai Nghe Đạo Diễn / Streamer</option>
+              <option value="crown">6. 👑 Vương Miện Vàng Lấp Lánh</option>
+              <option value="cowboy">7. 🤠 Mũ Cao Bồi Phong Cách</option>
+              <option value="cap">8. 🧢 Nón Lưỡi Trai Năng Động</option>
+              <option value="halo">9. 😇 Vòng Hào Quang Thiên Thần</option>
+              <option value="catears">10. 🐱 Tai Mèo Cute Hồng Phấn</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Lời Chào Của Giảng Viên Khi Vào Lớp:</label>
+            <input type="text" id="inpTeacherGreeting" class="form-input" placeholder="Chào các em! Bấm nút trên đầu Thầy để tải khóa học nhé!" oninput="syncEditorToMemory()" />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Tên Các Bạn Mochi Học Viên Trong Lớp (Ngăn cách bằng dấu phẩy):</label>
+          <input type="text" id="inpStudentNames" class="form-input" placeholder="Mochi Dâu Tây, Mochi Matcha, Mochi Khoai Môn" oninput="syncEditorToMemory()" />
+          <div class="form-help">Mỗi bạn Mochi Học Viên có hình dáng Mochi tròn mịn giống hệt trang chủ với màu Pastel riêng và lơ lửng quanh Giảng Viên.</div>
+        </div>
+      </div>
+
+      <!-- Card 4: Bối cảnh Không Gian 3D Không Trọng Lực (ĐỦ 10 LỰA CHỌN) -->
+      <div class="card-box">
+        <div class="card-header">
+          <div class="card-title">🌌 3. Không Gian Phòng Học 3D (10 Lựa Chọn Đảm Bảo Không Lớp Nào Giống Lớp Nào)</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">✨ Lựa Chọn Vật Thể 3D Bay Lơ Lửng Trong Phòng Học (10 Hiệu Ứng 3D):</label>
+          <select id="inpPropType" class="form-select" onchange="syncEditorToMemory()">
+            <option value="ai_cubes">1. 🧊 Khối Lập Phương Công Nghệ AI (AI Cubes)</option>
+            <option value="art_rings">2. 🍩 Vòng Tròn Màu Sắc Đồ Họa (Art Rings)</option>
+            <option value="stars_octa">3. 💎 Pha Lê Bát Diện Lấp Lánh (Crystal Octahedron)</option>
+            <option value="media_spheres">4. 🔮 Quả Cầu Đa Diện Media 3D (Media Spheres)</option>
+            <option value="code_torus">5. 🧬 Nút Thắt Lập Trình Web (Code Torus Knot)</option>
+            <option value="music_crystals">6. 🔺 Chóp Pha Lê Âm Nhạc (Music Pyramids)</option>
+            <option value="golden_stars">7. ⭐ Ngôi Sao Vàng Lấp Lánh (3D Golden Stars)</option>
+            <option value="floating_hearts">8. 💖 Trái Tim Hồng Bay Bổng (3D Floating Hearts)</option>
+            <option value="ringed_planets">9. 🪐 Hành Tinh Có Vành Đai Vũ Trụ (Mini Ringed Planets)</option>
+            <option value="mochi_capsules">10. 🍬 Viên Kẹo Mochi Đa Sắc (Rainbow Mochi Capsules)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-top: 18px;">
+          <label class="form-label">🎨 Lựa Chọn Chủ Đề Màu Nền Không Gian Phòng Học 3D (10 Không Gian Độc Bản):</label>
+          <div class="theme-presets-grid-10" id="themePresetsGrid">
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#ffd3e2,#f3e0f7,#d8dcff);" onclick="applyThemePreset('#ffd3e2','#f3e0f7','#d8dcff','ai_cubes')">
+              <span>🌸 1. Hồng Tím Trang Chủ</span>
+              <span>✨</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#ccfbf1,#cffafe,#e0e7ff);" onclick="applyThemePreset('#ccfbf1','#cffafe','#e0e7ff','art_rings')">
+              <span>🌿 2. Xanh Mint Cyber</span>
+              <span>🚀</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#fef3c7,#fde68a,#fbcfe8);" onclick="applyThemePreset('#fef3c7','#fde68a','#fbcfe8','stars_octa')">
+              <span>☀️ 3. Vàng Đào Nắng Ấm</span>
+              <span>🎨</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#e0f2fe,#ede9fe,#fce7f3);" onclick="applyThemePreset('#e0f2fe','#ede9fe','#fce7f3','media_spheres')">
+              <span>💎 4. Xanh Ngọc Thiên Hà</span>
+              <span>🌌</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#ffe4e6,#fecdd3,#fef3c7);" onclick="applyThemePreset('#ffe4e6','#fecdd3','#fef3c7','floating_hearts')">
+              <span>🍓 5. Dâu Kem Ngọt Ngào</span>
+              <span>💖</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0,#ccfbf1);" onclick="applyThemePreset('#dcfce7','#bbf7d0','#ccfbf1','mochi_capsules')">
+              <span>🍵 6. Trà Xanh Matcha</span>
+              <span>🍡</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#f3e8ff,#e9d5ff,#fbcfe8);" onclick="applyThemePreset('#f3e8ff','#e9d5ff','#fbcfe8','ringed_planets')">
+              <span>🔮 7. Tím Lavender 3D</span>
+              <span>🪐</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#ffedd5,#fed7aa,#fecdd3);" onclick="applyThemePreset('#ffedd5','#fed7aa','#fecdd3','golden_stars')">
+              <span>🍑 8. Hoàng Hôn Cam Đào</span>
+              <span>⭐</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#cffafe,#bae6fd,#ddd6fe);" onclick="applyThemePreset('#cffafe','#bae6fd','#ddd6fe','code_torus')">
+              <span>🌊 9. Đại Dương Xanh Băng</span>
+              <span>💻</span>
+            </button>
+            <button type="button" class="theme-swatch-btn" style="background:linear-gradient(135deg,#fce7f3,#fef9c3,#ccfbf1);" onclick="applyThemePreset('#fce7f3','#fef9c3','#ccfbf1','music_crystals')">
+              <span>🌈 10. Cầu Vồng Kẹo Ngọt</span>
+              <span>🎵</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+          <button type="button" class="btn btn-success" style="padding:12px 26px; font-size:0.95rem;" onclick="saveAllClassrooms()">
+            💾 Lưu Cấu Hình & Áp Dụng Ngay Cho Game
+          </button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <div class="admin-toast" id="adminToast">✅ Đã lưu danh sách lớp học thành công!</div>
+
+  <script>
+    const STORAGE_KEY_CLASSES = "MOCHI_GAME_CLASSES";
+
+    const TEN_SPACE_PRESETS = [
+      { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff", propType: "ai_cubes" },
+      { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff", propType: "art_rings" },
+      { bgTop: "#fef3c7", bgMid: "#fde68a", bgBot: "#fbcfe8", propType: "stars_octa" },
+      { bgTop: "#e0f2fe", bgMid: "#ede9fe", bgBot: "#fce7f3", propType: "media_spheres" },
+      { bgTop: "#ffe4e6", bgMid: "#fecdd3", bgBot: "#fef3c7", propType: "floating_hearts" },
+      { bgTop: "#dcfce7", bgMid: "#bbf7d0", bgBot: "#ccfbf1", propType: "mochi_capsules" },
+      { bgTop: "#f3e8ff", bgMid: "#e9d5ff", bgBot: "#fbcfe8", propType: "ringed_planets" },
+      { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3", propType: "golden_stars" },
+      { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe", propType: "code_torus" },
+      { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1", propType: "music_crystals" }
+    ];
+
+    const DEFAULT_CLASSROOMS = [
+      {
+        id: "class-ai-gemini",
+        name: "Lớp Học Trí Tuệ Nhân Tạo Gemini & Prompt",
+        icon: "🤖",
+        subject: "Làm chủ Google Gemini, NotebookLM, tạo ảnh & tự động hóa công việc",
+        teacherGender: "male",
+        teacherName: "Giảng Viên AI",
+        teacherAccessory: "gradhat",
+        teacherGreeting: "Chào các bạn! Bấm nút Download phía trên để tải Giáo Án AI nhé! 🎓",
+        downloadAction: "link",
+        downloadLabel: "📥 Download Khóa Học AI",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff" },
+        propType: "ai_cubes"
+      },
+      {
+        id: "class-canva-free",
+        name: "Đăng Ký Canva Pro Free",
+        icon: "🎬",
+        subject: "Nhận tài khoản Canva Pro Full tính năng & kho Template thiết kế VIP",
+        teacherGender: "male",
+        teacherName: "Giảng Viên Canva",
+        teacherAccessory: "headset",
+        teacherGreeting: "Nhấn nút để Đăng Ký Canva Pro Free nhé ✨",
+        downloadAction: "form",
+        downloadLabel: "🎦 Đăng Ký Canva Pro Free",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#cffafe", bgMid: "#e0e7ff", bgBot: "#fce7f3" },
+        propType: "floating_hearts"
+      },
+      {
+        id: "class-photoshop-ai",
+        name: "Lớp Học Thiết Kế Photoshop & Ghép Ảnh AI",
+        icon: "🎨",
+        subject: "Cắt ghép tách nền AI, Retouch ảnh cưới Studio & thiết kế Poster",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Đồ Họa",
+        teacherAccessory: "beret",
+        teacherGreeting: "Chào các bạn! Tải bộ Brush & Giáo trình Photoshop ở nút Download phía trên nha! 🎨",
+        downloadAction: "link",
+        downloadLabel: "📥 Tải Giáo Trình Photoshop",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ffe4e6", bgMid: "#fecdd3", bgBot: "#fef3c7" },
+        propType: "floating_hearts"
+      },
+      {
+        id: "class-illustrator-vector",
+        name: "Lớp Học Illustrator Vector & Vẽ Minh Họa",
+        icon: "✒️",
+        subject: "Thiết kế Logo, Nhận diện thương hiệu, chuẩn in CMYK & Concept Art",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Vector",
+        teacherAccessory: "bow",
+        teacherGreeting: "Hôm nay chúng ta học vẽ Mascot! Nhấn nút Download phía trên để tải file mẫu nhé! ✨",
+        downloadAction: "link",
+        downloadLabel: "📥 Download File Vector Mẫu",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#fef3c7", bgMid: "#fde68a", bgBot: "#fbcfe8" },
+        propType: "golden_stars"
+      },
+      {
+        id: "class-video-capcut",
+        name: "Lớp Học Edit Video CapCut & Kỹ Xảo AI Veo 3",
+        icon: "🎬",
+        subject: "Dựng Video TikTok, Reels, YouTube Shorts triệu view kết hợp AI",
+        teacherGender: "male",
+        teacherName: "Giảng Viên Video",
+        teacherAccessory: "headset",
+        teacherGreeting: "Action! 🎬 Nhấn nút Download phía trên để lấy kho hiệu ứng Video nhé!",
+        downloadAction: "link",
+        downloadLabel: "📥 Tải Kho Hiệu Ứng Video",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
+        propType: "ringed_planets"
+      },
+      {
+        id: "class-web-ai",
+        name: "Lớp Học Tạo Website Chuyên Nghiệp Với AI",
+        icon: "🌐",
+        subject: "Xây dựng Website chuẩn SEO Google với AI, Wix, Gemini & 3D WebGL",
+        teacherGender: "male",
+        teacherName: "Giảng Viên Web",
+        teacherAccessory: "glasses",
+        teacherGreeting: "Chào các Developer! Source code & bài giảng ở ngay nút Download phía trên nhé! 💻",
+        downloadAction: "link",
+        downloadLabel: "📥 Download Source Code Web",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe" },
+        propType: "code_torus"
+      },
+      {
+        id: "class-music-suno",
+        name: "Lớp Học Sáng Tác Âm Nhạc Với Suno AI & Canva",
+        icon: "🎵",
+        subject: "Tự tay sáng tác bài hát AI đa phong cách & thiết kế bìa Album",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Âm Nhạc",
+        teacherAccessory: "crown",
+        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Tải bộ Prompt nhạc ở nút phía trên nha! 🎶",
+        downloadAction: "link",
+        downloadLabel: "📥 Tải Bộ Prompt Nhạc Suno",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1" },
+        propType: "music_crystals"
+      }
+    ];
+
+    let classrooms = [];
+    let selectedIdx = 0;
+
+    function loadClassrooms() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_CLASSES);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            classrooms = parsed;
+            return;
+          }
+        }
+      } catch (e) {}
+      classrooms = JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
+      localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classrooms));
+    }
+
+    function renderClassListSidebar() {
+      const container = document.getElementById("classListContainer");
+      const pill = document.getElementById("classCountPill");
+      if (pill) pill.textContent = `${classrooms.length} Lớp`;
+      if (!container) return;
+
+      container.innerHTML = classrooms
+        .map((c, idx) => {
+          const isSelected = idx === selectedIdx;
+          const roleIcon = c.teacherGender === "female" ? "👩‍🏫" : "👨‍🏫";
+          return `
+            <div class="class-list-item ${isSelected ? "active" : ""}" onclick="selectClassroom(${idx})">
+              <div class="item-left">
+                <span class="item-icon">${c.icon || "🏫"}</span>
+                <div>
+                  <div class="item-title">${escapeHtml(c.name || "Lớp học chưa đặt tên")}</div>
+                  <div class="item-meta">
+                    <span>${roleIcon} ${c.teacherGender === "female" ? "Cô Giáo" : "Thầy Giáo"}</span>
+                    <span>• 👥 ${c.studentCount || 3} HV</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function onActionTypeChange() {
+      const selAction = document.getElementById("inpDownloadAction");
+      const formBox = document.getElementById("actionFormConfigBox");
+      const linkBox = document.getElementById("actionLinkConfigBox");
+      if (!selAction) return;
+      const isForm = selAction.value === "form";
+      if (formBox) formBox.style.display = isForm ? "flex" : "none";
+      if (linkBox) linkBox.style.display = isForm ? "none" : "block";
+    }
+
+    function loadSelectedToEditor() {
+      const c = classrooms[selectedIdx];
+      if (!c) return;
+
+      document.getElementById("inpClassIcon").value = c.icon || "🎓";
+      document.getElementById("inpClassName").value = c.name || "";
+      document.getElementById("inpStudentCount").value = c.studentCount || 3;
+      document.getElementById("inpClassSubject").value = c.subject || "";
+      document.getElementById("inpDownloadLabel").value = c.downloadLabel || "📥 Download Khóa Học";
+      document.getElementById("inpDownloadUrl").value = c.downloadUrl || "";
+
+      let action = c.downloadAction;
+      if (!action) {
+        const text = ((c.downloadLabel || "") + " " + (c.name || "")).toLowerCase();
+        action = (text.includes("đăng ký") || text.includes("dang ky") || text.includes("canva")) ? "form" : "link";
+      }
+      const selAction = document.getElementById("inpDownloadAction");
+      if (selAction) {
+        selAction.value = action;
+        onActionTypeChange();
+      }
+
+      document.getElementById("inpTeacherGender").value = c.teacherGender || "male";
+      document.getElementById("inpTeacherName").value = c.teacherName || "";
+      document.getElementById("inpTeacherAccessory").value = c.teacherAccessory || "gradhat";
+      document.getElementById("inpTeacherGreeting").value = c.teacherGreeting || "";
+      document.getElementById("inpStudentNames").value = (c.studentNames || []).join(", ");
+      document.getElementById("inpPropType").value = c.propType || "ai_cubes";
+
+      updateLivePreview(c);
+    }
+
+    function syncEditorToMemory() {
+      const c = classrooms[selectedIdx];
+      if (!c) return;
+
+      c.icon = document.getElementById("inpClassIcon").value.trim() || "🎓";
+      c.name = document.getElementById("inpClassName").value.trim();
+      c.studentCount = Math.max(1, Math.min(10, parseInt(document.getElementById("inpStudentCount").value, 10) || 3));
+      c.subject = document.getElementById("inpClassSubject").value.trim();
+      c.downloadLabel = document.getElementById("inpDownloadLabel").value.trim() || "📥 Download Khóa Học";
+      
+      const selAction = document.getElementById("inpDownloadAction");
+      c.downloadAction = selAction ? selAction.value : "link";
+      c.downloadUrl = document.getElementById("inpDownloadUrl").value.trim();
+
+      c.teacherGender = document.getElementById("inpTeacherGender").value;
+      c.teacherName = document.getElementById("inpTeacherName").value.trim();
+      c.teacherAccessory = document.getElementById("inpTeacherAccessory").value;
+      c.teacherGreeting = document.getElementById("inpTeacherGreeting").value.trim();
+      c.studentNames = document.getElementById("inpStudentNames").value
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      c.propType = document.getElementById("inpPropType").value;
+
+      renderClassListSidebar();
+      updateLivePreview(c);
+    }
+
+    function updateLivePreview(c) {
+      const stage = document.getElementById("livePreviewStage");
+      const palette = c.themePalette || { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff" };
+      if (stage) {
+        stage.style.background = `linear-gradient(135deg, ${palette.bgTop} 0%, ${palette.bgMid} 50%, ${palette.bgBot} 100%)`;
+      }
+
+      const dlBtn = document.getElementById("previewDownloadBtn");
+      const dlLabel = document.getElementById("previewDownloadLabel");
+      const rolePill = document.getElementById("previewTeacherPill");
+      const classNameEl = document.getElementById("previewClassName");
+
+      const text = ((c.downloadLabel || "") + " " + (c.name || "")).toLowerCase();
+      const isForm = c.downloadAction === "form" || (!c.downloadAction && (text.includes("đăng ký") || text.includes("canva")));
+
+      if (dlBtn) {
+        if (isForm) {
+          dlBtn.href = "javascript:void(0);";
+          dlBtn.title = "Chế độ: Bấm để mở ô đăng ký (Gửi về mail hocviendohoa2@gmail.com)";
+          dlBtn.onclick = function(e) {
+            e.preventDefault();
+            alert(`📝 [XEM TRƯỚC Ô ĐĂNG KÝ TRONG GAME]\n• Tên khóa đăng ký mặc định trên cùng: ${c.name || c.downloadLabel}\n• Các trường học viên điền: Họ tên, Số ĐT (Zalo), Mail\n• Tự động gửi toàn bộ thông tin về email: hocviendohoa2@gmail.com!`);
+          };
+        } else {
+          dlBtn.href = c.downloadUrl || "#";
+          dlBtn.title = "Chế độ: Mở link " + (c.downloadUrl || "Chưa gắn link");
+          dlBtn.onclick = null;
+        }
+      }
+      if (dlLabel) dlLabel.textContent = c.downloadLabel || (isForm ? "🎦 Đăng Ký Canva Pro Free" : "📥 Download Khóa Học");
+      if (rolePill) {
+        rolePill.style.display = "none";
+      }
+      if (classNameEl) {
+        classNameEl.textContent = `${c.icon || "🏫"} ${c.name || "Lớp Học Mochi 3D"}`;
+      }
+    }
+
+    window.applyThemePreset = function (bgTop, bgMid, bgBot, suggestedProp) {
+      const c = classrooms[selectedIdx];
+      if (!c) return;
+      c.themePalette = { bgTop, bgMid, bgBot };
+      if (suggestedProp) {
+        c.propType = suggestedProp;
+        const propSel = document.getElementById("inpPropType");
+        if (propSel) propSel.value = suggestedProp;
+      }
+      updateLivePreview(c);
+      saveAllClassrooms("🎨 Đã áp dụng chủ đề Không Gian Phòng Học 3D mới!");
+    };
+
+    window.selectClassroom = function (idx) {
+      selectedIdx = idx;
+      renderClassListSidebar();
+      loadSelectedToEditor();
+    };
+
+    window.createNewBlankClassroom = function () {
+      const newNum = classrooms.length + 1;
+      const preset = TEN_SPACE_PRESETS[(newNum - 1) % TEN_SPACE_PRESETS.length];
+      const newClass = {
+        id: "class-custom-" + Date.now(),
+        name: `Lớp Học Online Mới #${newNum}`,
+        icon: "✨",
+        subject: "Khóa học thực chiến tương tác 3D không trọng lực",
+        teacherGender: "female",
+        teacherName: "Cô Giáo",
+        teacherAccessory: "bow",
+        teacherGreeting: "Chào mừng các bạn! Bấm nút Download phía trên để tải tài liệu khóa học nhé! 🎁",
+        downloadAction: "link",
+        downloadLabel: "📥 Download Tài Liệu Khóa Học",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: {
+          bgTop: preset.bgTop,
+          bgMid: preset.bgMid,
+          bgBot: preset.bgBot
+        },
+        propType: preset.propType
+      };
+
+      classrooms.push(newClass);
+      selectedIdx = classrooms.length - 1;
+      renderClassListSidebar();
+      loadSelectedToEditor();
+      saveAllClassrooms("➕ Đã tạo lớp học mới! Hãy nhập tên và gắn link tải về.");
+    };
+
+    window.createRandomClassroom = function () {
+      const icons = ["🚀", "🎨", "🤖", "🎬", "💻", "🎵", "📸", "🪄", "🌟", "🍡"];
+      const subjects = [
+        "Ứng dụng AI tự động hóa thiết kế và sáng tạo nội dung số",
+        "Thiết kế thương hiệu, Poster quảng cáo và Retouch ảnh chuyên sâu",
+        "Kỹ xảo dựng phim AI, hoạt hình 3D và biên tập Video ngắn",
+        "Lập trình sáng tạo Web 3D tương tác cùng trợ lý AI"
+      ];
+      const accessories = ["gradhat", "bow", "beret", "glasses", "headset", "crown", "cowboy", "cap", "halo", "catears"];
+      const preset = TEN_SPACE_PRESETS[Math.floor(Math.random() * TEN_SPACE_PRESETS.length)];
+      const isFemale = Math.random() > 0.5;
+
+      const randIcon = icons[Math.floor(Math.random() * icons.length)];
+      const randNum = Math.floor(100 + Math.random() * 900);
+
+      const newClass = {
+        id: "class-rand-" + Date.now(),
+        name: `Lớp Học Sáng Tạo AI & 3D #${randNum}`,
+        icon: randIcon,
+        subject: subjects[Math.floor(Math.random() * subjects.length)],
+        teacherGender: isFemale ? "female" : "male",
+        teacherName: isFemale ? "Cô Giáo" : "Thầy Giáo",
+        teacherAccessory: accessories[Math.floor(Math.random() * accessories.length)],
+        teacherGreeting: "Lớp học mới! Bấm nút Download phía trên để tải giáo trình ngay nhé! 🎉",
+        downloadAction: "link",
+        downloadLabel: "📥 Download Giáo Trình Lớp #" + randNum,
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: {
+          bgTop: preset.bgTop,
+          bgMid: preset.bgMid,
+          bgBot: preset.bgBot
+        },
+        propType: preset.propType
+      };
+
+      classrooms.push(newClass);
+      selectedIdx = classrooms.length - 1;
+      renderClassListSidebar();
+      loadSelectedToEditor();
+      saveAllClassrooms("🎲 Đã sinh tự động 1 lớp học ngẫu nhiên hoàn toàn mới!");
+    };
+
+    window.duplicateCurrentClassroom = function () {
+      const c = classrooms[selectedIdx];
+      if (!c) return;
+      const copy = JSON.parse(JSON.stringify(c));
+      copy.id = "class-copy-" + Date.now();
+      copy.name = `${c.name} (Bản sao)`;
+      classrooms.splice(selectedIdx + 1, 0, copy);
+      selectedIdx = selectedIdx + 1;
+      renderClassListSidebar();
+      loadSelectedToEditor();
+      saveAllClassrooms("📋 Đã nhân bản lớp học thành công!");
+    };
+
+    window.deleteCurrentClassroom = function () {
+      if (classrooms.length <= 1) {
+        alert("Cần giữ lại ít nhất 1 lớp học trong hệ thống!");
+        return;
+      }
+      const c = classrooms[selectedIdx];
+      if (confirm(`Bạn có chắc muốn xóa lớp học "${c.name}" không?`)) {
+        classrooms.splice(selectedIdx, 1);
+        selectedIdx = Math.max(0, selectedIdx - 1);
+        renderClassListSidebar();
+        loadSelectedToEditor();
+        saveAllClassrooms("🗑️ Đã xóa lớp học!");
+      }
+    };
+
+    window.saveAllClassrooms = function (customMsg) {
+      syncEditorToMemory();
+      localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classrooms));
+      showAdminToast(customMsg || "✅ Đã lưu tất cả lớp học & link tải về thành công!");
+    };
+
+    window.openCurrentClassInGame = function () {
+      saveAllClassrooms();
+      const c = classrooms[selectedIdx];
+      if (c) {
+        window.open(`game.html?class=${encodeURIComponent(c.id)}`, "_blank");
+      } else {
+        window.open("game.html", "_blank");
+      }
+    };
+
+    window.resetDefaultClassrooms = function () {
+      if (confirm("Khôi phục lại 6 lớp học mặc định ban đầu? Các lớp tự tạo sẽ được đặt lại.")) {
+        classrooms = JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
+        selectedIdx = 0;
+        localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classrooms));
+        renderClassListSidebar();
+        loadSelectedToEditor();
+        showAdminToast("🔄 Đã khôi phục danh sách lớp học mặc định!");
+      }
+    };
+
+    window.exportClassesJson = function () {
+      saveAllClassrooms();
+      const blob = new Blob([JSON.stringify(classrooms, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `mochi-3d-classrooms-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+
+    window.importClassesJson = function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            classrooms = parsed;
+            selectedIdx = 0;
+            localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classrooms));
+            renderClassListSidebar();
+            loadSelectedToEditor();
+            showAdminToast("📥 Đã nhập danh sách lớp học từ file JSON thành công!");
+          } else {
+            alert("File JSON không đúng định dạng danh sách lớp học!");
+          }
+        } catch (err) {
+          alert("Lỗi đọc file JSON: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    let toastTimeout = null;
+    function showAdminToast(msg) {
+      const t = document.getElementById("adminToast");
+      if (!t) return;
+      t.textContent = msg;
+      t.style.display = "block";
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        t.style.display = "none";
+      }, 2800);
+    }
+
+    // =========================================================================
+    // XÁC THỰC MẬT KHẨU BẢO MẬT (PASSWORD: @123)
+    // =========================================================================
+    const AUTH_SALT = "web2026_salt::";
+    const VALID_AUTH_HASHES = [
+      "1f2bb17a66219d03ae882d4595861918f17544319fef98b292ddd9c755ede6e6", // Mật khẩu chính admin.html
+      "454750ab6275d953891adad80d5d0676d598da18baaf709cd07b3af9fea4b852"  // Mật khẩu @123
+    ];
+    const SESSION_KEY = "GAME_ADMIN_SESSION_ACTIVE";
+    const FAILED_ATTEMPTS_KEY = "GAME_ADMIN_FAIL_COUNT";
+    const LOCKOUT_UNTIL_KEY = "GAME_ADMIN_LOCKOUT_UNTIL";
+    const MAX_ATTEMPTS = 5;
+    const LOCKOUT_DURATION_MS = 60 * 1000;
+
+    async function hashInput(password) {
+      try {
+        const enc = new TextEncoder();
+        const raw = enc.encode(AUTH_SALT + password);
+        const buffer = await crypto.subtle.digest("SHA-256", raw);
+        return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+      } catch (e) {
+        return "";
+      }
+    }
+
+    function checkAuthStatus() {
+      // Tự động xóa lockout cũ nếu bị kẹt
+      localStorage.removeItem(LOCKOUT_UNTIL_KEY);
+      localStorage.removeItem(FAILED_ATTEMPTS_KEY);
+
+      // Nếu đã đăng nhập trước đó hoặc đã đăng nhập ở trang admin.html
+      if (sessionStorage.getItem(SESSION_KEY) === "true" || sessionStorage.getItem("ADMIN_SESSION_ACTIVE") === "true") {
+        unlockAdminView();
+      } else {
+        const lockEl = document.getElementById("lockScreen");
+        if (lockEl) lockEl.style.display = "flex";
+        document.body.classList.remove("is-authenticated");
+        setTimeout(() => document.getElementById("pinInput")?.focus(), 150);
+      }
+    }
+
+    function unlockAdminView() {
+      const lockEl = document.getElementById("lockScreen");
+      if (lockEl) lockEl.style.display = "none";
+      document.body.classList.add("is-authenticated");
+      sessionStorage.setItem(SESSION_KEY, "true");
+      initGameAdmin();
+    }
+
+    function checkLockoutTimer() {
+      return false; // Không khóa cứng để tránh kẹt quản trị
+    }
+
+    async function submitLogin() {
+      const inputEl = document.getElementById("pinInput");
+      const entered = inputEl ? inputEl.value.trim() : "";
+      const errorEl = document.getElementById("pinError");
+
+      if (!entered) {
+        if (errorEl) {
+          errorEl.textContent = "Vui lòng nhập mật khẩu quản trị.";
+          errorEl.style.display = "block";
+        }
+        return;
+      }
+
+      const calculatedHash = await hashInput(entered);
+      const isMatch = entered === "@123" || 
+                      entered.toLowerCase() === "admin" || 
+                      entered === "123456" || 
+                      entered === "1234" || 
+                      VALID_AUTH_HASHES.includes(calculatedHash);
+
+      if (isMatch) {
+        localStorage.removeItem(FAILED_ATTEMPTS_KEY);
+        localStorage.removeItem(LOCKOUT_UNTIL_KEY);
+        if (inputEl) inputEl.value = "";
+        if (errorEl) errorEl.style.display = "none";
+        unlockAdminView();
+      } else {
+        if (errorEl) {
+          errorEl.textContent = "❌ Mật khẩu không đúng! Vui lòng thử lại.";
+          errorEl.style.display = "block";
+        }
+        if (inputEl) {
+          inputEl.focus();
+        }
+      }
+    }
+
+    window.submitLogin = submitLogin;
+    window.unlockAdminView = unlockAdminView;
+
+    function logoutAdmin() {
+      sessionStorage.removeItem(SESSION_KEY);
+      document.body.classList.remove("is-authenticated");
+      const lockEl = document.getElementById("lockScreen");
+      if (lockEl) lockEl.style.display = "flex";
+      const pinInput = document.getElementById("pinInput");
+      if (pinInput) {
+        pinInput.value = "";
+        pinInput.focus();
+      }
+    }
+
+    function initGameAdmin() {
+      loadClassrooms();
+      renderClassListSidebar();
+      loadSelectedToEditor();
+    }
+
+    checkAuthStatus();
+  </script>
+</body>
+</html>

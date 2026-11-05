@@ -649,15 +649,15 @@ function renderInteractiveFaceCard() {
       </div>
       <div class="category-body ai-face-body">
         <div class="category-footer" style="padding-top: 0; border-top: none;">
-          <div>
-            <span class="price-label" style="display:block; font-size:0.82rem; font-weight:800; color:var(--text-main); margin-bottom:2px;">
-              kéo và cho ăn Mochi 3D nè !
+          <div style="flex: 1; min-width: 0; padding-right: 8px;">
+            <span class="price-label" style="display:block; font-size:0.84rem; font-weight:800; color:var(--text-main); text-transform:none; letter-spacing:normal; line-height:1.35; margin-bottom:2px;">
+              Tham gia lớp học để tải <br/> các khóa học miễn phí các bạn nhé.
             </span>
-            <span class="price-value" id="aiFaceStatusText" style="font-size: 0.95rem; color: var(--primary);">Đang nhìn bạn nè 🥰</span>
+            <span class="price-value" id="aiFaceStatusText" style="font-size: 0.85rem; color: var(--primary); font-weight:600; display:block; min-height:1.2em;"></span>
           </div>
-          <button class="btn btn-primary" style="padding:8px 16px; font-size:0.84rem;" onclick="prefillCourseAndScroll('Khóa học Trí tuệ nhân tạo')">
-            TƯ VẤN NGAY →
-          </button>
+          <a href="game.html" class="btn btn-primary" style="padding:8px 16px; font-size:0.84rem; text-decoration:none; flex-shrink:0;">
+            Tham Gia Lớp Học →
+          </a>
         </div>
       </div>
     </article>
@@ -1011,9 +1011,13 @@ class AIFaceTracker {
       sleepy: "Oaaa... Buồn ngủ quá, bong bóng mũi phập phồng nè! 😪💤",
       unamused: "Hứ, tớ đang giận dỗi và liếc chán nản bạn đó! 😒💅",
       rolling: "Ủa alo? Đảo mắt lên trần nhà luôn nè! 🙄🙄",
-      normal: "Đang nhìn bạn nè 🥰"
+      normal: ""
     };
-    this.setStatus(msgs[this.currentEmotion] || "Đang nhìn bạn nè 🥰", 3500);
+    if (this.currentEmotion !== "normal") {
+      this.setStatus(msgs[this.currentEmotion] || "", 3500);
+    } else {
+      this.setStatus("", 0);
+    }
 
     // Mochi nảy nhẹ khi đổi cảm xúc
     this.velY = -4;
@@ -1051,7 +1055,7 @@ class AIFaceTracker {
     if (duration > 0) {
       this.statusTimer = setTimeout(() => {
         if (this.statusEl) {
-          this.statusEl.textContent = "Đang nhìn bạn nè 🥰";
+          this.statusEl.textContent = "";
         }
       }, duration);
     }

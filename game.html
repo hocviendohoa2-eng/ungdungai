@@ -1,0 +1,3466 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Lớp Học Mochi 3D | Tương Tác Khóa Học Online</title>
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1HRW4vE9oSS_FnoU5rU1dsLcqL5Z9gnUc" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Three.js, Cannon.js & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --hot-pink: #f43f5e;
+      --cyan: #0ea5e9;
+      --emerald: #10b981;
+      --text-dark: #1e1b4b;
+      --text-muted: #64748b;
+      --glass-bg: rgba(255, 255, 255, 0.92);
+      --glass-border: rgba(255, 255, 255, 0.98);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffd3e2 0%, #f3e0f7 38%, #e2e4ff 75%, #d8dcff 100%);
+      touch-action: none;
+      transition: background 0.5s ease;
+    }
+
+    /* WebGL Canvas Container */
+    #canvasContainer {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      cursor: grab;
+    }
+    #canvasContainer.is-dragging {
+      cursor: grabbing;
+    }
+
+    /* ==================== TOP NAVIGATION BAR (RESPONSIVE, KHÔNG MẤT CHỮ) ==================== */
+    .top-classroom-bar {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .top-row-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+      flex-wrap: wrap;
+      pointer-events: auto;
+    }
+
+    .top-row-select {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      justify-content: center;
+      pointer-events: auto;
+    }
+
+    .brand-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 2px solid var(--glass-border);
+      padding: 7px 13px;
+      border-radius: 999px;
+      box-shadow: 0 6px 18px rgba(30, 27, 75, 0.1);
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 800;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .brand-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.18);
+    }
+    .brand-chip img {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .top-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .action-pill-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .action-pill-btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-random-class {
+      background: linear-gradient(135deg, #f43f5e, #fb923c);
+      color: #fff;
+      box-shadow: 0 5px 14px rgba(244, 63, 94, 0.3);
+    }
+    .btn-class-list {
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      color: #fff;
+      box-shadow: 0 5px 14px rgba(79, 70, 229, 0.28);
+    }
+    .btn-admin-link {
+      background: var(--glass-bg);
+      color: var(--text-dark);
+      border: 1.5px solid var(--glass-border);
+      box-shadow: 0 5px 14px rgba(30, 27, 75, 0.08);
+    }
+
+    .class-selector-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 2px solid var(--glass-border);
+      padding: 4px 10px;
+      border-radius: 999px;
+      box-shadow: 0 8px 22px rgba(30, 27, 75, 0.1);
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .class-select-dropdown {
+      border: none;
+      background: transparent;
+      color: var(--text-dark);
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 5px 6px;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+      text-overflow: ellipsis;
+    }
+
+    /* ==================== 3D FLOATING LABELS & INSTRUCTOR DOWNLOAD BUTTON ==================== */
+    #labelsOverlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 15;
+      overflow: hidden;
+    }
+
+    .instructor-head-anchor {
+      position: absolute;
+      left: 50%;
+      top: 30%;
+      transform: translate(-50%, -100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      pointer-events: auto;
+      z-index: 25;
+      width: max-content;
+      max-width: calc(100vw - 20px);
+      will-change: left, top;
+    }
+
+    .instructor-download-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+      background-size: 200% 200%;
+      animation: gradientFlow 3s ease infinite, floatBob 2.4s ease-in-out infinite;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 0.8rem;
+      padding: 7px 15px;
+      border-radius: 999px;
+      border: 2px solid #ffffff;
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.42), 0 0 0 3px rgba(255, 255, 255, 0.35);
+      text-decoration: none;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.25;
+      max-width: calc(100vw - 24px);
+      white-space: normal;
+      word-break: break-word;
+    }
+    .instructor-download-btn:hover {
+      transform: scale(1.06);
+    }
+
+    .dl-icon-badge {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      flex-shrink: 0;
+    }
+
+    .instructor-role-tag {
+      display: none !important;
+    }
+
+    .instructor-speech-bubble {
+      background: rgba(30, 27, 75, 0.88);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 12px;
+      max-width: min(270px, calc(100vw - 28px));
+      text-align: center;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.35;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    .instructor-speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px 5px 0;
+      border-style: solid;
+      border-color: rgba(30, 27, 75, 0.88) transparent transparent;
+    }
+
+    .student-head-anchor,
+    .student-name-pill {
+      display: none !important;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes floatBob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* ==================== NÚT CHO ĂN BÁNH TRẮNG BÊN TRÁI (GIỐNG HỆT TRANG CHỦ) ==================== */
+    .mochi-feed-floating-dock {
+      position: absolute;
+      left: 14px;
+      top: 46%;
+      transform: translateY(-50%);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .mochi-feed-floating-dock.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-50%) translateX(-80px);
+    }
+
+    .feed-mochi-ball-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 10px 24px rgba(30, 27, 75, 0.14);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .feed-mochi-ball-btn:hover {
+      transform: scale(1.1);
+    }
+    .feed-mochi-ball-btn:active {
+      transform: scale(0.9);
+    }
+    .snack-sphere-icon {
+      width: 30px;
+      height: 28px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 30%, #ffffff 0%, #f8fafc 55%, #cbd5e1 100%);
+      box-shadow: inset -2px -3px 6px rgba(100, 116, 139, 0.4), 0 4px 10px rgba(100, 116, 139, 0.22);
+      display: block;
+    }
+    .feed-label-tag {
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--text-dark);
+      font-size: 0.66rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+      white-space: nowrap;
+    }
+
+    /* ==================== NÚT MỞ LẠI PANEL KHI ĐANG ẨN ==================== */
+    .hud-Launcher-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 35;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      border: 2px solid #ffffff;
+      padding: 7px 14px;
+      border-radius: 999px;
+      box-shadow: 0 10px 28px rgba(30, 27, 75, 0.18);
+      white-space: nowrap;
+    }
+    .hud-Launcher-bar.visible {
+      display: inline-flex;
+    }
+    .btn-show-hud {
+      border: none;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 6px 13px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    /* ==================== 2D OVERLAY (HUD) PANEL Ở GÓC MÀN HÌNH ==================== */
+    .hud-overlay-panel {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      z-index: 30;
+      width: 380px;
+      max-width: calc(100vw - 24px);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 2px solid #ffffff;
+      border-radius: 24px;
+      padding: 14px 16px;
+      box-shadow: 0 18px 45px rgba(30, 27, 75, 0.16);
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
+    }
+    .hud-overlay-panel.is-collapsed {
+      transform: translateY(calc(100% + 24px));
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hud-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .hud-headline {
+      font-size: 0.88rem;
+      font-weight: 900;
+      color: #111827;
+      text-transform: uppercase;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+
+    .hud-sub-status {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #0284c7;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .hud-target-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #4f46e5;
+      background: rgba(79, 70, 229, 0.1);
+      padding: 3px 9px;
+      border-radius: 999px;
+      margin-top: 4px;
+    }
+
+    .btn-toggle-hud {
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .hud-emoji-section-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .emoji-grid-8 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      padding: 8px;
+      border-radius: 16px;
+      border: 1.5px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .emoji-btn {
+      height: 42px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background: #ffffff;
+      box-shadow: 0 3px 8px rgba(15, 23, 42, 0.05);
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .emoji-btn:hover {
+      transform: translateY(-2px) scale(1.06);
+    }
+    .emoji-btn span.emo-label {
+      font-size: 0.55rem;
+      font-weight: 800;
+      color: #64748b;
+      margin-top: -1px;
+      white-space: nowrap;
+    }
+    .emoji-btn.active {
+      background: linear-gradient(135deg, #eef2ff, #fae8ff);
+      border-color: #6366f1;
+    }
+
+    .hud-actions-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-hud-feed {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #ec4899, #f43f5e);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(244, 63, 94, 0.28);
+      white-space: nowrap;
+    }
+
+    .btn-hud-consult {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 5px 14px rgba(99, 102, 241, 0.28);
+      white-space: nowrap;
+    }
+
+    /* ==================== CLASSROOM DIRECTORY MODAL ==================== */
+    .class-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .class-modal-backdrop.open {
+      display: flex;
+    }
+    .class-modal-sheet {
+      background: #ffffff;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 840px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    .class-modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .class-modal-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--text-dark);
+    }
+    .class-modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .class-modal-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .class-card-item {
+      border: 2px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .class-card-item:hover {
+      border-color: #6366f1;
+    }
+    .class-card-item.active {
+      border-color: #4f46e5;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(244, 63, 94, 0.06));
+    }
+    .class-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .class-card-icon {
+      font-size: 1.4rem;
+    }
+    .class-card-teacher-pill {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+    .class-card-name {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #1e1b4b;
+      line-height: 1.3;
+    }
+    .class-card-desc {
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.4;
+    }
+    .class-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #4f46e5;
+      padding-top: 6px;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    /* ==================== MODAL Ô ĐĂNG KÝ KHÓA HỌC MOCHI 3D ==================== */
+    .mochi-reg-sheet {
+      background: #ffffff;
+      border-radius: 26px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.4), 0 0 0 1px rgba(226, 232, 240, 0.8);
+      overflow: hidden;
+      animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .mochi-reg-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .mochi-reg-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2563eb, #db2777);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);
+      flex-shrink: 0;
+    }
+    .mochi-reg-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #1e1b4b;
+      line-height: 1.2;
+    }
+    .mochi-reg-sub {
+      font-size: 0.74rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .mochi-reg-body {
+      padding: 18px 20px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .mochi-reg-course-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08));
+      border: 1.5px solid rgba(99, 102, 241, 0.28);
+      border-radius: 14px;
+      padding: 11px 14px;
+    }
+    .mochi-reg-course-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #6366f1;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .mochi-reg-course-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #2563eb, #db2777);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.3;
+    }
+    .mochi-reg-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .mochi-reg-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mochi-reg-label .req {
+      color: #ef4444;
+      font-weight: 900;
+    }
+    .mochi-reg-input {
+      width: 100%;
+      padding: 10px 13px;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 0.88rem;
+      color: #1e293b;
+      background: #f8fafc;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    .mochi-reg-input:focus {
+      border-color: #6366f1;
+      background: #ffffff;
+      box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.16);
+    }
+    .mochi-reg-actions {
+      margin-top: 4px;
+    }
+    .mochi-reg-submit-btn {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+      background-size: 200% 200%;
+      animation: gradientFlow 3s ease infinite;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 10px 24px rgba(124, 58, 237, 0.4);
+      transition: all 0.2s ease;
+    }
+    .mochi-reg-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(124, 58, 237, 0.5);
+    }
+    .mochi-reg-submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .mochi-reg-alert {
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      animation: fadeIn 0.3s ease;
+    }
+    .mochi-reg-zalo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .mochi-reg-zalo-btn:hover {
+      transform: translateY(-1px);
+    }
+    .mochi-reg-mail-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .mochi-reg-footer-note {
+      font-size: 0.72rem;
+      color: #64748b;
+      text-align: center;
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    /* Toast Notification */
+    .game-toast {
+      position: fixed;
+      top: 96px;
+      right: 16px;
+      left: 16px;
+      max-width: 360px;
+      margin: 0 auto;
+      z-index: 120;
+      background: rgba(30, 27, 75, 0.94);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.25s ease;
+    }
+    .game-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .top-classroom-bar {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        gap: 5px;
+      }
+      .brand-chip {
+        padding: 6px 11px;
+        font-size: 0.76rem;
+      }
+      .action-pill-btn {
+        padding: 6px 10px;
+        font-size: 0.73rem;
+      }
+      .class-selector-wrap {
+        max-width: 100%;
+        padding: 3px 8px;
+      }
+      .class-select-dropdown {
+        font-size: 0.78rem;
+        padding: 4px 4px;
+      }
+      .hud-overlay-panel {
+        bottom: 8px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        max-width: none;
+        padding: 12px 14px;
+        border-radius: 20px;
+      }
+      .mochi-feed-floating-dock {
+        left: 8px;
+        top: 44%;
+      }
+      .feed-mochi-ball-btn {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+      }
+      .snack-sphere-icon {
+        width: 24px;
+        height: 22px;
+      }
+      .emoji-btn {
+        height: 38px;
+        font-size: 1.15rem;
+      }
+      .instructor-download-btn {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+      }
+      .instructor-role-tag {
+        font-size: 0.7rem;
+      }
+      .instructor-speech-bubble {
+        font-size: 0.67rem;
+        padding: 4px 9px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. THANH ĐIỀU HƯỚNG TRÊN CÙNG -->
+  <header class="top-classroom-bar">
+    <div class="top-row-main">
+      <a href="index.html" class="brand-chip" title="Về Trang Chủ">
+        <img src="https://lh3.googleusercontent.com/d/1HRW4vE9oSS_FnoU5rU1dsLcqL5Z9gnUc" alt="Logo" />
+        <span>🏠 Trang Chủ</span>
+      </a>
+
+      <div class="top-actions-right">
+        <button type="button" class="action-pill-btn btn-random-class" onclick="enterRandomUniqueClassroom()" title="Đổi sang lớp học ngẫu nhiên">
+          🎲 Đổi Lớp
+        </button>
+        <button type="button" class="action-pill-btn btn-class-list" onclick="openClassroomModal()">
+          🏫 Các Lớp (<span id="totalClassCountBadge">0</span>)
+        </button>
+        <a href="game admin.html" class="action-pill-btn btn-admin-link" title="Tạo lớp học & gắn link tải về">
+          ⚙️ Admin
+        </a>
+      </div>
+    </div>
+
+    <div class="top-row-select">
+      <div class="class-selector-wrap">
+        <select id="classroomSelect" class="class-select-dropdown" onchange="switchClassroomById(this.value)" aria-label="Chọn lớp học Online"></select>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. NÚT CHO ĂN BÁNH TRẮNG BÊN TRÁI (GIỐNG TRANG CHỦ) -->
+  <div class="mochi-feed-floating-dock" id="floatingFeedDock">
+    <button type="button" class="feed-mochi-ball-btn" onclick="feedSelectedMochi()" title="Cho Mochi ăn bánh trắng (Ăn quá 3 lần sẽ nổ BÙM!)">
+      <span class="snack-sphere-icon"></span>
+    </button>
+    <span class="feed-label-tag">🍡 Cho Ăn</span>
+  </div>
+
+  <!-- 3. NÚT MỞ LẠI PANEL KÉO & CHO ĂN KHI ĐANG ẨN -->
+  <div class="hud-Launcher-bar" id="hudLauncherBar">
+    <button type="button" class="btn-hud-feed" style="padding:6px 12px; font-size:0.76rem;" onclick="feedSelectedMochi()">
+      🍡 Cho Ăn
+    </button>
+    <button type="button" class="btn-show-hud" onclick="toggleHudPanel(true)">
+      🔼 Hiện Kéo & Cảm Xúc Mochi
+    </button>
+  </div>
+
+  <!-- 4. NHÃN 3D TRÊN ĐẦU MOCHI GIẢNG VIÊN (NÚT DOWNLOAD) & CÁC BẠN HỌC VIÊN -->
+  <div id="labelsOverlay">
+    <div class="instructor-head-anchor" id="instructorHeadAnchor">
+      <a id="instructorDownloadBtn"
+         class="instructor-download-btn"
+         href="#"
+         target="_blank"
+         rel="noopener"
+         onclick="handleDownloadCourseClick(event)">
+        <span class="dl-icon-badge">📥</span>
+        <span id="instructorDownloadText">Download Khóa Học</span>
+      </a>
+      <div class="instructor-speech-bubble" id="instructorSpeechBubble">
+        Chào các bạn! Bấm nút bên trên để tải tài liệu nhé! ✨
+      </div>
+    </div>
+
+    <div id="studentAnchorsContainer"></div>
+  </div>
+
+  <!-- 5. GIAO DIỆN 2D OVERLAY (HUD) CÓ NÚT ẨN / HIỆN -->
+  <aside class="hud-overlay-panel" id="hudPanel">
+    <div class="hud-top-row">
+      <div>
+        <div class="hud-headline" id="hudMainHeadline">Kéo và cho ăn mochi 3D nè !</div>
+        <div class="hud-sub-status" id="hudStatusText">Hết đau rồi, lại tươi cười với bạn nè! 🥰</div>
+        <div class="hud-target-badge" id="hudSelectedMochiBadge">
+          🎯 Đang tương tác: <strong>Mochi Giảng Viên</strong>
+        </div>
+      </div>
+      <button type="button" class="btn-toggle-hud" onclick="toggleHudPanel(false)" title="Ẩn bảng điều khiển">
+        🔽 Ẩn
+      </button>
+    </div>
+
+    <div class="hud-emoji-section-label">
+      <span>🎭 HỆ THỐNG CẢM XÚC MOCHI (CHUẨN TRANG CHỦ):</span>
+      <span style="color:#6366f1;">Chạm để đổi biểu cảm</span>
+    </div>
+
+    <!-- Lưới Grid 8 nút biểu tượng cảm xúc giống hệt Trang Chủ -->
+    <div class="emoji-grid-8" id="emojiGrid">
+      <button type="button" class="emoji-btn active" data-emo="happy" onclick="triggerMochiEmotion('happy', this)" title="Cười tít mắt">
+        <span>😄</span>
+        <span class="emo-label">Cười</span>
+      </button>
+      <button type="button" class="emoji-btn" data-emo="love" onclick="triggerMochiEmotion('love', this)" title="Thả tim">
+        <span>😍</span>
+        <span class="emo-label">Trái tim</span>
+      </button>
+      <button type="button" class="emoji-btn" data-emo="nerd" onclick="triggerMochiEmotion('nerd', this)" title="Kính cận">
+        <span>🤓</span>
+        <span class="emo-label">Kính cận</span>
+      </button>
+      <button type="button" class="emoji-btn" data-emo="shocked" onclick="triggerMochiEmotion('shocked', this)" title="Mếu / Hoang mang">
+        <span>😧</span>
+        <span class="emo-label">Mếu</span>
+      </button>
+      <button type="button" class="emoji-btn" data-emo="lie" onclick="triggerMochiEmotion('lie', this)" title="Mũi dài Pinocchio">
+        <span>🤥</span>
+        <span class="emo-label">Mũi dài</span>
+      </button>
+      <button type="button" class="emoji-btn" data-emo="sleepy" onclick="triggerMochiEmotion('sleepy', this)" title="Ngủ gật bong bóng mũi">
+        <span>😪</span>
+        <span class="emo-label">Buồn ngủ</span>
+      </button>
+      <button type="button" class="emoji-btn" data-emo="unamused" onclick="triggerMochiEmotion('unamused', this)" title="Chán nản liếc xéo">
+        <span>😒</span>
+        <span class="emo-label">Chán nản</span>
+      </button>
+      <button type="button" class="emoji-btn" data-emo="rolling" onclick="triggerMochiEmotion('rolling', this)" title="Đảo mắt">
+        <span>🙄</span>
+        <span class="emo-label">Đảo mắt</span>
+      </button>
+    </div>
+
+    <div class="hud-actions-footer">
+      <button type="button" class="btn-hud-feed" onclick="feedSelectedMochi()">
+        🍡 Cho Ăn Mochi 3D
+      </button>
+      <a href="game.html" onclick="openClassroomModal(); return false;" class="btn-hud-consult">
+        Tham Gia Lớp Học →
+      </a>
+    </div>
+  </aside>
+
+  <!-- 6. MODAL CHỌN LỚP HỌC ONLINE -->
+  <div class="class-modal-backdrop" id="classModalBackdrop" onclick="closeClassroomModal(event)">
+    <div class="class-modal-sheet" onclick="event.stopPropagation()">
+      <div class="class-modal-header">
+        <div>
+          <div class="class-modal-title">🏫 Chọn Lớp Học Online Mochi 3D</div>
+          <div style="font-size:0.78rem; color:#64748b; margin-top:2px;">
+            Mỗi lớp học có Thầy/Cô giáo, các bạn học viên, không gian 3D và Link Download khóa học riêng!
+          </div>
+        </div>
+        <button type="button" class="class-modal-close" onclick="closeClassroomModal()">✕</button>
+      </div>
+      <div class="class-modal-body" id="classModalGrid"></div>
+    </div>
+  </div>
+
+  <!-- 7. MODAL / Ô ĐĂNG KÝ KHÓA HỌC MOCHI 3D (GỬI VỀ hocviendohoa2@gmail.com) -->
+  <div class="class-modal-backdrop" id="courseRegModalBackdrop" onclick="closeCourseRegistrationModal(event)">
+    <div class="mochi-reg-sheet" onclick="event.stopPropagation()">
+      <div class="mochi-reg-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="mochi-reg-icon-badge">✨</div>
+          <div>
+            <div class="mochi-reg-title">Đăng Ký Khóa Học Online</div>
+            <div class="mochi-reg-sub">Thông tin sẽ được gửi trực tiếp đến Giảng Viên</div>
+          </div>
+        </div>
+        <button type="button" class="class-modal-close" onclick="closeCourseRegistrationModal()">✕</button>
+      </div>
+
+      <form id="mochiCourseRegForm" onsubmit="handleCourseRegSubmit(event)" class="mochi-reg-body">
+        <!-- 1. Tên khóa đăng ký hiển thị trên cùng -->
+        <div class="mochi-reg-course-banner" style="text-align: center; padding: 12px 14px;">
+          <div class="mochi-reg-course-title" id="mochiRegCourseDisplay">Đăng Ký Canva Pro Free</div>
+          <input type="hidden" id="mochiRegCourseInput" name="course_name" value="Đăng Ký Canva Pro Free" />
+        </div>
+
+        <!-- 2. Họ và tên -->
+        <div class="mochi-reg-field">
+          <label class="mochi-reg-label" for="mochiRegName">
+            👤 Họ và Tên <span class="req">*</span>
+          </label>
+          <input type="text" id="mochiRegName" name="full_name" class="mochi-reg-input" placeholder="Ví dụ: Nguyễn Văn A" required />
+        </div>
+
+        <!-- 3. Số ĐT (Zalo) -->
+        <div class="mochi-reg-field">
+          <label class="mochi-reg-label" for="mochiRegPhone">
+            📱 Số Điện Thoại (Zalo) <span class="req">*</span>
+          </label>
+          <input type="tel" id="mochiRegPhone" name="phone_zalo" class="mochi-reg-input" placeholder="Ví dụ: 0916172524" required />
+        </div>
+
+        <!-- 4. Email -->
+        <div class="mochi-reg-field">
+          <label class="mochi-reg-label" for="mochiRegEmail">
+            ✉️ Email Học Viên <span class="req">*</span>
+          </label>
+          <input type="email" id="mochiRegEmail" name="email" class="mochi-reg-input" placeholder="Ví dụ: hocvien@gmail.com" required />
+        </div>
+
+        <!-- Feedback Alert Box -->
+        <div id="mochiRegFeedback" style="display:none;" class="mochi-reg-alert"></div>
+
+        <!-- Submit Button -->
+        <div class="mochi-reg-actions">
+          <button type="submit" id="mochiRegSubmitBtn" class="mochi-reg-submit-btn">
+            <span>🚀 Gửi Đăng Ký Về Mail Giảng Viên</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast thông báo -->
+  <div class="game-toast" id="gameToast">🎉 Đã vào lớp học mới!</div>
+
+  <!-- 7. THREE.JS + CANNON.JS + GSAP 3D ENGINE -->
+  <div id="canvasContainer"></div>
+
+  <script>
+    // =========================================================================
+    // 1. BẢNG MÀU BÁNH MOCHI CHUẨN TRANG CHỦ (app.js MOCHI_PALETTES)
+    // =========================================================================
+    const MOCHI_PALETTES = {
+      white: {
+        c0: [255, 255, 255],
+        c1: [253, 252, 255],
+        c2: [243, 238, 252],
+        c3: [232, 224, 248],
+        c4: [220, 210, 240],
+        stroke: [255, 255, 255, 0.85],
+        rim: [255, 200, 230, 0.5]
+      },
+      pink: {
+        c0: [255, 245, 248],
+        c1: [255, 224, 235],
+        c2: [251, 182, 206],
+        c3: [244, 140, 178],
+        c4: [225, 105, 150],
+        stroke: [255, 240, 245, 0.9],
+        rim: [255, 255, 255, 0.55]
+      },
+      matcha: {
+        c0: [242, 255, 248],
+        c1: [215, 250, 230],
+        c2: [167, 243, 208],
+        c3: [110, 231, 183],
+        c4: [74, 205, 155],
+        stroke: [236, 253, 245, 0.9],
+        rim: [255, 255, 255, 0.55]
+      },
+      lavender: {
+        c0: [250, 245, 255],
+        c1: [237, 225, 255],
+        c2: [216, 187, 255],
+        c3: [192, 150, 250],
+        c4: [168, 120, 235],
+        stroke: [245, 240, 255, 0.9],
+        rim: [255, 230, 255, 0.55]
+      },
+      yellow: {
+        c0: [255, 254, 240],
+        c1: [254, 249, 195],
+        c2: [253, 230, 138],
+        c3: [252, 211, 77],
+        c4: [245, 180, 45],
+        stroke: [255, 251, 235, 0.9],
+        rim: [255, 255, 255, 0.6]
+      },
+      sky: {
+        c0: [240, 249, 255],
+        c1: [218, 238, 255],
+        c2: [186, 224, 254],
+        c3: [140, 198, 250],
+        c4: [100, 172, 238],
+        stroke: [240, 249, 255, 0.9],
+        rim: [255, 255, 255, 0.55]
+      },
+      peach: {
+        c0: [255, 247, 237],
+        c1: [255, 232, 210],
+        c2: [254, 205, 165],
+        c3: [251, 170, 118],
+        c4: [238, 140, 90],
+        stroke: [255, 247, 237, 0.9],
+        rim: [255, 255, 255, 0.55]
+      }
+    };
+
+    const STUDENT_FLAVOR_KEYS = ["pink", "matcha", "lavender", "yellow", "sky", "peach"];
+
+    // 10 Cài đặt Không Gian Phòng Học 3D Độc Bản
+    const TEN_SPACE_PRESETS = [
+      { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff", propType: "ai_cubes" },
+      { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff", propType: "art_rings" },
+      { bgTop: "#fef3c7", bgMid: "#fde68a", bgBot: "#fbcfe8", propType: "stars_octa" },
+      { bgTop: "#e0f2fe", bgMid: "#ede9fe", bgBot: "#fce7f3", propType: "media_spheres" },
+      { bgTop: "#ffe4e6", bgMid: "#fecdd3", bgBot: "#fef3c7", propType: "floating_hearts" },
+      { bgTop: "#dcfce7", bgMid: "#bbf7d0", bgBot: "#ccfbf1", propType: "mochi_capsules" },
+      { bgTop: "#f3e8ff", bgMid: "#e9d5ff", bgBot: "#fbcfe8", propType: "ringed_planets" },
+      { bgTop: "#ffedd5", bgMid: "#fed7aa", bgBot: "#fecdd3", propType: "golden_stars" },
+      { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe", propType: "code_torus" },
+      { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1", propType: "music_crystals" }
+    ];
+
+    const STORAGE_KEY_CLASSES = "MOCHI_GAME_CLASSES";
+
+    const DEFAULT_CLASSROOMS = [
+      {
+        id: "class-ai-gemini",
+        name: "Lớp Học Trí Tuệ Nhân Tạo Gemini & Prompt",
+        icon: "🤖",
+        subject: "Làm chủ Google Gemini, NotebookLM, tạo ảnh & tự động hóa công việc",
+        teacherGender: "male",
+        teacherName: "Giảng Viên AI",
+        teacherAccessory: "gradhat",
+        teacherGreeting: "Chào các bạn! Bấm nút Download phía trên để tải Giáo Án AI nhé! 🎓",
+        downloadAction: "link",
+        downloadLabel: "📥 Download Khóa Học AI",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ffd3e2", bgMid: "#f3e0f7", bgBot: "#d8dcff" },
+        propType: "ai_cubes"
+      },
+      {
+        id: "class-canva-free",
+        name: "Đăng Ký Canva Pro Free",
+        icon: "🎬",
+        subject: "Nhận tài khoản Canva Pro Full tính năng & kho Template thiết kế VIP",
+        teacherGender: "male",
+        teacherName: "Giảng Viên Canva",
+        teacherAccessory: "headset",
+        teacherGreeting: "Nhấn nút để Đăng Ký Canva Pro Free nhé ✨",
+        downloadAction: "form",
+        downloadLabel: "🎦 Đăng Ký Canva Pro Free",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#cffafe", bgMid: "#e0e7ff", bgBot: "#fce7f3" },
+        propType: "floating_hearts"
+      },
+      {
+        id: "class-photoshop-ai",
+        name: "Lớp Học Thiết Kế Photoshop & Ghép Ảnh AI",
+        icon: "🎨",
+        subject: "Cắt ghép tách nền AI, Retouch ảnh cưới Studio & thiết kế Poster",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Đồ Họa",
+        teacherAccessory: "beret",
+        teacherGreeting: "Chào các bạn! Tải bộ Brush & Giáo trình Photoshop ở nút Download phía trên nha! 🎨",
+        downloadAction: "link",
+        downloadLabel: "📥 Tải Giáo Trình Photoshop",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ffe4e6", bgMid: "#fecdd3", bgBot: "#fef3c7" },
+        propType: "floating_hearts"
+      },
+      {
+        id: "class-illustrator-vector",
+        name: "Lớp Học Illustrator Vector & Vẽ Minh Họa",
+        icon: "✒️",
+        subject: "Thiết kế Logo, Nhận diện thương hiệu, chuẩn in CMYK & Concept Art",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Vector",
+        teacherAccessory: "bow",
+        teacherGreeting: "Hôm nay chúng ta học vẽ Mascot! Nhấn nút Download phía trên để tải file mẫu nhé! ✨",
+        downloadAction: "link",
+        downloadLabel: "📥 Download File Vector Mẫu",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#fef3c7", bgMid: "#fde68a", bgBot: "#fbcfe8" },
+        propType: "golden_stars"
+      },
+      {
+        id: "class-video-capcut",
+        name: "Lớp Học Edit Video CapCut & Kỹ Xảo AI Veo 3",
+        icon: "🎬",
+        subject: "Dựng Video TikTok, Reels, YouTube Shorts triệu view kết hợp AI",
+        teacherGender: "male",
+        teacherName: "Giảng Viên Video",
+        teacherAccessory: "headset",
+        teacherGreeting: "Action! 🎬 Nhấn nút Download phía trên để lấy kho hiệu ứng Video nhé!",
+        downloadAction: "link",
+        downloadLabel: "📥 Tải Kho Hiệu Ứng Video",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#ccfbf1", bgMid: "#cffafe", bgBot: "#e0e7ff" },
+        propType: "ringed_planets"
+      },
+      {
+        id: "class-web-ai",
+        name: "Lớp Học Tạo Website Chuyên Nghiệp Với AI",
+        icon: "🌐",
+        subject: "Xây dựng Website chuẩn SEO Google với AI, Wix, Gemini & 3D WebGL",
+        teacherGender: "male",
+        teacherName: "Giảng Viên Web",
+        teacherAccessory: "glasses",
+        teacherGreeting: "Chào các Developer! Source code & bài giảng ở ngay nút Download phía trên nhé! 💻",
+        downloadAction: "link",
+        downloadLabel: "📥 Download Source Code Web",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#cffafe", bgMid: "#bae6fd", bgBot: "#ddd6fe" },
+        propType: "code_torus"
+      },
+      {
+        id: "class-music-suno",
+        name: "Lớp Học Sáng Tác Âm Nhạc Với Suno AI & Canva",
+        icon: "🎵",
+        subject: "Tự tay sáng tác bài hát AI đa phong cách & thiết kế bìa Album",
+        teacherGender: "female",
+        teacherName: "Giảng Viên Âm Nhạc",
+        teacherAccessory: "crown",
+        teacherGreeting: "Cùng phiêu theo giai điệu không trọng lực! Tải bộ Prompt nhạc ở nút phía trên nha! 🎶",
+        downloadAction: "link",
+        downloadLabel: "📥 Tải Bộ Prompt Nhạc Suno",
+        downloadUrl: "https://zalo.me/0916172524",
+        studentCount: 3,
+        studentNames: [],
+        themePalette: { bgTop: "#fce7f3", bgMid: "#fef9c3", bgBot: "#ccfbf1" },
+        propType: "music_crystals"
+      }
+    ];
+
+    const PASTEL_PROP_COLORS = [
+      0xffb3c6, 0xb8f2e6, 0xd8bbff, 0xfff3b0, 0xbde0fe,
+      0xffd6a5, 0xfbcfe8, 0xc7f9cc, 0xe0c3fc, 0xfed7aa
+    ];
+
+    const RANDOM_STUDENT_NAMES = [
+      "Bé Mochi 1", "Bé Mochi 2", "Bé Mochi 3", "Bé Mochi 4",
+      "Bé Mochi 5", "Bé Mochi 6", "Bé Mochi 7", "Bé Mochi 8"
+    ];
+
+    let classroomsList = [];
+    let currentClassroom = null;
+    let randomClassCounter = 1;
+    let isHudVisible = true;
+
+    window.toggleHudPanel = function (show) {
+      isHudVisible = show;
+      const hud = document.getElementById("hudPanel");
+      const launcher = document.getElementById("hudLauncherBar");
+      const feedDock = document.getElementById("floatingFeedDock");
+
+      if (hud) hud.classList.toggle("is-collapsed", !show);
+      if (launcher) launcher.classList.toggle("visible", !show);
+      if (feedDock) feedDock.classList.toggle("is-hidden", !show);
+
+      updateResponsiveCameraAndLayout();
+    };
+
+    function loadClassroomsFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_CLASSES);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            classroomsList = parsed;
+            return;
+          }
+        }
+      } catch (e) {}
+      classroomsList = JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
+      try {
+        localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classroomsList));
+      } catch (_) {}
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === STORAGE_KEY_CLASSES) {
+        loadClassroomsFromStorage();
+        populateClassroomUI();
+        if (currentClassroom) {
+          const updated = classroomsList.find((c) => c.id === currentClassroom.id);
+          if (updated) {
+            setupClassroomScene(updated, false);
+            showGameToast("🔄 Đã cập nhật thông tin lớp học từ trang Admin!");
+          }
+        }
+      }
+    });
+
+    // =========================================================================
+    // 2. KHỞI TẠO KHÔNG GIAN 3D THREE.JS & VẬT LÝ KHÔNG TRỌNG LỰC CANNON.JS
+    // =========================================================================
+    const container = document.getElementById("canvasContainer");
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      100
+    );
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    container.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambientLight);
+
+    const mainDirLight = new THREE.DirectionalLight(0xfff5f7, 0.8);
+    mainDirLight.position.set(5, 9, 8);
+    scene.add(mainDirLight);
+
+    // Thế giới vật lý Cannon.js: MÔI TRƯỜNG KHÔNG TRỌNG LỰC (Zero Gravity)
+    const world = new CANNON.World();
+    world.gravity.set(0, 0, 0);
+    world.broadphase = new CANNON.NaiveBroadphase();
+    world.solver.iterations = 12;
+
+    const mochiPhysicsMaterial = new CANNON.Material("mochiMaterial");
+    const mochiContactMaterial = new CANNON.ContactMaterial(
+      mochiPhysicsMaterial,
+      mochiPhysicsMaterial,
+      {
+        friction: 0.12,
+        restitution: 0.85
+      }
+    );
+    world.addContactMaterial(mochiContactMaterial);
+
+    const jointShape = new CANNON.Sphere(0.1);
+    const jointBody = new CANNON.Body({
+      mass: 0,
+      type: CANNON.Body.KINEMATIC,
+      collisionFilterGroup: 0,
+      collisionFilterMask: 0
+    });
+    jointBody.addShape(jointShape);
+    world.addBody(jointBody);
+
+    let mochiEntities = [];
+    let selectedMochi = null;
+    let environmentPropsGroup = new THREE.Group();
+    scene.add(environmentPropsGroup);
+    let floatingPropsList = [];
+    let sceneBounds = { x: 4.5, y: 3.2, z: 2.0 };
+
+    function updateResponsiveCameraAndLayout() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const aspect = w / Math.max(h, 1);
+      const isMobilePortrait = aspect < 0.85;
+
+      camera.aspect = aspect;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+
+      if (isMobilePortrait) {
+        const targetZ = Math.min(20.5, Math.max(14.0, 6.7 / aspect));
+        const targetY = isHudVisible ? -0.95 : -0.1;
+        camera.position.set(0, targetY, targetZ);
+        sceneBounds = { x: 2.35, y: 3.1, z: 1.4 };
+      } else {
+        camera.position.set(0, 0.25, 11.4);
+        sceneBounds = { x: 4.8, y: 2.9, z: 1.8 };
+      }
+
+      if (mochiEntities.length > 0) {
+        const instructor = mochiEntities[0];
+        if (isMobilePortrait) {
+          instructor.homePosition.set(0, 1.05, 0.2);
+        } else {
+          instructor.homePosition.set(-0.2, 0.25, 0.4);
+        }
+
+        const students = mochiEntities.slice(1);
+        const count = students.length;
+        students.forEach((st, idx) => {
+          if (isMobilePortrait) {
+            if (count === 3) {
+              const mobileSlots = [
+                new THREE.Vector3(-1.58, -0.75, 0.1),
+                new THREE.Vector3(1.58, -0.75, 0.1),
+                new THREE.Vector3(0, -1.78, 0.25)
+              ];
+              st.homePosition.copy(mobileSlots[idx]);
+            } else {
+              const angle = Math.PI + ((idx + 0.5) / count) * Math.PI;
+              st.homePosition.set(
+                Math.cos(angle) * 1.75,
+                0.2 + Math.sin(angle) * 1.95,
+                0.15
+              );
+            }
+          } else {
+            const angle = (idx / count) * Math.PI * 2 + 0.4;
+            st.homePosition.set(
+              Math.cos(angle) * 3.15 - 0.1,
+              Math.sin(angle) * 1.68,
+              0.2
+            );
+          }
+        });
+      }
+    }
+
+    // =========================================================================
+    // 3. BỘ VẼ BÁNH MOCHI CHUẨN TRANG CHỦ (100% GIỐNG HÌNH ẢNH TRANG CHỦ)
+    //    KẾT HỢP THREE.QuadraticBezierCurve3 & GSAP SQUASH AND STRETCH
+    // =========================================================================
+    function drawHomepageMochiCanvas(mochi, now) {
+      const ctx = mochi.ctx;
+      const W = 512;
+      const H = 512;
+      ctx.save();
+      ctx.clearRect(0, 0, W, H);
+
+      const cx = W / 2;
+      const cy = H / 2 + 12;
+      const rx = 148 * (mochi.growthScale || 1.0);
+      const ry = rx * 0.94;
+
+      const isCrying = now < mochi.cryUntil || mochi.currentEmotion === "cry";
+      const isChewing = mochi.isEating && (now - mochi.eatingStart) > 200 && (now - mochi.eatingStart) < 1850;
+      const isDizzy = now < mochi.dizzyUntil;
+
+      // Hướng liếc mắt mềm mại theo chuột / ngón tay
+      const px = mochi.gazeX * 12;
+      const py = mochi.gazeY * 9;
+
+      // 1. Bóng đổ mềm phía dưới bánh Mochi
+      const shadowY = cy + ry + 10;
+      const shadowRx = rx * 0.85;
+      const shadowRy = rx * 0.17;
+      const shadowGrad = ctx.createRadialGradient(cx, shadowY, 4, cx, shadowY, shadowRx);
+      shadowGrad.addColorStop(0, "rgba(155, 145, 190, 0.42)");
+      shadowGrad.addColorStop(0.55, "rgba(155, 145, 190, 0.16)");
+      shadowGrad.addColorStop(1, "rgba(155, 145, 190, 0)");
+      ctx.fillStyle = shadowGrad;
+      ctx.beginPath();
+      ctx.ellipse(cx, shadowY, shadowRx, shadowRy, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      // 2. Thân bánh Mochi 3D tròn phúng phính (Bezier Curve chuẩn trang chủ)
+      ctx.beginPath();
+      ctx.moveTo(0, -ry);
+      ctx.bezierCurveTo(rx * 0.95, -ry * 0.95, rx * 1.05, -ry * 0.1, rx * 1.03, rx * 0.20);
+      ctx.bezierCurveTo(rx * 0.98, ry * 0.82, rx * 0.55, ry * 1.02, 0, ry * 1.02);
+      ctx.bezierCurveTo(-rx * 0.55, ry * 1.02, -rx * 0.98, ry * 0.82, -rx * 1.03, rx * 0.20);
+      ctx.bezierCurveTo(-rx * 1.05, -ry * 0.1, -rx * 0.95, -ry * 0.95, 0, -ry);
+      ctx.closePath();
+
+      const p = mochi.palette;
+      const rgbStr = (arr) => `rgb(${Math.round(arr[0])}, ${Math.round(arr[1])}, ${Math.round(arr[2])})`;
+      const rgbaStr = (arr) => `rgba(${Math.round(arr[0])}, ${Math.round(arr[1])}, ${Math.round(arr[2])}, ${arr[3]})`;
+
+      const lightX = -rx * 0.32 + px * 0.45;
+      const lightY = -ry * 0.38 + py * 0.45;
+      const bodyGrad = ctx.createRadialGradient(lightX, lightY, rx * 0.15, 0, 12, rx * 1.15);
+      bodyGrad.addColorStop(0, rgbStr(p.c0));
+      bodyGrad.addColorStop(0.52, rgbStr(p.c1));
+      bodyGrad.addColorStop(0.80, rgbStr(p.c2));
+      bodyGrad.addColorStop(0.95, rgbStr(p.c3));
+      bodyGrad.addColorStop(1, rgbStr(p.c4));
+      ctx.fillStyle = bodyGrad;
+      ctx.fill();
+
+      ctx.strokeStyle = rgbaStr(p.stroke);
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+
+      // Ambient Rim Light giống hệt trang chủ
+      const rimGrad = ctx.createRadialGradient(rx * 0.55, ry * 0.55, 18, rx * 0.55, ry * 0.55, rx * 0.75);
+      rimGrad.addColorStop(0, rgbaStr(p.rim));
+      rimGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.fillStyle = rimGrad;
+      ctx.fill();
+
+      // 3. Vệt má hồng phúng phính + gạch chéo /// đáng yêu khi đỏ mặt
+      const remainingBlush = mochi.blushUntil - now;
+      let blushFactor = isCrying ? 1.0 : 0;
+      if (!isCrying && remainingBlush > 0) {
+        blushFactor = remainingBlush > 800 ? 1.0 : remainingBlush / 800;
+      }
+
+      [-1, 1].forEach((dir) => {
+        const blushX = dir * (rx * 0.62) + px * 0.5;
+        const blushY = rx * 0.10 + py * 0.5;
+        ctx.save();
+        ctx.translate(blushX, blushY);
+        ctx.rotate(dir * 0.22);
+        const bW = rx * 0.21 + blushFactor * 7;
+        const bH = rx * 0.12 + blushFactor * 5;
+        const blushGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, bW);
+        if (blushFactor > 0.01) {
+          blushGrad.addColorStop(0, `rgba(244, 63, 94, ${0.48 + blushFactor * 0.48})`);
+          blushGrad.addColorStop(0.5, `rgba(251, 113, 133, ${0.28 + blushFactor * 0.42})`);
+          blushGrad.addColorStop(1, "rgba(244, 63, 94, 0)");
+        } else {
+          blushGrad.addColorStop(0, "rgba(244, 114, 182, 0.72)");
+          blushGrad.addColorStop(0.5, "rgba(244, 114, 182, 0.4)");
+          blushGrad.addColorStop(1, "rgba(244, 114, 182, 0)");
+        }
+        ctx.fillStyle = blushGrad;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, bW, bH, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (blushFactor > 0.25) {
+          ctx.strokeStyle = `rgba(225, 29, 72, ${blushFactor * 0.78})`;
+          ctx.lineWidth = 2.2;
+          ctx.lineCap = "round";
+          for (let i = -1; i <= 1; i++) {
+            ctx.beginPath();
+            ctx.moveTo(i * 7 - 3, 5);
+            ctx.lineTo(i * 7 + 3, -5);
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      });
+
+      // 4. Đôi mắt 3D to tròn long lanh chuẩn Trang Chủ
+      const eyeSpacing = rx * 0.36;
+      const eyeY = rx * 0.07 + py;
+      const outerEyeW = rx * 0.26;
+      const outerEyeH = (rx * 0.28) * (1 - mochi.blinkProgress * 0.95);
+
+      [-1, 1].forEach((dir) => {
+        const eyeX = dir * eyeSpacing + px;
+
+        if (mochi.currentEmotion === "shocked" || isDizzy) {
+          ctx.beginPath();
+          ctx.moveTo(eyeX - dir * 14, eyeY - rx * 0.22);
+          ctx.quadraticCurveTo(eyeX, eyeY - rx * 0.28, eyeX + dir * 15, eyeY - rx * 0.20);
+          ctx.lineWidth = 3.2;
+          ctx.strokeStyle = "#1e1e2d";
+          ctx.lineCap = "round";
+          ctx.stroke();
+        } else if (mochi.currentEmotion === "unamused") {
+          ctx.beginPath();
+          ctx.moveTo(eyeX - dir * 14, eyeY - rx * 0.20 + dir * 3);
+          ctx.lineTo(eyeX + dir * 14, eyeY - rx * 0.18 - dir * 3);
+          ctx.lineWidth = 3.2;
+          ctx.strokeStyle = "#1e1e2d";
+          ctx.lineCap = "round";
+          ctx.stroke();
+        }
+
+        if (isCrying) {
+          // Mắt khóc nhắm tịt > <
+          ctx.beginPath();
+          ctx.moveTo(eyeX - dir * 16, eyeY - 11);
+          ctx.lineTo(eyeX + dir * 11, eyeY);
+          ctx.lineTo(eyeX - dir * 16, eyeY + 11);
+          ctx.lineWidth = 5.0;
+          ctx.strokeStyle = "#1e1e2d";
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.stroke();
+        } else if (isChewing || mochi.currentEmotion === "happy") {
+          // Mắt cười tít ^ ^
+          ctx.beginPath();
+          ctx.arc(eyeX, eyeY + 3, rx * 0.16, Math.PI * 1.15, Math.PI * 1.85);
+          ctx.lineWidth = 4.6;
+          ctx.strokeStyle = "#1e1e2d";
+          ctx.lineCap = "round";
+          ctx.stroke();
+        } else if (mochi.currentEmotion === "love") {
+          // Mắt trái tim đập thình thịch 😍
+          const heartBeat = 0.92 + Math.sin(now * 0.01) * 0.14;
+          ctx.save();
+          ctx.translate(eyeX, eyeY);
+          ctx.scale(heartBeat, heartBeat);
+          ctx.fillStyle = "#f43f5e";
+          const hr = rx * 0.125;
+          ctx.beginPath();
+          ctx.arc(-hr * 0.45, -hr * 0.35, hr * 0.5, Math.PI, 0);
+          ctx.arc(hr * 0.45, -hr * 0.35, hr * 0.5, Math.PI, 0);
+          ctx.lineTo(0, hr * 0.78);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.arc(-hr * 0.42, -hr * 0.4, hr * 0.16, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        } else if (mochi.currentEmotion === "sleepy") {
+          ctx.beginPath();
+          ctx.arc(eyeX, eyeY + 2, rx * 0.15, 0.15 * Math.PI, 0.85 * Math.PI);
+          ctx.lineWidth = 4.4;
+          ctx.strokeStyle = "#1e1e2d";
+          ctx.lineCap = "round";
+          ctx.stroke();
+        } else if (mochi.blinkProgress > 0.65 || outerEyeH < 4) {
+          ctx.beginPath();
+          ctx.arc(eyeX, eyeY - 2, rx * 0.17, Math.PI * 0.15, Math.PI * 0.85);
+          ctx.lineWidth = 4.4;
+          ctx.strokeStyle = "#1e1e2d";
+          ctx.lineCap = "round";
+          ctx.stroke();
+        } else {
+          // Tròng trắng
+          ctx.beginPath();
+          ctx.ellipse(eyeX, eyeY, outerEyeW, outerEyeH, 0, 0, Math.PI * 2);
+          ctx.fillStyle = "#f5f6fb";
+          ctx.fill();
+          ctx.strokeStyle = "rgba(218, 224, 238, 0.85)";
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.ellipse(eyeX, eyeY, outerEyeW - 0.5, outerEyeH - 0.5, 0, 0, Math.PI * 2);
+          ctx.clip();
+
+          let pupilOffsetX = mochi.gazeX * (rx * 0.095);
+          let pupilOffsetY = mochi.gazeY * (rx * 0.075);
+          let pupilR = rx * 0.148;
+
+          if (mochi.currentEmotion === "shocked" || isDizzy) {
+            pupilR = rx * 0.088;
+            pupilOffsetX += Math.sin(now * 0.045) * 2.2;
+            pupilOffsetY += Math.cos(now * 0.045) * 2.2;
+          } else if (mochi.currentEmotion === "rolling") {
+            pupilOffsetY = -outerEyeH * 0.52;
+            pupilOffsetX = 0;
+          } else if (mochi.currentEmotion === "unamused") {
+            pupilOffsetX = -rx * 0.08;
+            pupilOffsetY = 0;
+          } else if (mochi.currentEmotion === "lie") {
+            pupilOffsetX = dir === 1 ? -rx * 0.07 : rx * 0.07;
+          }
+
+          const pupilX = eyeX + pupilOffsetX;
+          const pupilY = eyeY + pupilOffsetY;
+
+          const pupilGrad = ctx.createRadialGradient(pupilX - 2, pupilY - 2, 1, pupilX, pupilY, pupilR);
+          pupilGrad.addColorStop(0, "#28273d");
+          pupilGrad.addColorStop(0.7, "#1c1b2b");
+          pupilGrad.addColorStop(1, "#12111d");
+
+          ctx.beginPath();
+          ctx.arc(pupilX, pupilY, pupilR, 0, Math.PI * 2);
+          ctx.fillStyle = pupilGrad;
+          ctx.fill();
+
+          // Đốm phản quang chính & phụ
+          ctx.beginPath();
+          ctx.arc(pupilX - (rx * 0.036), pupilY - (rx * 0.04), rx * 0.05, 0, Math.PI * 2);
+          ctx.fillStyle = "#ffffff";
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(pupilX + (rx * 0.04), pupilY + (rx * 0.04), rx * 0.022, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+          ctx.fill();
+
+          if (mochi.currentEmotion === "unamused") {
+            ctx.fillStyle = rgbStr(p.c2);
+            ctx.beginPath();
+            ctx.rect(eyeX - outerEyeW - 2, eyeY - outerEyeH - 2, outerEyeW * 2 + 4, outerEyeH + 2);
+            ctx.fill();
+            ctx.strokeStyle = "#1e1e2d";
+            ctx.lineWidth = 3.0;
+            ctx.beginPath();
+            ctx.moveTo(eyeX - outerEyeW, eyeY);
+            ctx.lineTo(eyeX + outerEyeW, eyeY + 1);
+            ctx.stroke();
+          }
+
+          ctx.restore();
+        }
+      });
+
+      // 5. Dòng nước mắt suối chảy khi khóc hoặc bị kéo
+      if (isCrying) {
+        const tearTime = now * 0.015;
+        [-1, 1].forEach((dir) => {
+          const tearSourceX = dir * (eyeSpacing + rx * 0.14) + px;
+          const tearSourceY = eyeY + 3;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(tearSourceX, tearSourceY);
+          ctx.bezierCurveTo(
+            tearSourceX + dir * (rx * 0.12) + Math.sin(tearTime * 1.5) * 4, tearSourceY + ry * 0.35,
+            tearSourceX + dir * (rx * 0.18) + Math.cos(tearTime * 1.2) * 5, tearSourceY + ry * 0.7,
+            tearSourceX + dir * (rx * 0.14), ry * 0.95
+          );
+          ctx.lineWidth = rx * 0.085;
+          ctx.strokeStyle = "rgba(56, 189, 248, 0.78)";
+          ctx.lineCap = "round";
+          ctx.stroke();
+
+          ctx.lineWidth = rx * 0.035;
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(tearSourceX, tearSourceY, rx * 0.065, 0, Math.PI * 2);
+          ctx.fillStyle = "#38bdf8";
+          ctx.fill();
+          ctx.restore();
+        });
+      }
+
+      // 6. MIỆNG MOCHI ĐƯỢC ĐIỀU KHIỂN BỞI TỌA ĐỘ ĐIỂM KIỂM SOÁT GIỮA CỦA QuadraticBezierCurve3
+      const mouthX = px * 0.45;
+      const mouthY = rx * 0.36 + py * 0.45;
+      // Lấy độ cong từ điểm kiểm soát giữa (mouthControl.y) của THREE.QuadraticBezierCurve3
+      const curveControlOffset = (mochi.mouthBaseY - mochi.mouthControl.y) / mochi.radius;
+
+      if (isCrying) {
+        const cryW = rx * 0.18;
+        const cryH = 12 + Math.sin(now * 0.025) * 4;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(mouthX - cryW, mouthY + cryH * 0.5);
+        ctx.quadraticCurveTo(mouthX, mouthY - cryH * 0.85, mouthX + cryW, mouthY + cryH * 0.5);
+        ctx.quadraticCurveTo(mouthX, mouthY + cryH * 0.2, mouthX - cryW, mouthY + cryH * 0.5);
+        ctx.fillStyle = "#2c0b14";
+        ctx.fill();
+        ctx.lineWidth = 3.0;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.stroke();
+        ctx.clip();
+        ctx.fillStyle = "#fb7185";
+        ctx.beginPath();
+        ctx.arc(mouthX, mouthY + cryH * 0.5, cryW * 0.65, Math.PI, 0);
+        ctx.fill();
+        ctx.restore();
+      } else if (mochi.isEating) {
+        const openH = Math.max(6, mochi.chewProgress * 28);
+        const openW = Math.max(13, rx * 0.18 - mochi.chewProgress * 4);
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(mouthX, mouthY + openH * 0.25, openW, openH, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "#2c0b14";
+        ctx.fill();
+        ctx.clip();
+        ctx.fillStyle = "#fb7185";
+        ctx.beginPath();
+        ctx.arc(mouthX, mouthY + openH * 0.9, openW * 0.85, Math.PI, 0);
+        ctx.fill();
+        ctx.restore();
+        ctx.beginPath();
+        ctx.ellipse(mouthX, mouthY + openH * 0.25, openW, openH, 0, 0, Math.PI * 2);
+        ctx.lineWidth = 3.0;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.stroke();
+      } else if (mochi.currentEmotion === "happy") {
+        const openW = rx * 0.19;
+        const openH = rx * 0.14;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(mouthX, mouthY - 4, openW, 0, Math.PI);
+        ctx.fillStyle = "#4c0519";
+        ctx.fill();
+        ctx.clip();
+        ctx.beginPath();
+        ctx.arc(mouthX, mouthY + openH * 0.35, openW * 0.85, Math.PI, 0);
+        ctx.fillStyle = "#fb7185";
+        ctx.fill();
+        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(mouthX, mouthY - 4, openW, 0, Math.PI);
+        ctx.lineWidth = 3.2;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.stroke();
+      } else if (mochi.currentEmotion === "love") {
+        ctx.beginPath();
+        ctx.arc(mouthX - rx * 0.055, mouthY, rx * 0.065, 0, Math.PI * 0.95);
+        ctx.lineWidth = 3.2;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(mouthX + rx * 0.055, mouthY, rx * 0.065, Math.PI * 0.05, Math.PI);
+        ctx.lineWidth = 3.2;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      } else if (mochi.currentEmotion === "nerd") {
+        const mOpenW = rx * 0.12;
+        ctx.beginPath();
+        ctx.arc(mouthX, mouthY - 4, mOpenW, 0.1 * Math.PI, 0.9 * Math.PI);
+        ctx.lineWidth = 3.2;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineWidth = 1.6;
+        ctx.fillRect(mouthX - 6, mouthY + 2, 5.5, 6);
+        ctx.strokeRect(mouthX - 6, mouthY + 2, 5.5, 6);
+        ctx.fillRect(mouthX + 0.5, mouthY + 2, 5.5, 6);
+        ctx.strokeRect(mouthX + 0.5, mouthY + 2, 5.5, 6);
+      } else if (mochi.currentEmotion === "lie") {
+        ctx.beginPath();
+        ctx.moveTo(mouthX - rx * 0.10, mouthY + 2);
+        ctx.bezierCurveTo(mouthX - rx * 0.04, mouthY - 4, mouthX + rx * 0.04, mouthY + 8, mouthX + rx * 0.10, mouthY + 1);
+        ctx.lineWidth = 3.2;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      } else if (mochi.currentEmotion === "sleepy") {
+        ctx.beginPath();
+        ctx.ellipse(mouthX - 2, mouthY + 2, rx * 0.05, rx * 0.06, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "#2c0b14";
+        ctx.fill();
+        ctx.lineWidth = 2.4;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.stroke();
+      } else {
+        // Vẽ trực tiếp từ điểm kiểm soát giữa của THREE.QuadraticBezierCurve3 (biến thiên mượt từ mếu ︵ sang cười ◡)
+        const mW = rx * 0.11;
+        const ctrlY = mouthY + curveControlOffset * rx * 0.85;
+        ctx.beginPath();
+        ctx.moveTo(mouthX - mW, mouthY);
+        ctx.quadraticCurveTo(mouthX + mochi.mouthControl.x * 40, ctrlY, mouthX + mW, mouthY);
+        ctx.lineWidth = 3.4;
+        ctx.strokeStyle = "#1e1e2d";
+        ctx.lineCap = "round";
+        ctx.stroke();
+      }
+
+      // 7. Kính cận mọt sách 🤓
+      if (mochi.currentEmotion === "nerd" || mochi.defaultGlasses) {
+        const rimR = rx * 0.22;
+        const frameY = eyeY;
+        ctx.save();
+        [-1, 1].forEach((dir) => {
+          const gx = dir * eyeSpacing + px;
+          ctx.beginPath();
+          ctx.arc(gx, frameY, rimR, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255, 255, 255, 0.22)";
+          ctx.fill();
+          ctx.lineWidth = 4.6;
+          ctx.strokeStyle = "#27272a";
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(gx, frameY, rimR - 3, 0, Math.PI * 2);
+          ctx.lineWidth = 1.6;
+          ctx.strokeStyle = "rgba(234, 179, 8, 0.85)";
+          ctx.stroke();
+        });
+        ctx.beginPath();
+        ctx.arc(px, frameY - 5, eyeSpacing * 0.5, Math.PI * 1.2, Math.PI * 1.8);
+        ctx.lineWidth = 4.6;
+        ctx.strokeStyle = "#27272a";
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 8. Mũi dài Pinocchio (🤥)
+      if (mochi.currentEmotion === "lie") {
+        const noseStartX = px * 0.45;
+        const noseStartY = eyeY + rx * 0.12;
+        const noseLength = rx * 0.82;
+        const noseH = rx * 0.095;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(noseStartX, noseStartY - noseH * 0.45);
+        ctx.lineTo(noseStartX + noseLength, noseStartY - noseH * 0.25);
+        ctx.arc(noseStartX + noseLength, noseStartY, noseH * 0.42, -Math.PI * 0.5, Math.PI * 0.5);
+        ctx.lineTo(noseStartX, noseStartY + noseH * 0.45);
+        ctx.closePath();
+
+        const woodGrad = ctx.createLinearGradient(noseStartX, 0, noseStartX + noseLength, 0);
+        woodGrad.addColorStop(0, "#fed7aa");
+        woodGrad.addColorStop(0.5, "#fdba74");
+        woodGrad.addColorStop(1, "#fb923c");
+        ctx.fillStyle = woodGrad;
+        ctx.fill();
+        ctx.lineWidth = 2.6;
+        ctx.strokeStyle = "#c2410c";
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 9. Bong bóng nước mũi ngủ gật + chữ Zzz (😪)
+      if (mochi.currentEmotion === "sleepy") {
+        const bubblePulse = Math.sin(now * 0.004);
+        const bubbleR = rx * (0.16 + bubblePulse * 0.07);
+        const bubbleX = mouthX + rx * 0.13;
+        const bubbleY = eyeY + rx * 0.17;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(bubbleX, bubbleY, Math.max(4, bubbleR), 0, Math.PI * 2);
+        const bGrad = ctx.createRadialGradient(
+          bubbleX - bubbleR * 0.3, bubbleY - bubbleR * 0.3, 1,
+          bubbleX, bubbleY, bubbleR
+        );
+        bGrad.addColorStop(0, "rgba(224, 242, 254, 0.95)");
+        bGrad.addColorStop(0.5, "rgba(56, 189, 248, 0.65)");
+        bGrad.addColorStop(1, "rgba(2, 132, 199, 0.8)");
+        ctx.fillStyle = bGrad;
+        ctx.fill();
+        ctx.lineWidth = 2.0;
+        ctx.strokeStyle = "rgba(186, 230, 253, 0.9)";
+        ctx.stroke();
+
+        const zProgress = (now * 0.0012) % 1;
+        ctx.font = 'bold 20px "Be Vietnam Pro", sans-serif';
+        ctx.fillStyle = `rgba(59, 130, 246, ${Math.max(0, 1 - zProgress)})`;
+        ctx.fillText("Zzz", bubbleX + bubbleR + 6, bubbleY - zProgress * 30);
+        ctx.restore();
+      }
+
+      // 10. Vẽ 10 Phụ kiện Giảng Viên trên đầu Mochi
+      if (mochi.isInstructor) {
+        const acc = mochi.teacherAccessory || "gradhat";
+        const hatY = -ry + rx * 0.04;
+        ctx.save();
+        ctx.translate(px * 0.25, hatY);
+
+        if (acc === "gradhat") {
+          ctx.fillStyle = "#1e1b4b";
+          ctx.beginPath();
+          ctx.moveTo(0, -42);
+          ctx.lineTo(88, -16);
+          ctx.lineTo(0, 10);
+          ctx.lineTo(-88, -16);
+          ctx.closePath();
+          ctx.fill();
+          ctx.strokeStyle = "#312e81";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          ctx.strokeStyle = "#facc15";
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(0, -16);
+          ctx.lineTo(58, -2);
+          ctx.lineTo(64, 26);
+          ctx.stroke();
+        } else if (acc === "bow") {
+          ctx.fillStyle = "#f43f5e";
+          ctx.strokeStyle = "#be123c";
+          ctx.lineWidth = 2.5;
+          [-1, 1].forEach((d) => {
+            ctx.beginPath();
+            ctx.moveTo(0, -6);
+            ctx.bezierCurveTo(d * 48, -36, d * 52, 18, 0, -2);
+            ctx.fill();
+            ctx.stroke();
+          });
+          ctx.beginPath();
+          ctx.arc(0, -5, 11, 0, Math.PI * 2);
+          ctx.fillStyle = "#fb7185";
+          ctx.fill();
+          ctx.stroke();
+        } else if (acc === "beret") {
+          ctx.fillStyle = "#ec4899";
+          ctx.strokeStyle = "#9d174d";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.ellipse(-8, -12, 68, 24, -0.12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        } else if (acc === "crown") {
+          ctx.fillStyle = "#fbbf24";
+          ctx.strokeStyle = "#b45309";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(-42, 4);
+          ctx.lineTo(-48, -32);
+          ctx.lineTo(-20, -12);
+          ctx.lineTo(0, -40);
+          ctx.lineTo(20, -12);
+          ctx.lineTo(48, -32);
+          ctx.lineTo(42, 4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        } else if (acc === "cowboy") {
+          ctx.fillStyle = "#b45309";
+          ctx.strokeStyle = "#451a03";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 92, 18, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(0, -6, 44, Math.PI, 0);
+          ctx.fillStyle = "#d97706";
+          ctx.fill();
+          ctx.stroke();
+        } else if (acc === "cap") {
+          ctx.fillStyle = "#3b82f6";
+          ctx.strokeStyle = "#1e3a8a";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(0, 2, 54, Math.PI, 0);
+          ctx.fill();
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.ellipse(18, 2, 58, 12, 0.08, 0, Math.PI);
+          ctx.fillStyle = "#1d4ed8";
+          ctx.fill();
+          ctx.stroke();
+        } else if (acc === "halo") {
+          ctx.strokeStyle = "#facc15";
+          ctx.lineWidth = 7;
+          ctx.beginPath();
+          ctx.ellipse(0, -28, 56, 14, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (acc === "catears") {
+          [-1, 1].forEach((d) => {
+            ctx.fillStyle = "#fbcfe8";
+            ctx.strokeStyle = "#f472b6";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(d * 32, 8);
+            ctx.lineTo(d * 62, -36);
+            ctx.lineTo(d * 78, 22);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          });
+        } else if (acc === "headset") {
+          ctx.strokeStyle = "#0ea5e9";
+          ctx.lineWidth = 8;
+          ctx.beginPath();
+          ctx.arc(0, ry * 0.9, rx * 1.02, Math.PI * 1.08, Math.PI * 1.92);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // 11. Ngôi sao choáng váng khi 2 Mochi va đập mạnh (💫)
+      if (isDizzy) {
+        for (let i = 0; i < 3; i++) {
+          const ang = now * 0.006 + (i * Math.PI * 2) / 3;
+          const sx = Math.cos(ang) * (rx * 0.65);
+          const sy = -ry - 18 + Math.sin(ang) * 14;
+          ctx.font = "26px sans-serif";
+          ctx.fillText("⭐", sx - 12, sy);
+        }
+      }
+
+      ctx.restore();
+
+      // 12. Vụn bánh & Trái tim bay khi ăn
+      if (mochi.crumbs && mochi.crumbs.length > 0) {
+        mochi.crumbs.forEach((c) => {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, c.life);
+          ctx.fillStyle = c.col;
+          ctx.translate(c.x, c.y);
+          ctx.scale(c.scale, c.scale);
+          if (c.isHeart) {
+            ctx.beginPath();
+            ctx.arc(-3, -3, 3.5, Math.PI, 0);
+            ctx.arc(3, -3, 3.5, Math.PI, 0);
+            ctx.lineTo(0, 6);
+            ctx.closePath();
+            ctx.fill();
+          } else {
+            ctx.beginPath();
+            ctx.arc(0, 0, c.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        });
+      }
+
+      // 13. Hiệu ứng Nổ 💥 BÙÙÙM! khi ăn quá 3 lần (Chuẩn Trang Chủ)
+      if (mochi.explosionParticles && mochi.explosionParticles.length > 0) {
+        mochi.explosionParticles.forEach((p) => {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.fillStyle = p.color;
+          ctx.translate(p.x, p.y);
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        if (mochi.isExploding) {
+          const timeSinceExp = now - mochi.explosionTime;
+          if (timeSinceExp < 800) {
+            const waveProgress = timeSinceExp / 800;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(cx, cy, waveProgress * 220, 0, Math.PI * 2);
+            ctx.lineWidth = 7 * (1 - waveProgress);
+            ctx.strokeStyle = `rgba(244, 63, 94, ${0.85 * (1 - waveProgress)})`;
+            ctx.stroke();
+
+            const textScale = Math.sin(Math.min(1, waveProgress * 2.5) * Math.PI * 0.5);
+            ctx.font = `900 ${Math.round(42 * textScale)}px "Be Vietnam Pro", sans-serif`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#ffed4a";
+            ctx.strokeStyle = "#e11d48";
+            ctx.lineWidth = 5;
+            ctx.strokeText("💥 BÙÙÙM!", cx, cy - 10);
+            ctx.fillText("💥 BÙÙÙM!", cx, cy - 10);
+            ctx.restore();
+          }
+        }
+      }
+
+      ctx.restore();
+      mochi.canvasTexture.needsUpdate = true;
+    }
+
+    // =========================================================================
+    // 4. KHỞI TẠO NHÂN VẬT MOCHI 3D TRONG THREE.JS & CANNON.JS
+    // =========================================================================
+    function createMochiCharacter(config) {
+      const {
+        id,
+        name,
+        isInstructor = false,
+        teacherGender = "male",
+        teacherAccessory = "gradhat",
+        flavorKey = "white",
+        radius = 1.0,
+        position = new THREE.Vector3(0, 0, 0)
+      } = config;
+
+      const rootGroup = new THREE.Group();
+      rootGroup.position.copy(position);
+      scene.add(rootGroup);
+
+      const visualGroup = new THREE.Group();
+      const baseScale = { x: 1.0, y: 1.0, z: 1.0 };
+      visualGroup.scale.set(1, 1, 1);
+      rootGroup.add(visualGroup);
+
+      // Canvas 512x512 vẽ Mochi giống hệt trang chủ
+      const faceCanvas = document.createElement("canvas");
+      faceCanvas.width = 512;
+      faceCanvas.height = 512;
+      const ctx = faceCanvas.getContext("2d");
+
+      const canvasTexture = new THREE.CanvasTexture(faceCanvas);
+      canvasTexture.minFilter = THREE.LinearFilter;
+      canvasTexture.magFilter = THREE.LinearFilter;
+
+      // Plane hiển thị Mochi sắc nét chuẩn trang chủ
+      const planeSize = radius * 3.15;
+      const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
+      const planeMat = new THREE.MeshBasicMaterial({
+        map: canvasTexture,
+        transparent: true,
+        depthWrite: false
+      });
+      const facePlaneMesh = new THREE.Mesh(planeGeo, planeMat);
+      visualGroup.add(facePlaneMesh);
+
+      // Sphere vô hình dùng cho THREE.Raycaster bắt điểm chạm kéo thả 3D chính xác
+      const hitGeo = new THREE.SphereGeometry(radius * 1.05, 24, 24);
+      const hitMat = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0,
+        depthWrite: false
+      });
+      const bodyMesh = new THREE.Mesh(hitGeo, hitMat);
+      visualGroup.add(bodyMesh);
+
+      // THREE.QuadraticBezierCurve3 cho hệ thống cảm xúc miệng (Yêu cầu kỹ thuật)
+      const mouthWidth = radius * 0.16;
+      const mouthBaseY = -radius * 0.18;
+      const mouthZ = radius * 0.96;
+      const mouthP0 = new THREE.Vector3(-mouthWidth, mouthBaseY, mouthZ);
+      const mouthControl = new THREE.Vector3(0, mouthBaseY - radius * 0.14, mouthZ + 0.03);
+      const mouthP2 = new THREE.Vector3(mouthWidth, mouthBaseY, mouthZ);
+      const mouthCurve = new THREE.QuadraticBezierCurve3(mouthP0, mouthControl, mouthP2);
+
+      // Khởi tạo Physics Body trong CANNON.World
+      const shape = new CANNON.Sphere(radius);
+      const body = new CANNON.Body({
+        mass: isInstructor ? 2.4 : 1.2,
+        material: mochiPhysicsMaterial,
+        linearDamping: 0.35,
+        angularDamping: 0.75
+      });
+      body.addShape(shape);
+      body.position.set(position.x, position.y, position.z);
+      body.velocity.set(
+        (Math.random() - 0.5) * 0.45,
+        (Math.random() - 0.5) * 0.45,
+        0
+      );
+      world.addBody(body);
+
+      const palette = MOCHI_PALETTES[flavorKey] || MOCHI_PALETTES.white;
+
+      const mochiObj = {
+        id,
+        name,
+        isInstructor,
+        teacherGender,
+        teacherAccessory,
+        radius,
+        palette: JSON.parse(JSON.stringify(palette)),
+        baseScale,
+        homePosition: position.clone(),
+        floatPhase: Math.random() * Math.PI * 2,
+        rootGroup,
+        visualGroup,
+        bodyMesh,
+        facePlaneMesh,
+        faceCanvas,
+        ctx,
+        canvasTexture,
+        mouthCurve,
+        mouthControl,
+        mouthBaseY,
+        body,
+        currentEmotion: "normal",
+        defaultGlasses: isInstructor && teacherAccessory === "glasses",
+        gazeX: 0,
+        gazeY: 0,
+        targetGazeX: 0,
+        targetGazeY: 0,
+        blinkProgress: 0,
+        isBlinking: false,
+        nextBlinkTime: Date.now() + 1800 + Math.random() * 2500,
+        blinkStartTime: 0,
+        blushUntil: 0,
+        cryUntil: 0,
+        dizzyUntil: 0,
+        feedCount: 0,
+        growthScale: 1.0,
+        targetGrowthScale: 1.0,
+        isEating: false,
+        eatingStart: 0,
+        chewProgress: 0,
+        crumbs: [],
+        isExploding: false,
+        explosionTime: 0,
+        explosionParticles: [],
+        lastCollideTime: 0
+      };
+
+      bodyMesh.userData.mochiRef = mochiObj;
+
+      // Phản ứng thú vị khi các bánh Mochi va đập vào nhau
+      body.addEventListener("collide", (evt) => {
+        const now = performance.now();
+        if (now - mochiObj.lastCollideTime < 350) return;
+        const impactVelocity = evt.contact.getImpactVelocityAlongNormal();
+        if (Math.abs(impactVelocity) > 1.1) {
+          mochiObj.lastCollideTime = now;
+          mochiObj.dizzyUntil = Date.now() + 1400;
+          mochiObj.blushUntil = Date.now() + 2500;
+
+          gsap.fromTo(
+            mochiObj.visualGroup.scale,
+            { x: 1.26, y: 0.74, z: 1.0 },
+            { x: 1.0, y: 1.0, z: 1.0, duration: 0.7, ease: "elastic.out(1.1, 0.32)" }
+          );
+        }
+      });
+
+      return mochiObj;
+    }
+
+    // =========================================================================
+    // 5. HỆ THỐNG CẢM XÚC SINH ĐỘNG (QUADRATICBEZIERCURVE3 + GSAP SQUASH & STRETCH)
+    // =========================================================================
+    function applyEmotionToMochi(mochi, emotionKey, withSquashStretch = true) {
+      if (!mochi) return;
+      mochi.currentEmotion = emotionKey;
+      mochi.blushUntil = Date.now() + 4000;
+
+      const r = mochi.radius;
+      const baseY = mochi.mouthBaseY;
+
+      // Thay đổi tọa độ điểm kiểm soát giữa của QuadraticBezierCurve3 để miệng biến từ mếu thành cười hoặc ngược lại
+      let targetControlY = baseY - r * 0.16;
+      let targetControlX = 0;
+
+      if (emotionKey === "happy" || emotionKey === "love" || emotionKey === "nerd") {
+        targetControlY = baseY - r * 0.24; // Miệng cười tươi ◡
+      } else if (emotionKey === "shocked" || emotionKey === "cry") {
+        targetControlY = baseY + r * 0.24; // Miệng mếu ︵
+      } else if (emotionKey === "unamused") {
+        targetControlY = baseY + r * 0.03;
+        targetControlX = r * 0.04;
+      } else if (emotionKey === "rolling") {
+        targetControlY = baseY;
+      }
+
+      gsap.to(mochi.mouthControl, {
+        x: targetControlX,
+        y: targetControlY,
+        duration: 0.38,
+        ease: "back.out(2)"
+      });
+
+      // Dùng GSAP tạo hiệu ứng Squash and Stretch (nén dẹp trục Y, phình to trục X, rồi nảy lại kích thước ban đầu)
+      if (withSquashStretch) {
+        gsap.killTweensOf(mochi.visualGroup.scale);
+        const tl = gsap.timeline();
+        tl.to(mochi.visualGroup.scale, {
+          x: 1.32, // Phình to theo trục X
+          y: 0.68, // Nén dẹp theo trục Y
+          z: 1.0,
+          duration: 0.14,
+          ease: "power2.out"
+        }).to(mochi.visualGroup.scale, {
+          x: 1.0,
+          y: 1.0,
+          z: 1.0,
+          duration: 0.78,
+          ease: "elastic.out(1.18, 0.3)"
+        });
+      }
+    }
+
+    window.triggerMochiEmotion = function (emotionKey, btnEl) {
+      document.querySelectorAll(".emoji-btn").forEach((b) => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+
+      const target = selectedMochi || mochiEntities[0];
+      if (!target) return;
+
+      applyEmotionToMochi(target, emotionKey, true);
+
+      // Các bạn Mochi cùng lớp cũng phản ứng hưởng ứng cực vui nhộn
+      mochiEntities.forEach((m) => {
+        if (m !== target) {
+          setTimeout(() => {
+            applyEmotionToMochi(m, emotionKey, true);
+          }, 90 + Math.random() * 160);
+        }
+      });
+
+      const statusMessages = {
+        happy: "Bé Mochi đang siêu vui vẻ cười tít mắt nè! 😄✨",
+        love: "Bé Mochi thả ngàn trái tim yêu thương gửi đến bạn! 😍💖",
+        nerd: "Bé Mochi đeo kính cận thành giáo sư AI mọt sách! 🤓📚",
+        shocked: "Ủa gì vậy trời? Bé Mochi mếu máo hoang mang tột độ! 😧⚡",
+        lie: "Mũi tớ dài ra như Pinocchio rồi nè, không nói dối đâu nha! 🤥✨",
+        sleepy: "Oaaa... Buồn ngủ quá, bong bóng mũi phập phồng nè! 😪💤",
+        unamused: "Hứ, tớ đang giận dỗi và liếc chán nản bạn đó! 😒💅",
+        rolling: "Ủa alo? Đảo mắt lên trần nhà luôn nè! 🙄✨"
+      };
+      updateHudStatus(statusMessages[emotionKey] || "Hết đau rồi, lại tươi cười với bạn nè! 🥰");
+    };
+
+    function updateHudStatus(text) {
+      const el = document.getElementById("hudStatusText");
+      if (el) el.textContent = text;
+    }
+
+    function selectActiveMochi(mochi) {
+      if (!mochi) return;
+      selectedMochi = mochi;
+      const badge = document.getElementById("hudSelectedMochiBadge");
+      if (badge) {
+        badge.innerHTML = mochi.isInstructor
+          ? `🎯 Đang tương tác: <strong>Mochi Giảng Viên</strong>`
+          : `🎯 Đang tương tác: <strong>Bé Mochi</strong>`;
+      }
+    }
+
+    // =========================================================================
+    // 6. KÉO THẢ (DRAG & DROP) VỚI THREE.RAYCASTER & CANNON.POINTTOPOINTCONSTRAINT
+    // =========================================================================
+    const raycaster = new THREE.Raycaster();
+    const pointerNDC = new THREE.Vector2();
+    const dragPlane = new THREE.Plane();
+    const dragIntersectPoint = new THREE.Vector3();
+
+    let mouseConstraint = null;
+    let draggedMochi = null;
+    let recoveryTimeout = null;
+
+    function getPointerNDC(clientX, clientY) {
+      pointerNDC.x = (clientX / window.innerWidth) * 2 - 1;
+      pointerNDC.y = -(clientY / window.innerHeight) * 2 + 1;
+    }
+
+    function onPointerDown(clientX, clientY) {
+      getPointerNDC(clientX, clientY);
+      raycaster.setFromCamera(pointerNDC, camera);
+
+      const meshes = mochiEntities.map((m) => m.bodyMesh);
+      const intersects = raycaster.intersectObjects(meshes, false);
+
+      if (intersects.length > 0) {
+        const hit = intersects[0];
+        const mochi = hit.object.userData.mochiRef;
+        if (!mochi) return;
+
+        selectActiveMochi(mochi);
+        draggedMochi = mochi;
+        container.classList.add("is-dragging");
+
+        if (recoveryTimeout) {
+          clearTimeout(recoveryTimeout);
+          recoveryTimeout = null;
+        }
+
+        const camDir = new THREE.Vector3();
+        camera.getWorldDirection(camDir);
+        dragPlane.setFromNormalAndCoplanarPoint(camDir.negate(), hit.point);
+
+        jointBody.position.set(hit.point.x, hit.point.y, hit.point.z);
+
+        const worldHitVec = new CANNON.Vec3(hit.point.x, hit.point.y, hit.point.z);
+        const localPivot = mochi.body.pointToLocalFrame(worldHitVec);
+
+        mouseConstraint = new CANNON.PointToPointConstraint(
+          mochi.body,
+          localPivot,
+          jointBody,
+          new CANNON.Vec3(0, 0, 0)
+        );
+        world.addConstraint(mouseConstraint);
+
+        mochi.cryUntil = Date.now() + 4500;
+        mochi.blushUntil = Date.now() + 5000;
+        applyEmotionToMochi(mochi, "cry", true);
+        updateHudStatus(`Huhu... đừng kéo má ${mochi.name} mà, đau quá à! 😭`);
+      }
+    }
+
+    function onPointerMove(clientX, clientY) {
+      getPointerNDC(clientX, clientY);
+
+      // Cập nhật hướng liếc mắt cho tất cả Mochi theo con trỏ chuột
+      mochiEntities.forEach((m) => {
+        m.targetGazeX = Math.max(-1, Math.min(1, pointerNDC.x * 1.1));
+        m.targetGazeY = Math.max(-1, Math.min(1, -pointerNDC.y * 1.1));
+      });
+
+      if (mouseConstraint && draggedMochi) {
+        raycaster.setFromCamera(pointerNDC, camera);
+        if (raycaster.ray.intersectPlane(dragPlane, dragIntersectPoint)) {
+          const clampedX = Math.max(-sceneBounds.x, Math.min(sceneBounds.x, dragIntersectPoint.x));
+          const clampedY = Math.max(-sceneBounds.y, Math.min(sceneBounds.y, dragIntersectPoint.y));
+          const clampedZ = Math.max(-sceneBounds.z, Math.min(sceneBounds.z, dragIntersectPoint.z));
+          jointBody.position.set(clampedX, clampedY, clampedZ);
+        }
+      }
+    }
+
+    function onPointerUp() {
+      if (mouseConstraint) {
+        world.removeConstraint(mouseConstraint);
+        mouseConstraint = null;
+      }
+      if (draggedMochi) {
+        const releasedMochi = draggedMochi;
+        draggedMochi = null;
+        container.classList.remove("is-dragging");
+
+        releasedMochi.cryUntil = Date.now() + 1400;
+        recoveryTimeout = setTimeout(() => {
+          releasedMochi.cryUntil = 0;
+          applyEmotionToMochi(releasedMochi, "normal", true);
+          updateHudStatus("Hết đau rồi, lại tươi cười với bạn nè! 🥰");
+        }, 1450);
+      }
+    }
+
+    container.addEventListener("mousedown", (e) => {
+      if (e.button === 0) onPointerDown(e.clientX, e.clientY);
+    });
+    window.addEventListener("mousemove", (e) => {
+      onPointerMove(e.clientX, e.clientY);
+    });
+    window.addEventListener("mouseup", () => {
+      onPointerUp();
+    });
+
+    container.addEventListener("touchstart", (e) => {
+      if (e.touches.length > 0) {
+        const t = e.touches[0];
+        onPointerDown(t.clientX, t.clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (e) => {
+      if (e.touches.length > 0) {
+        const t = e.touches[0];
+        onPointerMove(t.clientX, t.clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchend", () => {
+      onPointerUp();
+    });
+
+    // =========================================================================
+    // 7. CHO ĂN BÁNH MOCHI & NỔ "💥 BÙÙÙM!" GIỐNG HỆT TRANG CHỦ
+    // =========================================================================
+    function triggerMochiExplosion(mochi) {
+      mochi.isExploding = true;
+      mochi.explosionTime = Date.now();
+      mochi.feedCount = 0;
+      mochi.targetGrowthScale = 1.0;
+      mochi.growthScale = 0.4;
+      mochi.isEating = false;
+      mochi.chewProgress = 0;
+
+      mochi.explosionParticles = [];
+      const colors = ["#fb7185", "#38bdf8", "#facc15", "#a855f7", "#ffffff", "#4ade80", "#f43f5e", "#fb923c"];
+      for (let i = 0; i < 48; i++) {
+        const angle = (Math.PI * 2 * i) / 48 + (Math.random() - 0.5) * 0.35;
+        const speed = 5 + Math.random() * 9;
+        mochi.explosionParticles.push({
+          x: 256,
+          y: 256,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          r: 4 + Math.random() * 7,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 1.0,
+          decay: 0.02 + Math.random() * 0.02
+        });
+      }
+
+      applyEmotionToMochi(mochi, "happy", true);
+      updateHudStatus("💥 BÙÙÙM! Ăn no quá phát nổ rồi... Bé Mochi biến về ban đầu nè! 💨✨");
+
+      setTimeout(() => {
+        mochi.isExploding = false;
+        mochi.targetGrowthScale = 1.0;
+      }, 1600);
+    }
+
+    window.feedSelectedMochi = function () {
+      const target = selectedMochi || mochiEntities[0];
+      if (!target || target.isExploding) return;
+
+      const snackGeo = new THREE.SphereGeometry(0.26, 20, 20);
+      const snackMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const snackMesh = new THREE.Mesh(snackGeo, snackMat);
+      snackMesh.position.set(-sceneBounds.x * 0.85, 0, 2.2);
+      scene.add(snackMesh);
+
+      const targetPos = target.rootGroup.position;
+      gsap.to(snackMesh.position, {
+        x: targetPos.x,
+        y: targetPos.y - 0.1,
+        z: targetPos.z + 0.5,
+        duration: 0.38,
+        ease: "power2.in",
+        onComplete: () => {
+          scene.remove(snackMesh);
+          snackGeo.dispose();
+          snackMat.dispose();
+
+          target.feedCount = (target.feedCount || 0) + 1;
+          if (target.feedCount > 3) {
+            triggerMochiExplosion(target);
+            return;
+          }
+
+          target.targetGrowthScale = 1.0 + target.feedCount * 0.14;
+          target.isEating = true;
+          target.eatingStart = Date.now();
+          target.blushUntil = Date.now() + 5000;
+
+          const feedMsgs = {
+            1: `Măm măm... Bánh Mochi ngon quá, ${target.name} béo lên một chút rồi nè! (Lần 1/3) 😋`,
+            2: `Ngoàm ngoàm... ${target.name} to thêm một vòng phổng phao rồi nè! (Lần 2/3) 🥟`,
+            3: `Căng tròn sắp nổ tung rồi đó nha! Ăn thêm cái nữa là BÙÙÙM! (Lần 3/3) 💣`
+          };
+          updateHudStatus(feedMsgs[target.feedCount]);
+          applyEmotionToMochi(target, "happy", true);
+        }
+      });
+    };
+
+    // =========================================================================
+    // 8. KHỞI TẠO 10 KHÔNG GIAN PHÒNG HỌC 3D ĐỘC NHẤT
+    // =========================================================================
+    function clearCurrentClassroom3D() {
+      if (mouseConstraint) {
+        world.removeConstraint(mouseConstraint);
+        mouseConstraint = null;
+      }
+      mochiEntities.forEach((m) => {
+        scene.remove(m.rootGroup);
+        world.removeBody(m.body);
+      });
+      mochiEntities = [];
+      selectedMochi = null;
+
+      while (environmentPropsGroup.children.length > 0) {
+        const child = environmentPropsGroup.children[0];
+        environmentPropsGroup.remove(child);
+      }
+      floatingPropsList = [];
+    }
+
+    function createClassroom3DEnvironment(classroom, randomVariationSeed) {
+      const palette = classroom.themePalette || {
+        bgTop: "#ffd3e2",
+        bgMid: "#f3e0f7",
+        bgBot: "#d8dcff"
+      };
+
+      document.body.style.background = `linear-gradient(135deg, ${palette.bgTop} 0%, ${palette.bgMid} 50%, ${palette.bgBot} 100%)`;
+
+      const allPropTypes = [
+        "ai_cubes", "art_rings", "stars_octa", "media_spheres", "code_torus",
+        "music_crystals", "golden_stars", "floating_hearts", "ringed_planets", "mochi_capsules"
+      ];
+      const activePropType = classroom.propType || allPropTypes[randomVariationSeed % allPropTypes.length];
+
+      const propCount = 12;
+      for (let i = 0; i < propCount; i++) {
+        let mesh;
+        const size = 0.15 + (i % 3) * 0.05;
+        const propColor = PASTEL_PROP_COLORS[(i + randomVariationSeed) % PASTEL_PROP_COLORS.length];
+        const mat = new THREE.MeshStandardMaterial({
+          color: propColor,
+          roughness: 0.25,
+          metalness: 0.1
+        });
+
+        if (activePropType === "ai_cubes") {
+          mesh = new THREE.Mesh(new THREE.BoxGeometry(size * 1.3, size * 1.3, size * 1.3), mat);
+        } else if (activePropType === "art_rings") {
+          mesh = new THREE.Mesh(new THREE.TorusGeometry(size, size * 0.32, 12, 24), mat);
+        } else if (activePropType === "stars_octa") {
+          mesh = new THREE.Mesh(new THREE.OctahedronGeometry(size * 1.25), mat);
+        } else if (activePropType === "code_torus") {
+          mesh = new THREE.Mesh(new THREE.TorusKnotGeometry(size * 0.75, size * 0.22, 36, 8), mat);
+        } else if (activePropType === "music_crystals") {
+          mesh = new THREE.Mesh(new THREE.ConeGeometry(size, size * 2.0, 6), mat);
+        } else if (activePropType === "golden_stars") {
+          const starMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.2, metalness: 0.3 });
+          mesh = new THREE.Mesh(new THREE.OctahedronGeometry(size * 1.3, 0), starMat);
+        } else if (activePropType === "floating_hearts") {
+          const heartMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.25 });
+          mesh = new THREE.Mesh(new THREE.DodecahedronGeometry(size * 1.15), heartMat);
+        } else if (activePropType === "ringed_planets") {
+          mesh = new THREE.Group();
+          const planet = new THREE.Mesh(new THREE.SphereGeometry(size * 0.9, 16, 16), mat);
+          const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(size * 1.45, size * 0.12, 8, 24),
+            new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 })
+          );
+          ring.rotation.x = Math.PI / 3;
+          mesh.add(planet);
+          mesh.add(ring);
+        } else if (activePropType === "mochi_capsules") {
+          mesh = new THREE.Mesh(new THREE.SphereGeometry(size * 1.1, 20, 20), mat);
+          mesh.scale.set(1.25, 0.85, 1.0);
+        } else {
+          mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(size * 1.15, 0), mat);
+        }
+
+        const angle = (i / propCount) * Math.PI * 2 + randomVariationSeed * 0.4;
+        const dist = 3.0 + (i % 2) * 0.9;
+        mesh.position.set(
+          Math.cos(angle) * dist * 0.85,
+          Math.sin(angle) * dist * 0.75,
+          -2.2 - (i % 3) * 0.5
+        );
+        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+        environmentPropsGroup.add(mesh);
+
+        floatingPropsList.push({
+          mesh,
+          baseY: mesh.position.y,
+          speed: 0.6 + Math.random() * 1.1,
+          phase: Math.random() * Math.PI * 2,
+          rotSpeedX: (Math.random() - 0.5) * 0.018,
+          rotSpeedY: (Math.random() - 0.5) * 0.018
+        });
+      }
+    }
+
+    function setupClassroomScene(classroom, randomizeLayout = false) {
+      currentClassroom = classroom;
+      clearCurrentClassroom3D();
+
+      const variationSeed = randomizeLayout
+        ? Math.floor(Math.random() * 10000)
+        : classroom.id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+
+      createClassroom3DEnvironment(classroom, variationSeed);
+
+      const isMobilePortrait = (window.innerWidth / Math.max(window.innerHeight, 1)) < 0.85;
+
+      // 1. Sinh ra 1 "Mochi Giảng Viên" (Màu trắng giống hệt Trang Chủ)
+      const instructorPos = isMobilePortrait
+        ? new THREE.Vector3(0, 1.05, 0.2)
+        : new THREE.Vector3(-0.2, 0.25, 0.4);
+
+      const instructorMochi = createMochiCharacter({
+        id: "mochi-instructor",
+        name: classroom.teacherName || (classroom.teacherGender === "female" ? "Cô Giáo Mochi" : "Thầy Giáo Mochi"),
+        isInstructor: true,
+        teacherGender: classroom.teacherGender || "male",
+        teacherAccessory: classroom.teacherAccessory || "gradhat",
+        flavorKey: "white",
+        radius: 1.24,
+        position: instructorPos
+      });
+      mochiEntities.push(instructorMochi);
+
+      // 2. Sinh ra 3 "Mochi Học Viên" (Màu sắc Pastel chuẩn Trang Chủ)
+      const count = Math.max(3, parseInt(classroom.studentCount || 3, 10));
+      const shuffledFlavors = [...STUDENT_FLAVOR_KEYS].sort(() => Math.random() - 0.5);
+      const studentAnchorsContainer = document.getElementById("studentAnchorsContainer");
+      studentAnchorsContainer.innerHTML = "";
+
+      for (let i = 0; i < count; i++) {
+        let studentPos;
+        if (isMobilePortrait && count === 3) {
+          const mobileSlots = [
+            new THREE.Vector3(-1.58, -0.75, 0.1),
+            new THREE.Vector3(1.58, -0.75, 0.1),
+            new THREE.Vector3(0, -1.78, 0.25)
+          ];
+          studentPos = mobileSlots[i];
+        } else if (isMobilePortrait) {
+          const angle = Math.PI + ((i + 0.5) / count) * Math.PI;
+          studentPos = new THREE.Vector3(
+            Math.cos(angle) * 1.75,
+            0.2 + Math.sin(angle) * 1.95,
+            0.15
+          );
+        } else {
+          const sideAngle = ((i / count) * Math.PI * 2) + (randomizeLayout ? Math.random() * 0.8 : 0.4);
+          studentPos = new THREE.Vector3(
+            Math.cos(sideAngle) * 3.15 - 0.1,
+            Math.sin(sideAngle) * 1.68,
+            0.2
+          );
+        }
+
+        const customNames = Array.isArray(classroom.studentNames) ? classroom.studentNames : [];
+        const studentName = customNames[i] || RANDOM_STUDENT_NAMES[(i + variationSeed) % RANDOM_STUDENT_NAMES.length];
+        const flavorKey = shuffledFlavors[i % shuffledFlavors.length];
+
+        const studentMochi = createMochiCharacter({
+          id: `mochi-student-${i}`,
+          name: studentName,
+          isInstructor: false,
+          flavorKey: flavorKey,
+          radius: 0.78,
+          position: studentPos
+        });
+        mochiEntities.push(studentMochi);
+      }
+
+      updateResponsiveCameraAndLayout();
+      selectActiveMochi(instructorMochi);
+
+      mochiEntities.forEach((m, idx) => {
+        m.visualGroup.scale.set(0.01, 0.01, 0.01);
+        gsap.to(m.visualGroup.scale, {
+          x: 1,
+          y: 1,
+          z: 1,
+          duration: 0.8,
+          delay: idx * 0.07,
+          ease: "elastic.out(1.1, 0.38)"
+        });
+      });
+
+      updateClassroomUIElements(classroom);
+    }
+
+    function isClassroomFormAction(c) {
+      if (!c) return false;
+      if (c.downloadAction === "form") return true;
+      if (c.downloadAction === "link") return false;
+      const text = ((c.downloadLabel || "") + " " + (c.name || "")).toLowerCase();
+      return text.includes("đăng ký") || text.includes("dang ky") || text.includes("canva");
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function updateClassroomUIElements(classroom) {
+      const selectEl = document.getElementById("classroomSelect");
+      if (selectEl && selectEl.value !== classroom.id) {
+        selectEl.value = classroom.id;
+      }
+
+      const dlBtn = document.getElementById("instructorDownloadBtn");
+      const dlText = document.getElementById("instructorDownloadText");
+      const roleTag = document.getElementById("instructorRoleTag");
+      const speechEl = document.getElementById("instructorSpeechBubble");
+
+      const isForm = isClassroomFormAction(classroom);
+
+      if (dlBtn) {
+        if (isForm) {
+          dlBtn.href = "javascript:void(0);";
+          dlBtn.removeAttribute("target");
+          dlBtn.title = "Bấm để mở ô đăng ký khóa học";
+        } else {
+          dlBtn.href = classroom.downloadUrl || "https://zalo.me/0916172524";
+          dlBtn.setAttribute("target", "_blank");
+          dlBtn.title = "Bấm để mở link tải: " + (classroom.downloadUrl || "");
+        }
+      }
+      if (dlText) {
+        dlText.textContent = classroom.downloadLabel || (isForm ? "🎦 Đăng Ký Canva Pro Free" : "📥 Download Khóa Học");
+      }
+      if (roleTag) {
+        roleTag.style.display = "none";
+      }
+      if (speechEl) {
+        speechEl.textContent = classroom.teacherGreeting || (isForm ? "Nhấn nút để Đăng Ký Canva Pro Free nhé! ✨" : "Click nút trên đầu mình để tải khóa học nhé! ✨");
+      }
+    }
+
+    window.handleDownloadCourseClick = function (e) {
+      if (!currentClassroom) return;
+      const instructor = mochiEntities[0];
+      if (instructor) {
+        applyEmotionToMochi(instructor, "love", true);
+      }
+
+      if (isClassroomFormAction(currentClassroom)) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        openCourseRegistrationModal(currentClassroom);
+        return;
+      }
+
+      const targetUrl = currentClassroom.downloadUrl || "https://zalo.me/0916172524";
+      showGameToast(`📥 Đang mở link tải khóa học: ${currentClassroom.name}`);
+
+      if (!targetUrl || targetUrl === "#") {
+        if (e) e.preventDefault();
+        alert("Lớp học này chưa gắn link tải. Bạn có thể gắn link trong trang Quản Trị (game admin.html)!");
+      }
+    };
+
+    // =========================================================================
+    // MODAL / Ô ĐĂNG KÝ KHÓA HỌC MOCHI 3D (GỬI VỀ hocviendohoa2@gmail.com)
+    // =========================================================================
+    window.openCourseRegistrationModal = function (classroom) {
+      const cls = classroom || currentClassroom;
+      const courseDisplay = document.getElementById("mochiRegCourseDisplay");
+      const courseInput = document.getElementById("mochiRegCourseInput");
+
+      // Lấy tên khóa học hiển thị mặc định trên cùng
+      let defaultCourseName = "Đăng Ký Canva Pro Free";
+      if (cls) {
+        const rawLabel = (cls.downloadLabel || "").replace(/^[^\p{L}\p{N}\s]+/u, '').trim();
+        const rawName = (cls.name || "").replace(/^[^\p{L}\p{N}\s]+/u, '').trim();
+        if (rawLabel && (rawLabel.toLowerCase().includes("đăng ký") || rawLabel.toLowerCase().includes("canva"))) {
+          defaultCourseName = rawLabel;
+        } else if (rawName) {
+          defaultCourseName = rawName;
+        } else if (rawLabel) {
+          defaultCourseName = rawLabel;
+        }
+      }
+
+      if (courseDisplay) courseDisplay.textContent = defaultCourseName;
+      if (courseInput) courseInput.value = defaultCourseName;
+
+      const feedback = document.getElementById("mochiRegFeedback");
+      if (feedback) {
+        feedback.style.display = "none";
+        feedback.innerHTML = "";
+      }
+
+      const submitBtn = document.getElementById("mochiRegSubmitBtn");
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<span>🚀 Gửi Đăng Ký Về Mail Giảng Viên</span>";
+      }
+
+      const backdrop = document.getElementById("courseRegModalBackdrop");
+      if (backdrop) backdrop.classList.add("open");
+
+      setTimeout(() => {
+        const inpName = document.getElementById("mochiRegName");
+        if (inpName) inpName.focus();
+      }, 200);
+    };
+
+    window.closeCourseRegistrationModal = function (e) {
+      const backdrop = document.getElementById("courseRegModalBackdrop");
+      if (backdrop) backdrop.classList.remove("open");
+    };
+
+    window.handleCourseRegSubmit = async function (e) {
+      e.preventDefault();
+      const courseName = document.getElementById("mochiRegCourseInput").value.trim() || 
+                         document.getElementById("mochiRegCourseDisplay").textContent.trim() || 
+                         "Đăng Ký Canva Pro Free";
+      const name = document.getElementById("mochiRegName").value.trim();
+      const phone = document.getElementById("mochiRegPhone").value.trim();
+      const email = document.getElementById("mochiRegEmail").value.trim();
+
+      if (!name || !phone || !email) {
+        alert("Vui lòng điền đầy đủ Họ tên, Số ĐT (Zalo) và Email!");
+        return;
+      }
+
+      const targetEmail = "hocviendohoa2@gmail.com";
+      const submitBtn = document.getElementById("mochiRegSubmitBtn");
+      const feedback = document.getElementById("mochiRegFeedback");
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>⏳ Đang gửi thông tin về ${targetEmail}...</span>`;
+      }
+
+      // Tiêu đề email hiển thị rõ ràng tên khóa học (ví dụ: [Đăng Ký Canva Pro Free])
+      const mailSubject = `[${courseName}] Đăng Ký: ${name} - ${phone}`;
+      const mailBody =
+        `TÊN KHÓA HỌC: ${courseName}\n` +
+        `Họ và tên: ${name}\n` +
+        `Số điện thoại (Zalo): ${phone}\n` +
+        `Email: ${email}\n` +
+        `Nguồn: Nút Đăng Ký Trên Đầu Mochi Giảng Viên (3D Game)\n` +
+        `Thời gian gửi: ${new Date().toLocaleString("vi-VN")}\n`;
+
+      const mailtoUrl = `mailto:${targetEmail}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+
+      let sentViaApi = false;
+      try {
+        const resp = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            _subject: mailSubject,
+            "TÊN KHÓA HỌC": courseName,
+            "Khóa Học": courseName,
+            "Họ và Tên": name,
+            "Số Điện Thoại (Zalo)": phone,
+            "Email Học Viên": email,
+            _replyto: email,
+            _template: "table"
+          })
+        });
+        if (resp.ok) {
+          sentViaApi = true;
+        }
+      } catch (err) {
+        sentViaApi = false;
+      }
+
+      // Tự động lưu hồ sơ vào bảng Leads quản trị (SUBMITTED_REGISTRATIONS)
+      try {
+        const newLead = {
+          id: "mochi_lead_" + Date.now(),
+          time: new Date().toLocaleString("vi-VN"),
+          name: name,
+          phone: phone,
+          email: email,
+          courses: courseName,
+          mode: "Mochi 3D Game",
+          note: "Đăng ký từ nút trên đầu Mochi Giảng Viên",
+          status: "Mới"
+        };
+        const savedLeads = JSON.parse(localStorage.getItem("SUBMITTED_REGISTRATIONS") || "[]");
+        savedLeads.unshift(newLead);
+        localStorage.setItem("SUBMITTED_REGISTRATIONS", JSON.stringify(savedLeads));
+      } catch (_) {}
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<span>✅ Đã Gửi Thành Công!</span>";
+      }
+
+      if (feedback) {
+        feedback.style.display = "block";
+        feedback.innerHTML = `
+          <div style="font-weight:800; color:#059669; font-size:1rem; margin-bottom:6px;">
+            🎉 ${sentViaApi ? "Đăng Ký Thành Công!" : "Đã Tạo Đơn Đăng Ký Thành Công!"}
+          </div>
+          <div style="font-size:0.84rem; color:#334155; line-height:1.45; margin-bottom:10px;">
+            Thông tin của bạn đã được chuyển tới email: <strong style="color:#0284c7;">${targetEmail}</strong>.<br/>
+            Khóa học đăng ký: <strong style="color:#e11d48;">${escapeHtml(courseName)}</strong>.<br/>
+            Giảng viên sẽ sớm liên hệ qua Zalo <strong style="color:#059669;">${escapeHtml(phone)}</strong>!
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+            <a href="https://zalo.me/0916172524" target="_blank" rel="noopener" class="mochi-reg-zalo-btn">
+              💬 Nhắn Zalo Giảng Viên Ngay (0916172524)
+            </a>
+            <a href="${mailtoUrl}" class="mochi-reg-mail-btn">
+              📧 Mở Ứng Dụng Mail
+            </a>
+          </div>
+        `;
+      }
+
+      const instructor = mochiEntities[0];
+      if (instructor) {
+        applyEmotionToMochi(instructor, "love", true);
+        if (typeof window.triggerMochiEmotion === "function") {
+          window.triggerMochiEmotion("love");
+        }
+      }
+      showGameToast(`🎉 Đã gửi đăng ký khóa học ${courseName} về ${targetEmail}!`);
+    };
+
+    // =========================================================================
+    // 9. CHUYỂN ĐỔI LỚP HỌC & RANDOM 10 KHÔNG GIAN PHÒNG HỌC ĐỘC NHẤT
+    // =========================================================================
+    function populateClassroomUI() {
+      const selectEl = document.getElementById("classroomSelect");
+      const countBadge = document.getElementById("totalClassCountBadge");
+      const modalGrid = document.getElementById("classModalGrid");
+
+      if (countBadge) countBadge.textContent = classroomsList.length;
+
+      if (selectEl) {
+        selectEl.innerHTML = classroomsList
+          .map((c) => `<option value="${c.id}">${c.icon || "🏫"} ${c.name}</option>`)
+          .join("");
+        if (currentClassroom) {
+          selectEl.value = currentClassroom.id;
+        }
+      }
+
+      if (modalGrid) {
+        modalGrid.innerHTML = classroomsList
+          .map((c) => {
+            const isActive = currentClassroom && currentClassroom.id === c.id;
+            const teacherBadge = c.teacherGender === "female" ? `👩‍🏫 Cô Giáo` : `👨‍🏫 Thầy Giáo`;
+            return `
+              <div class="class-card-item ${isActive ? "active" : ""}" onclick="selectClassroomFromModal('${c.id}')">
+                <div>
+                  <div class="class-card-top">
+                    <span class="class-card-icon">${c.icon || "🎓"}</span>
+                    <span class="class-card-teacher-pill">${teacherBadge}</span>
+                  </div>
+                  <div class="class-card-name" style="margin-top:8px;">${c.name}</div>
+                  <div class="class-card-desc" style="margin-top:4px;">${c.subject || "Lớp học tương tác 3D không trọng lực."}</div>
+                </div>
+                <div class="class-card-footer">
+                  <span>👥 ${c.studentCount || 3} Bạn cùng lớp</span>
+                  <span>Tham Gia Lớp Học →</span>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+    }
+
+    window.switchClassroomById = function (classId) {
+      const found = classroomsList.find((c) => c.id === classId);
+      if (!found) return;
+      setupClassroomScene(found, false);
+      populateClassroomUI();
+      showGameToast(`🏫 Đã vào: ${found.name}`);
+    };
+
+    window.selectClassroomFromModal = function (classId) {
+      closeClassroomModal();
+      switchClassroomById(classId);
+    };
+
+    window.enterRandomUniqueClassroom = function () {
+      randomClassCounter++;
+      const baseTemplate = classroomsList[Math.floor(Math.random() * classroomsList.length)];
+      const isFemale = Math.random() > 0.5;
+      const accessories = ["gradhat", "bow", "beret", "glasses", "headset", "crown", "cowboy", "cap", "halo", "catears"];
+      const randomAccessory = accessories[Math.floor(Math.random() * accessories.length)];
+      const chosenPreset = TEN_SPACE_PRESETS[(randomClassCounter - 1) % TEN_SPACE_PRESETS.length];
+
+      const teacherName = isFemale ? "Cô Giáo" : "Thầy Giáo";
+
+      const uniqueRandomClass = {
+        ...baseTemplate,
+        id: baseTemplate.id,
+        name: `${baseTemplate.name} (Phòng #${randomClassCounter})`,
+        teacherGender: isFemale ? "female" : "male",
+        teacherName: teacherName,
+        teacherAccessory: randomAccessory,
+        studentCount: 3,
+        studentNames: [],
+        themePalette: {
+          bgTop: chosenPreset.bgTop,
+          bgMid: chosenPreset.bgMid,
+          bgBot: chosenPreset.bgBot
+        },
+        propType: chosenPreset.propType
+      };
+
+      setupClassroomScene(uniqueRandomClass, true);
+      showGameToast(`🎲 Đã đổi sang Không Gian Lớp Học 3D mới!`);
+    };
+
+    window.openClassroomModal = function () {
+      populateClassroomUI();
+      const modal = document.getElementById("classModalBackdrop");
+      if (modal) modal.classList.add("open");
+    };
+
+    window.closeClassroomModal = function () {
+      const modal = document.getElementById("classModalBackdrop");
+      if (modal) modal.classList.remove("open");
+    };
+
+    let toastTimer = null;
+    function showGameToast(msg) {
+      const toast = document.getElementById("gameToast");
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add("show");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    // =========================================================================
+    // 10. VÒNG LẶP VẬT LÝ KHÔNG TRỌNG LỰC & VẼ BÁNH MOCHI CHUẨN TRANG CHỦ
+    // =========================================================================
+    const tempProjVec = new THREE.Vector3();
+    let lastFrameTime = performance.now();
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+
+      const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+      lastFrameTime = now;
+      const nowMs = Date.now();
+
+      world.step(1 / 60, dt, 3);
+
+      const timeSec = now * 0.001;
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+
+      mochiEntities.forEach((mochi) => {
+        const body = mochi.body;
+
+        // Cập nhật chớp mắt tự nhiên
+        if (nowMs > mochi.nextBlinkTime && !mochi.isBlinking) {
+          mochi.isBlinking = true;
+          mochi.blinkStartTime = nowMs;
+        }
+        if (mochi.isBlinking) {
+          const elapsed = nowMs - mochi.blinkStartTime;
+          if (elapsed < 180) {
+            mochi.blinkProgress = Math.sin((elapsed / 180) * Math.PI);
+          } else {
+            mochi.blinkProgress = 0;
+            mochi.isBlinking = false;
+            mochi.nextBlinkTime = nowMs + 2500 + Math.random() * 3200;
+          }
+        }
+
+        // Nội suy hướng nhìn
+        mochi.gazeX += (mochi.targetGazeX - mochi.gazeX) * 0.14;
+        mochi.gazeY += (mochi.targetGazeY - mochi.gazeY) * 0.14;
+
+        // Nội suy phóng to khi ăn bánh
+        mochi.growthScale += (mochi.targetGrowthScale - mochi.growthScale) * 0.12;
+
+        // Cập nhật hiệu ứng nhai bánh nhóp nhép & vụn bánh bay
+        if (mochi.isEating) {
+          const elapsed = nowMs - mochi.eatingStart;
+          if (elapsed < 2000) {
+            mochi.chewProgress = 0.35 + Math.abs(Math.sin(elapsed * 0.02)) * 0.55;
+            if (Math.random() < 0.25) {
+              mochi.crumbs.push({
+                x: 256 + (Math.random() - 0.5) * 44,
+                y: 310 + (Math.random() - 0.5) * 16,
+                vx: (Math.random() - 0.5) * 3.5,
+                vy: -2 - Math.random() * 2.5,
+                r: 3 + Math.random() * 3,
+                col: ["#fb7185", "#facc15", "#4ade80", "#38bdf8"][Math.floor(Math.random() * 4)],
+                isHeart: Math.random() > 0.5,
+                life: 1.0,
+                scale: 1.0
+              });
+            }
+          } else {
+            mochi.isEating = false;
+            mochi.chewProgress = 0;
+          }
+        }
+
+        if (mochi.crumbs.length > 0) {
+          mochi.crumbs = mochi.crumbs.filter((c) => {
+            c.x += c.vx;
+            c.y += c.vy;
+            c.vy += 0.12;
+            c.life -= 0.03;
+            c.scale = Math.max(0, c.life);
+            return c.life > 0;
+          });
+        }
+
+        if (mochi.explosionParticles.length > 0) {
+          mochi.explosionParticles = mochi.explosionParticles.filter((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vx *= 0.94;
+            p.vy = p.vy * 0.94 + 0.2;
+            p.life -= p.decay;
+            return p.life > 0;
+          });
+        }
+
+        // Lực trôi lơ lửng Không Trọng Lực
+        if (mochi !== draggedMochi) {
+          const driftX = Math.sin(timeSec * 1.1 + mochi.floatPhase) * 0.25;
+          const driftY = Math.cos(timeSec * 1.3 + mochi.floatPhase) * 0.25;
+
+          const pullToHomeX = (mochi.homePosition.x - body.position.x) * 0.65;
+          const pullToHomeY = (mochi.homePosition.y - body.position.y) * 0.65;
+          const pullToHomeZ = (mochi.homePosition.z - body.position.z) * 0.9;
+
+          body.applyForce(
+            new CANNON.Vec3(driftX + pullToHomeX, driftY + pullToHomeY, pullToHomeZ),
+            body.position
+          );
+        }
+
+        if (body.position.x > sceneBounds.x) { body.position.x = sceneBounds.x; body.velocity.x *= -0.7; }
+        if (body.position.x < -sceneBounds.x) { body.position.x = -sceneBounds.x; body.velocity.x *= -0.7; }
+        if (body.position.y > sceneBounds.y) { body.position.y = sceneBounds.y; body.velocity.y *= -0.7; }
+        if (body.position.y < -sceneBounds.y) { body.position.y = -sceneBounds.y; body.velocity.y *= -0.7; }
+        if (body.position.z > sceneBounds.z) { body.position.z = sceneBounds.z; body.velocity.z *= -0.7; }
+        if (body.position.z < -1.2) { body.position.z = -1.2; body.velocity.z *= -0.7; }
+
+        mochi.rootGroup.position.copy(body.position);
+        mochi.rootGroup.rotation.z = -body.velocity.x * 0.05;
+
+        // Vẽ khuôn mặt Mochi chuẩn trang chủ lên CanvasTexture
+        drawHomepageMochiCanvas(mochi, nowMs);
+
+        // Chiếu tọa độ 3D trên đỉnh đầu Mochi sang tọa độ 2D màn hình
+        const headOffset = mochi.radius * (mochi.growthScale || 1) * 1.08 + (mochi.isInstructor ? 0.38 : 0.14);
+        tempProjVec.set(
+          mochi.rootGroup.position.x,
+          mochi.rootGroup.position.y + headOffset,
+          mochi.rootGroup.position.z
+        );
+        tempProjVec.project(camera);
+
+        const rawScreenX = (tempProjVec.x * 0.5 + 0.5) * screenW;
+        const rawScreenY = (-tempProjVec.y * 0.5 + 0.5) * screenH;
+
+        if (mochi.isInstructor) {
+          const instructorAnchor = document.getElementById("instructorHeadAnchor");
+          if (instructorAnchor) {
+            const halfW = Math.min(135, screenW * 0.45);
+            const clampedX = Math.max(halfW + 8, Math.min(screenW - halfW - 8, rawScreenX));
+            const clampedY = Math.max(158, Math.min(screenH - 120, rawScreenY));
+            instructorAnchor.style.left = `${Math.round(clampedX)}px`;
+            instructorAnchor.style.top = `${Math.round(clampedY)}px`;
+          }
+        } else {
+          const studentAnchor = document.getElementById(`anchor-${mochi.id}`);
+          if (studentAnchor) {
+            const clampedX = Math.max(58, Math.min(screenW - 58, rawScreenX));
+            const clampedY = Math.max(95, Math.min(screenH - 36, rawScreenY));
+            studentAnchor.style.left = `${Math.round(clampedX)}px`;
+            studentAnchor.style.top = `${Math.round(clampedY)}px`;
+          }
+        }
+      });
+
+      floatingPropsList.forEach((p) => {
+        p.mesh.position.y = p.baseY + Math.sin(timeSec * p.speed + p.phase) * 0.24;
+        p.mesh.rotation.x += p.rotSpeedX;
+        p.mesh.rotation.y += p.rotSpeedY;
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener("resize", () => {
+      updateResponsiveCameraAndLayout();
+    });
+
+    function initMochiClassroomGame() {
+      loadClassroomsFromStorage();
+      populateClassroomUI();
+
+      const params = new URLSearchParams(window.location.search);
+      const requestedClassId = params.get("class");
+      let initialClass = classroomsList.find((c) => c.id === requestedClassId);
+      if (!initialClass) {
+        initialClass = classroomsList[0];
+      }
+
+      setupClassroomScene(initialClass, false);
+      populateClassroomUI();
+      requestAnimationFrame(animate);
+    }
+
+    initMochiClassroomGame();
+  </script>
+</body>
+</html>

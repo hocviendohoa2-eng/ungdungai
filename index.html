@@ -324,32 +324,6 @@
           <p class="session-modal-desc" id="modalSessionDesc">
             Làm quen giao diện, quản lý Layer và các công cụ tạo vùng chọn cơ bản.
           </p>
-
-          <!-- Nút sửa/xóa buổi học cho khóa theo yêu cầu -->
-          <div class="session-custom-edit-actions" id="sessionEditActions" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <button type="button" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" onclick="startEditingCurrentSession()">
-              ✏️ Viết Lại / Chỉnh Sửa Buổi Này
-            </button>
-            <button type="button" class="btn btn-outline" id="btnDeleteCurrentSession" style="padding: 6px 12px; font-size: 0.8rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.35);" onclick="deleteCurrentSession()">
-              🗑️ Xóa Buổi
-            </button>
-          </div>
-
-          <!-- Form chỉnh sửa nội dung buổi học trực tiếp -->
-          <div class="session-custom-edit-form" id="sessionEditForm" style="display: none; margin-top: 12px; background: rgba(99, 102, 241, 0.08); padding: 12px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.25);">
-            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Tên / Chủ đề buổi học:</label>
-            <input type="text" id="sessionEditTitleInput" class="form-input" style="margin-bottom: 8px;" />
-            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Chi tiết nội dung cần học:</label>
-            <textarea id="sessionEditDescInput" class="form-input" rows="3" style="margin-bottom: 10px;"></textarea>
-            <div style="display: flex; gap: 8px;">
-              <button type="button" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.82rem;" onclick="saveEditedCurrentSession()">
-                💾 Lưu Nội Dung
-              </button>
-              <button type="button" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.82rem;" onclick="cancelEditingCurrentSession()">
-                Hủy
-              </button>
-            </div>
-          </div>
         </div>
         
         <div class="session-modal-perks">
@@ -360,10 +334,6 @@
           <div class="modal-perk-item">
             <span class="perk-icon">⏱️</span>
             <div><strong>Linh hoạt lịch học:</strong> Tự chọn khung giờ sáng, chiều, tối hoặc cuối tuần</div>
-          </div>
-          <div class="modal-perk-item">
-            <span class="perk-icon">🚀</span>
-            <div><strong>Thực chiến sản phẩm:</strong> Nắm chắc kỹ năng, hoàn thiện sản phẩm ngay sau buổi</div>
           </div>
         </div>
       </div>
@@ -460,6 +430,6 @@
     </a>
   </nav>
 
-  <script src="app.js?v=20261103_v5"></script>
+  <script src="app.js?v=20261104_v6"></script>
 </body>
 </html>

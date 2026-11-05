@@ -440,6 +440,38 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .track-tab-pill {
+      padding: 7px 15px;
+      border-radius: 20px;
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .track-tab-pill:hover {
+      background: rgba(148, 163, 184, 0.2);
+      color: #fff;
+    }
+    .track-tab-pill.active {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(99, 102, 241, 0.25));
+      color: #38bdf8;
+      border-color: #38bdf8;
+      font-weight: 700;
+    }
+    .admin-session-item {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .admin-session-item:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+    }
   </style>
 </head>
 <body>
@@ -501,7 +533,7 @@
         🎯 Quản Lý Từ Khóa SEO
       </button>
       <button class="tab-btn" data-tab="tab-courses" onclick="switchTab('tab-courses')">
-        📚 Khóa Học & Học Phí
+        📚 Quản Lý Khóa Học & Giáo Án
       </button>
       <button class="tab-btn" data-tab="tab-images" onclick="switchTab('tab-images')">
         🖼️ Quản Lý Hình Ảnh
@@ -747,15 +779,23 @@
         </div>
       </section>
 
-      <!-- TAB: QUẢN LÝ KHÓA HỌC & HỌC PHÍ -->
+      <!-- TAB: QUẢN LÝ KHÓA HỌC & GIÁO ÁN CHI TIẾT -->
       <section id="tab-courses" class="tab-pane">
-        <h2 class="section-title">📚 Quản Lý 5 Khóa Học & Học Phí</h2>
-        <p class="section-desc">Chỉnh sửa tên khóa, thời lượng, học phí Online/Offline và các buổi học chi tiết.</p>
+        <h2 class="section-title">📚 Quản Lý Khóa Học & Nội Dung Giáo Án Từng Buổi</h2>
+        <p class="section-desc">Chỉnh sửa thông tin học phí, tên khóa, phân hệ chuyên đề và toàn bộ chi tiết nội dung giáo án tất cả các buổi học.</p>
 
+        <!-- Khối 1: Thông Tin Chung Khóa Học -->
         <div class="card-box">
-          <div class="form-group" style="max-width: 400px;">
+          <div class="card-box-title">
+            <span>⚙️ Thông Tin Chung & Học Phí Khóa Học</span>
+            <button type="button" class="btn btn-primary btn-sm" onclick="saveAllAdminSettings()">
+              💾 Lưu Cấu Hình
+            </button>
+          </div>
+
+          <div class="form-group" style="max-width: 450px;">
             <label class="form-label">Chọn Khóa Học Cần Sửa:</label>
-            <select id="courseSelect" class="form-select" onchange="loadCourseForm()">
+            <select id="courseSelect" class="form-select" onchange="onCourseSelectChange()">
               <option value="photoshop">🎨 Khóa Học Photoshop Theo Yêu Cầu</option>
               <option value="illustrator">✒️ Khóa Học Illustrator Theo Yêu Cầu</option>
               <option value="ai">🤖 Khóa Học Trí Tuệ Nhân Tạo Theo Yêu Cầu</option>
@@ -771,8 +811,8 @@
               <input type="text" id="courseTitle" class="form-input" />
             </div>
             <div class="form-group">
-              <label class="form-label">Thời Lượng (Số buổi):</label>
-              <input type="text" id="courseSessionsCount" class="form-input" />
+              <label class="form-label">Thời Lượng Tổng Thể:</label>
+              <input type="text" id="courseSessionsCount" class="form-input" placeholder="Ví dụ: 8 Buổi / Khóa" />
             </div>
             <div class="form-group">
               <label class="form-label">Học Phí Online (VNĐ):</label>
@@ -789,9 +829,80 @@
             <textarea id="courseShortDesc" rows="2" class="form-textarea"></textarea>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">3 Điểm Nổi Bật (Mỗi dòng 1 điểm):</label>
             <textarea id="courseHighlights" rows="3" class="form-textarea"></textarea>
+          </div>
+        </div>
+
+        <!-- Khối 2: Quản Lý Phân Hệ / Chuyên Đề & Lộ Trình Từng Buổi Học -->
+        <div class="card-box" id="adminCurriculumBox">
+          <div class="card-box-title" style="flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>📖 Nội Dung Giáo Án Chi Tiết Từng Buổi Học</span>
+              <span id="curriculumCourseBadge" style="background: rgba(14, 165, 233, 0.2); color: #38bdf8; font-size: 0.78rem; padding: 4px 10px; border-radius: 999px; font-weight: 700;"></span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="addNewTrackToCourse()">
+                ➕ Thêm Chuyên Đề Mới
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="saveAllAdminSettings()">
+                💾 Lưu Toàn Bộ Cấu Hình
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabs chọn Chuyên đề / Track nếu khóa có nhiều chuyên đề -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Chọn Chuyên Đề / Phân Hệ Cần Sửa Nội Dung:</label>
+            <div id="courseTrackTabs" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+          </div>
+
+          <!-- Thông tin chuyên đề đang chọn -->
+          <div id="activeTrackInfoBox" style="background: rgba(15, 23, 42, 0.6); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+            <div class="form-grid-3" style="gap: 12px; margin-bottom: 6px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 0.78rem;">Tên Tab Phân Hệ (tabLabel):</label>
+                <input type="text" id="trackTabLabel" class="form-input" style="padding: 7px 10px; font-size: 0.85rem;" oninput="updateCurrentTrackMeta()" />
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 0.78rem;">Tiêu Đề Chuyên Đề (title):</label>
+                <input type="text" id="trackTitle" class="form-input" style="padding: 7px 10px; font-size: 0.85rem;" oninput="updateCurrentTrackMeta()" />
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 0.78rem;">Thời Lượng (duration):</label>
+                <input type="text" id="trackDuration" class="form-input" style="padding: 7px 10px; font-size: 0.85rem;" oninput="updateCurrentTrackMeta()" />
+              </div>
+            </div>
+            <div id="trackDeleteActionWrap" style="text-align: right; margin-top: 10px; display: none;">
+              <button type="button" class="btn btn-danger btn-sm" onclick="deleteCurrentTrack()">
+                🗑️ Xóa Chuyên Đề Này
+              </button>
+            </div>
+          </div>
+
+          <!-- Danh sách các buổi học chi tiết -->
+          <div style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: #f1f5f9; margin: 0;">
+              📋 Chi Tiết Nội Dung Từng Buổi Học (<span id="sessionTotalCountText">0</span> Buổi):
+            </h4>
+            <button type="button" class="btn btn-outline btn-sm" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);" onclick="addSessionToCurrentTrack()">
+              ➕ Thêm Buổi Học
+            </button>
+          </div>
+
+          <div id="adminSessionsContainer" style="display: flex; flex-direction: column; gap: 14px;">
+            <!-- Render danh sách buổi học bằng JavaScript -->
+          </div>
+
+          <!-- Thanh nút thao tác cuối danh sách -->
+          <div style="margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <button type="button" class="btn btn-outline" onclick="addSessionToCurrentTrack()">
+              ➕ Thêm Buổi Học Vào Cuối Lộ Trình
+            </button>
+            <button type="button" class="btn btn-primary" onclick="saveAllAdminSettings()">
+              💾 Lưu Cập Nhật Giáo Án & Toàn Bộ Cấu Hình
+            </button>
           </div>
         </div>
       </section>
@@ -1063,6 +1174,14 @@
           cat.thumbnail = normalizeImageUrl(cat.thumbnail);
           if (Array.isArray(cat.posters)) {
             cat.posters = cat.posters.map(p => normalizeImageUrl(p));
+          }
+          if (!cat.tracks || !Array.isArray(cat.tracks) || cat.tracks.length === 0) {
+            if (typeof SITE_DATA !== "undefined") {
+              const orig = SITE_DATA.categories.find(c => c.id === cat.id);
+              if (orig && orig.tracks) {
+                cat.tracks = JSON.parse(JSON.stringify(orig.tracks));
+              }
+            }
           }
         });
         if (!currentSiteData.categories.some(c => c.id === "theo-yeu-cau") && typeof SITE_DATA !== "undefined") {
@@ -1350,10 +1469,52 @@
       renderFooterKeywords();
     }
 
+    let currentAdminCourseId = "photoshop";
+    let currentAdminTrackIdx = 0;
+
+    function onCourseSelectChange() {
+      // Lưu lại thay đổi của khóa học trước đó vào bộ nhớ
+      saveCurrentCourseToMemory();
+      // Chuyển sang khóa học mới
+      const selectEl = document.getElementById("courseSelect");
+      if (selectEl) {
+        currentAdminCourseId = selectEl.value;
+      }
+      currentAdminTrackIdx = 0;
+      loadCourseForm();
+    }
+
+    function ensureCategoryTracks(cat) {
+      if (!cat) return;
+      if (!cat.tracks || !Array.isArray(cat.tracks) || cat.tracks.length === 0) {
+        if (typeof SITE_DATA !== "undefined") {
+          const orig = SITE_DATA.categories.find(c => c.id === cat.id);
+          if (orig && orig.tracks && orig.tracks.length > 0) {
+            cat.tracks = JSON.parse(JSON.stringify(orig.tracks));
+            return;
+          }
+        }
+        cat.tracks = [
+          {
+            id: `${cat.id}-track-1`,
+            tabLabel: cat.title || "Chuyên đề 1",
+            title: cat.title || "Nội dung đào tạo",
+            duration: cat.sessionsCount || "8 Buổi",
+            priceOffline: cat.priceOffline || 0,
+            priceOnline: cat.priceOnline || 0,
+            sessions: []
+          }
+        ];
+      }
+    }
+
     function loadCourseForm() {
-      const catId = document.getElementById("courseSelect").value;
-      if (!currentSiteData.categories) return;
-      const cat = currentSiteData.categories.find(c => c.id === catId);
+      const selectEl = document.getElementById("courseSelect");
+      if (!selectEl) return;
+      currentAdminCourseId = selectEl.value;
+
+      if (!currentSiteData || !currentSiteData.categories) return;
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
       if (!cat) return;
 
       document.getElementById("courseTitle").value = cat.title || "";
@@ -1362,11 +1523,269 @@
       document.getElementById("coursePriceOffline").value = cat.priceOffline || 0;
       document.getElementById("courseShortDesc").value = cat.shortDesc || "";
       document.getElementById("courseHighlights").value = (cat.highlights || []).join("\n");
+
+      ensureCategoryTracks(cat);
+      renderCurriculumEditor();
+    }
+
+    function renderCurriculumEditor() {
+      if (!currentSiteData || !currentSiteData.categories) return;
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat) return;
+      ensureCategoryTracks(cat);
+
+      if (currentAdminTrackIdx >= cat.tracks.length) {
+        currentAdminTrackIdx = 0;
+      }
+      const track = cat.tracks[currentAdminTrackIdx];
+
+      // Update badge
+      const badgeEl = document.getElementById("curriculumCourseBadge");
+      if (badgeEl) {
+        badgeEl.textContent = `${cat.title} • ${cat.tracks.length} Chuyên Đề`;
+      }
+
+      // Render Track Tabs
+      const tabsWrap = document.getElementById("courseTrackTabs");
+      if (tabsWrap) {
+        tabsWrap.innerHTML = cat.tracks.map((t, idx) => `
+          <button type="button" 
+                  class="track-tab-pill ${idx === currentAdminTrackIdx ? "active" : ""}" 
+                  onclick="switchAdminTrack(${idx})">
+            ${idx + 1}. ${escapeHtmlAttr(t.tabLabel || t.title || "Chuyên đề " + (idx + 1))} (${(t.sessions || []).length} buổi)
+          </button>
+        `).join("");
+      }
+
+      // Update Active Track Meta
+      const tabLabelInp = document.getElementById("trackTabLabel");
+      const titleInp = document.getElementById("trackTitle");
+      const durationInp = document.getElementById("trackDuration");
+      if (tabLabelInp) tabLabelInp.value = track.tabLabel || "";
+      if (titleInp) titleInp.value = track.title || "";
+      if (durationInp) durationInp.value = track.duration || `${(track.sessions || []).length} Buổi`;
+
+      const delTrackWrap = document.getElementById("trackDeleteActionWrap");
+      if (delTrackWrap) {
+        delTrackWrap.style.display = cat.tracks.length > 1 ? "block" : "none";
+      }
+
+      renderSessionsList(track);
+    }
+
+    function renderSessionsList(track) {
+      if (!track.sessions) track.sessions = [];
+      const container = document.getElementById("adminSessionsContainer");
+      const countEl = document.getElementById("sessionTotalCountText");
+      if (countEl) countEl.textContent = track.sessions.length;
+      if (!container) return;
+
+      if (track.sessions.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 36px 16px; background: rgba(15, 23, 42, 0.45); border: 1.5px dashed var(--border-color); border-radius: 12px; color: var(--text-muted);">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">📭</div>
+            <p style="margin-bottom: 12px; font-size: 0.92rem; color: #cbd5e1;">Chuyên đề này hiện chưa có buổi học nào.</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="addSessionToCurrentTrack()">
+              ➕ Thêm Buổi Học Đầu Tiên
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = track.sessions.map((s, idx) => `
+        <div class="admin-session-item">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(99, 102, 241, 0.2)); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.82rem; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+                ${escapeHtmlAttr(s.num || "Buổi " + (idx + 1))}
+              </span>
+              <span style="font-size: 0.8rem; color: #94a3b8;">(Thứ tự ${idx + 1} / ${track.sessions.length})</span>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="moveAdminSession(${idx}, -1)" ${idx === 0 ? "disabled" : ""} title="Di chuyển lên">
+                ⬆️ Lên
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="moveAdminSession(${idx}, 1)" ${idx === track.sessions.length - 1 ? "disabled" : ""} title="Di chuyển xuống">
+                ⬇️ Xuống
+              </button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="removeAdminSession(${idx})" title="Xóa buổi này">
+                🗑️ Xóa Buổi
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" style="font-size: 0.8rem; color: #94a3b8;">Tên / Chủ Đề Buổi Học:</label>
+            <input type="text" class="form-input" style="font-weight: 600;" value="${escapeHtmlAttr(s.title || "")}" oninput="updateAdminSessionTitle(${idx}, this.value)" placeholder="Ví dụ: Nền tảng cơ bản..." />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.8rem; color: #94a3b8;">Chi Tiết Nội Dung Buổi Học:</label>
+            <textarea class="form-textarea" rows="2" oninput="updateAdminSessionDesc(${idx}, this.value)" placeholder="Ví dụ: Làm quen giao diện, quản lý Layer và các công cụ tạo vùng chọn cơ bản...">${escapeHtmlAttr(s.desc || "")}</textarea>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function switchAdminTrack(trackIdx) {
+      updateCurrentTrackMeta();
+      currentAdminTrackIdx = trackIdx;
+      renderCurriculumEditor();
+    }
+
+    function updateCurrentTrackMeta() {
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat || !cat.tracks || !cat.tracks[currentAdminTrackIdx]) return;
+      const track = cat.tracks[currentAdminTrackIdx];
+      const tabLabelInp = document.getElementById("trackTabLabel");
+      const titleInp = document.getElementById("trackTitle");
+      const durationInp = document.getElementById("trackDuration");
+      if (tabLabelInp) track.tabLabel = tabLabelInp.value.trim();
+      if (titleInp) track.title = titleInp.value.trim();
+      if (durationInp) track.duration = durationInp.value.trim();
+    }
+
+    function addNewTrackToCourse() {
+      updateCurrentTrackMeta();
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat) return;
+      ensureCategoryTracks(cat);
+
+      const trackNum = cat.tracks.length + 1;
+      const newTrackName = prompt(`Nhập tên chuyên đề / phân hệ số ${trackNum}:`, `Chuyên đề ${trackNum}`);
+      if (!newTrackName || !newTrackName.trim()) return;
+
+      const newTrack = {
+        id: `${cat.id}-track-${Date.now()}`,
+        tabLabel: `${trackNum}. ${newTrackName.trim()}`,
+        title: `KHÓA HỌC ${newTrackName.trim().toUpperCase()}`,
+        duration: "8 Buổi",
+        priceOffline: cat.priceOffline || 0,
+        priceOnline: cat.priceOnline || 0,
+        sessions: [
+          { num: "Buổi 1", title: "Khởi động & Nền tảng", desc: "Giới thiệu tổng quan và thiết lập môi trường thực hành." }
+        ]
+      };
+
+      cat.tracks.push(newTrack);
+      currentAdminTrackIdx = cat.tracks.length - 1;
+      renderCurriculumEditor();
+      showToast(`➕ Đã thêm chuyên đề mới "${newTrackName.trim()}"! Nhớ nhấn Lưu cấu hình.`);
+    }
+
+    function deleteCurrentTrack() {
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat || !cat.tracks || cat.tracks.length <= 1) {
+        alert("Khóa học phải có ít nhất 1 chuyên đề!");
+        return;
+      }
+      const track = cat.tracks[currentAdminTrackIdx];
+      if (confirm(`Bạn có chắc muốn xóa vĩnh viễn chuyên đề "${track.tabLabel || track.title}" cùng toàn bộ buổi học bên trong?`)) {
+        cat.tracks.splice(currentAdminTrackIdx, 1);
+        currentAdminTrackIdx = 0;
+        renderCurriculumEditor();
+        showToast("🗑️ Đã xóa chuyên đề thành công!");
+      }
+    }
+
+    function addSessionToCurrentTrack() {
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat || !cat.tracks || !cat.tracks[currentAdminTrackIdx]) return;
+      const track = cat.tracks[currentAdminTrackIdx];
+      if (!track.sessions) track.sessions = [];
+
+      const nextNum = track.sessions.length + 1;
+      track.sessions.push({
+        num: `Buổi ${nextNum}`,
+        title: `Buổi ${nextNum}: `,
+        desc: ""
+      });
+      track.duration = `${track.sessions.length} Buổi`;
+      renderCurriculumEditor();
+
+      setTimeout(() => {
+        const items = document.querySelectorAll(".admin-session-item");
+        if (items.length > 0) {
+          const last = items[items.length - 1];
+          last.scrollIntoView({ behavior: "smooth", block: "center" });
+          const inp = last.querySelector("input");
+          if (inp) inp.focus();
+        }
+      }, 100);
+    }
+
+    function removeAdminSession(idx) {
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat || !cat.tracks || !cat.tracks[currentAdminTrackIdx]) return;
+      const track = cat.tracks[currentAdminTrackIdx];
+      if (!track.sessions || !track.sessions[idx]) return;
+
+      const s = track.sessions[idx];
+      if (confirm(`Bạn có chắc chắn muốn xóa ${s.num || "Buổi " + (idx + 1)} ("${s.title || ""}") không?`)) {
+        track.sessions.splice(idx, 1);
+        track.sessions.forEach((item, i) => {
+          item.num = `Buổi ${i + 1}`;
+        });
+        track.duration = `${track.sessions.length} Buổi`;
+        renderCurriculumEditor();
+        showToast(`🗑️ Đã xóa buổi học. Lộ trình còn ${track.sessions.length} buổi.`);
+      }
+    }
+
+    function moveAdminSession(idx, delta) {
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat || !cat.tracks || !cat.tracks[currentAdminTrackIdx]) return;
+      const track = cat.tracks[currentAdminTrackIdx];
+      if (!track.sessions) return;
+
+      const targetIdx = idx + delta;
+      if (targetIdx < 0 || targetIdx >= track.sessions.length) return;
+
+      const temp = track.sessions[idx];
+      track.sessions[idx] = track.sessions[targetIdx];
+      track.sessions[targetIdx] = temp;
+
+      track.sessions.forEach((item, i) => {
+        item.num = `Buổi ${i + 1}`;
+      });
+
+      renderCurriculumEditor();
+    }
+
+    function updateAdminSessionTitle(idx, val) {
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat || !cat.tracks || !cat.tracks[currentAdminTrackIdx]) return;
+      const track = cat.tracks[currentAdminTrackIdx];
+      if (track.sessions && track.sessions[idx]) {
+        track.sessions[idx].title = val;
+      }
+    }
+
+    function updateAdminSessionDesc(idx, val) {
+      const cat = currentSiteData.categories.find(c => c.id === currentAdminCourseId);
+      if (!cat || !cat.tracks || !cat.tracks[currentAdminTrackIdx]) return;
+      const track = cat.tracks[currentAdminTrackIdx];
+      if (track.sessions && track.sessions[idx]) {
+        track.sessions[idx].desc = val;
+      }
+    }
+
+    function escapeHtmlAttr(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
     }
 
     function saveCurrentCourseToMemory() {
-      const catId = document.getElementById("courseSelect").value;
-      if (!currentSiteData.categories) return;
+      const selectEl = document.getElementById("courseSelect");
+      if (!selectEl) return;
+      const catId = selectEl.value;
+      if (!currentSiteData || !currentSiteData.categories) return;
       const cat = currentSiteData.categories.find(c => c.id === catId);
       if (!cat) return;
 
@@ -1376,6 +1795,8 @@
       cat.priceOffline = parseInt(document.getElementById("coursePriceOffline").value, 10) || 0;
       cat.shortDesc = document.getElementById("courseShortDesc").value.trim();
       cat.highlights = document.getElementById("courseHighlights").value.split("\n").map(s => s.trim()).filter(Boolean);
+
+      updateCurrentTrackMeta();
     }
 
     // Chuyển đổi linh hoạt link Google Drive sang link xem ảnh trực tiếp (CDN)
@@ -1497,27 +1918,40 @@
     // Lưu toàn bộ thay đổi
     function saveAllChanges() {
       // 1. Settings
-      currentSettings.brandName = document.getElementById("cfgBrandName").value.trim();
-      currentSettings.phone = document.getElementById("cfgPhone").value.trim();
-      currentSettings.zalo = document.getElementById("cfgZalo").value.trim();
-      currentSettings.email = document.getElementById("cfgEmail").value.trim();
-      currentSettings.address = document.getElementById("cfgAddress").value.trim();
-      currentSettings.metaKeywords = document.getElementById("seoHomeKeywords").value.trim();
+      const cfgBrandName = document.getElementById("cfgBrandName");
+      if (cfgBrandName) currentSettings.brandName = cfgBrandName.value.trim();
+      const cfgPhone = document.getElementById("cfgPhone");
+      if (cfgPhone) currentSettings.phone = cfgPhone.value.trim();
+      const cfgZalo = document.getElementById("cfgZalo");
+      if (cfgZalo) currentSettings.zalo = cfgZalo.value.trim();
+      const cfgEmail = document.getElementById("cfgEmail");
+      if (cfgEmail) currentSettings.email = cfgEmail.value.trim();
+      const cfgAddress = document.getElementById("cfgAddress");
+      if (cfgAddress) currentSettings.address = cfgAddress.value.trim();
+      const seoHomeKeywords = document.getElementById("seoHomeKeywords");
+      if (seoHomeKeywords) currentSettings.metaKeywords = seoHomeKeywords.value.trim();
 
       // 2. SEO
       if (!currentSEO.home) currentSEO.home = {};
-      currentSEO.home.title = document.getElementById("seoHomeTitle").value.trim();
-      currentSEO.home.desc = document.getElementById("seoHomeDesc").value.trim();
+      const seoHomeTitle = document.getElementById("seoHomeTitle");
+      if (seoHomeTitle) currentSEO.home.title = seoHomeTitle.value.trim();
+      const seoHomeDesc = document.getElementById("seoHomeDesc");
+      if (seoHomeDesc) currentSEO.home.desc = seoHomeDesc.value.trim();
 
-      // 3. Courses
+      // 3. Courses & Giáo án chi tiết
       saveCurrentCourseToMemory();
 
       // 4. Registration Config
-      currentRegConfig.badgeTitle = document.getElementById("cfgRegBadge").value.trim();
-      currentRegConfig.formTitle = document.getElementById("cfgRegTitle").value.trim();
-      currentRegConfig.calcBadgeTitle = document.getElementById("cfgCalcBadge").value.trim();
-      currentRegConfig.calcTitle = document.getElementById("cfgCalcTitle").value.trim();
-      currentRegConfig.submitBtnText = document.getElementById("cfgRegSubmitText").value.trim();
+      const cfgRegBadge = document.getElementById("cfgRegBadge");
+      if (cfgRegBadge) currentRegConfig.badgeTitle = cfgRegBadge.value.trim();
+      const cfgRegTitle = document.getElementById("cfgRegTitle");
+      if (cfgRegTitle) currentRegConfig.formTitle = cfgRegTitle.value.trim();
+      const cfgCalcBadge = document.getElementById("cfgCalcBadge");
+      if (cfgCalcBadge) currentRegConfig.calcBadgeTitle = cfgCalcBadge.value.trim();
+      const cfgCalcTitle = document.getElementById("cfgCalcTitle");
+      if (cfgCalcTitle) currentRegConfig.calcTitle = cfgCalcTitle.value.trim();
+      const cfgRegSubmitText = document.getElementById("cfgRegSubmitText");
+      if (cfgRegSubmitText) currentRegConfig.submitBtnText = cfgRegSubmitText.value.trim();
 
       // Lưu vào localStorage
       localStorage.setItem("CUSTOM_SITE_SETTINGS", JSON.stringify(currentSettings));
@@ -1525,8 +1959,9 @@
       localStorage.setItem("CUSTOM_SITE_DATA", JSON.stringify(currentSiteData));
       localStorage.setItem("CUSTOM_REGISTRATION_CONFIG", JSON.stringify(currentRegConfig));
 
-      showToast("✅ Đã lưu tất cả thay đổi thành công!");
+      showToast("✅ Đã lưu tất cả thay đổi & giáo án thành công!");
     }
+    window.saveAllAdminSettings = saveAllChanges;
 
     function showToast(msg) {
       const toast = document.getElementById("toast");
