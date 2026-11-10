@@ -45,13 +45,21 @@
       transition: background 0.5s ease;
     }
 
-    /* WebGL Canvas Container */
-    #canvasContainer {
+    /* WebGL Canvas Containers (Tách lớp 3D: Nền Props phía sau & Nhân vật/Ghế phía trước) */
+    #bgCanvasContainer {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       z-index: 1;
+      pointer-events: none;
+    }
+    #canvasContainer {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
       cursor: grab;
     }
     #canvasContainer.is-dragging {
@@ -962,6 +970,12 @@
       display: none !important;
     }
 
+    /* Ghế sofa và nhân vật 3D hiển thị Ở TRƯỚC màn hình TV */
+    body.cinema-mode #canvasContainer {
+      z-index: 45 !important;
+      pointer-events: none;
+    }
+
     .mochi-cinema-overlay {
       position: fixed;
       top: 52px;
@@ -991,14 +1005,14 @@
 
     .cinema-theater-box {
       width: 100%;
-      max-width: 680px;
+      max-width: 820px;
       background: rgba(15, 12, 34, 0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 18px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
       border: 1.5px solid rgba(139, 92, 246, 0.55);
       box-shadow: 0 16px 50px rgba(0, 0, 0, 0.65),
-                  0 0 30px rgba(99, 102, 241, 0.32),
+                  0 0 35px rgba(99, 102, 241, 0.35),
                   inset 0 1px 0 rgba(255, 255, 255, 0.2);
       overflow: hidden;
       display: flex;
@@ -1110,6 +1124,35 @@
         padding-top: 54%;
       }
     }
+
+    /* Ghế Sofa 3D & Con trỏ kéo thả */
+    #canvasContainer.is-dragging-sofa,
+    #canvasContainer.is-dragging-sofa * {
+      cursor: grabbing !important;
+    }
+    .sofa-chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+      color: #5b21b6;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(139, 92, 246, 0.15);
+    }
+    .sofa-chip-btn:hover {
+      transform: translateY(-1px) scale(1.04);
+      background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+    }
+    .sofa-chip-btn:active {
+      transform: translateY(0) scale(0.97);
+    }
   </style>
 </head>
 <body>
@@ -1123,6 +1166,9 @@
       </a>
 
       <div class="top-actions-right">
+        <button type="button" class="action-pill-btn" id="btnToggleTvScreen" onclick="toggleTvScreenMode()" style="background:linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); color:#5b21b6; border-color:rgba(139,92,246,0.4);" title="Bật / Ẩn Khung Xem TV">
+          📺 Khung TV
+        </button>
         <button type="button" class="action-pill-btn btn-random-class" onclick="enterRandomUniqueClassroom()" title="Đổi sang lớp học ngẫu nhiên">
           🎲 Đổi Lớp
         </button>
@@ -1154,6 +1200,9 @@
   <div class="hud-Launcher-bar" id="hudLauncherBar">
     <button type="button" class="btn-hud-feed" style="padding:6px 12px; font-size:0.76rem;" onclick="feedSelectedMochi()">
       🍡 Cho Ăn
+    </button>
+    <button type="button" class="btn-hud-feed" style="padding:6px 12px; font-size:0.76rem; background:linear-gradient(135deg, #ede9fe, #ddd6fe); color:#5b21b6; border-color:rgba(139,92,246,0.4);" onclick="recallAllMochisToSofa()" title="Đưa cả lớp Mochi về ngồi lại ngay ngắn trên ghế sofa">
+      🛋️ Cả Lớp Ngồi Ghế
     </button>
     <button type="button" class="btn-show-hud" onclick="toggleHudPanel(true)">
       🔼 Hiện Kéo & Cảm Xúc Mochi
@@ -1234,6 +1283,11 @@
         <span>🙄</span>
         <span class="emo-label">Đảo mắt</span>
       </button>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; margin-bottom:8px; padding:7px 12px; background:rgba(255,255,255,0.75); border-radius:12px; border:1px solid rgba(139,92,246,0.25);">
+      <span style="font-size:0.75rem; font-weight:700; color:#475569;">🛋️ Ghế Sofa Lớp Học</span>
+      <button type="button" class="sofa-chip-btn" onclick="recallAllMochisToSofa()" title="Đưa tất cả Mochi về ghế ngồi">🪑 Cả Lớp Ngồi Ghế</button>
     </div>
 
     <div class="hud-actions-footer">
@@ -1344,7 +1398,7 @@
         <iframe id="cinemaVideoIframe"
                 src=""
                 title="YouTube Video Player"
-                referrerpolicy="strict-origin-when-cross-origin"
+                referrerpolicy="no-referrer-when-downgrade"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen>
         </iframe>
@@ -1353,6 +1407,7 @@
   </div>
 
   <!-- 7. THREE.JS + CANNON.JS + GSAP 3D ENGINE -->
+  <div id="bgCanvasContainer"></div>
   <div id="canvasContainer"></div>
 
   <script>
@@ -1554,6 +1609,13 @@
       if (!url) return "";
       let raw = url.trim();
       let videoId = "";
+      let startTime = 0;
+
+      const tMatch = raw.match(/[?&]t=(\d+)s?/);
+      if (tMatch && tMatch[1]) {
+        startTime = parseInt(tMatch[1], 10);
+      }
+
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       const match = raw.match(regExp);
       if (match && match[2] && match[2].length === 11) {
@@ -1564,10 +1626,13 @@
       } else if (/^[a-zA-Z0-9_-]{11}$/.test(raw)) {
         videoId = raw;
       }
+
       if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0`;
+        let embed = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0`;
+        if (startTime > 0) embed += `&start=${startTime}`;
+        return embed;
       }
-      if (raw.includes("youtube.com/embed/")) {
+      if (raw.includes("youtube.com/embed/") || raw.includes("youtube-nocookie.com/embed/")) {
         const sep = raw.includes("?") ? "&" : "?";
         return raw + (raw.includes("autoplay=") ? "" : sep + "autoplay=1&playsinline=1&rel=0");
       }
@@ -1700,8 +1765,23 @@
     });
 
     // =========================================================================
-    // 2. KHỞI TẠO KHÔNG GIAN 3D THREE.JS & VẬT LÝ KHÔNG TRỌNG LỰC CANNON.JS
+    // 2. KHỞI TẠO KHÔNG GIAN 3D THREE.JS (TÁCH 2 LAYER: NỀN PROPS & NHÂN VẬT/GHẾ)
     // =========================================================================
+    // Layer 1: Nền các chi tiết hình khối (nằm phía sau TV khi xem video)
+    const bgContainer = document.getElementById("bgCanvasContainer");
+    const bgScene = new THREE.Scene();
+    const bgRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    bgRenderer.setSize(window.innerWidth, window.innerHeight);
+    bgRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    if (bgContainer) bgContainer.appendChild(bgRenderer.domElement);
+
+    const bgAmbientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    bgScene.add(bgAmbientLight);
+    const bgDirLight = new THREE.DirectionalLight(0xfff5f7, 0.8);
+    bgDirLight.position.set(5, 9, 8);
+    bgScene.add(bgDirLight);
+
+    // Layer 2: Nhân vật Mochi & Ghế sofa (hiển thị phía trước màn hình TV)
     const container = document.getElementById("canvasContainer");
     const scene = new THREE.Scene();
 
@@ -1754,7 +1834,7 @@
     let mochiEntities = [];
     let selectedMochi = null;
     let environmentPropsGroup = new THREE.Group();
-    scene.add(environmentPropsGroup);
+    bgScene.add(environmentPropsGroup);
     let floatingPropsList = [];
     let sceneBounds = { x: 4.5, y: 3.2, z: 2.0 };
     let isMobilePortrait = false;
@@ -1768,6 +1848,7 @@
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      if (bgRenderer) bgRenderer.setSize(w, h);
 
       if (isMobilePortrait) {
         const targetZ = Math.min(20.5, Math.max(14.0, 6.7 / aspect));
@@ -1805,41 +1886,73 @@
           }
         });
 
-        const instructor = mochiEntities[0];
-        if (isMobilePortrait) {
-          instructor.homePosition.set(0, 0.22, 0.2);
-        } else {
-          instructor.homePosition.set(-0.2, 0.25, 0.4);
-        }
+        // Nếu đang trong chế độ rạp chiếu xem video, cập nhật tỉ lệ ghế sofa & vị trí ngồi
+        if (classroomSofa && isCinemaWatchingMode) {
+          const targetScale = isMobilePortrait ? 0.68 : 1.0;
+          classroomSofa.baseScale.set(targetScale, targetScale, targetScale);
+          classroomSofa.group.scale.set(targetScale, targetScale, targetScale);
 
-        const students = mochiEntities.slice(1);
-        const count = students.length;
-        students.forEach((st, idx) => {
-          if (isMobilePortrait) {
-            if (count === 3) {
-              const mobileSlots = [
-                new THREE.Vector3(-1.55, -1.35, 0.1),
-                new THREE.Vector3(1.55, -1.35, 0.1),
-                new THREE.Vector3(0, -2.45, 0.25)
-              ];
-              st.homePosition.copy(mobileSlots[idx]);
-            } else {
-              const angle = Math.PI + ((idx + 0.5) / count) * Math.PI;
-              st.homePosition.set(
-                Math.cos(angle) * 1.75,
-                -0.45 + Math.sin(angle) * 1.85,
-                0.15
-              );
+          mochiEntities.forEach((m, idx) => {
+            if (m.isSeatedOnSofa) {
+              m.sofaSlotOffset = classroomSofa.getSeatOffset(idx, N);
+              const seatPos = classroomSofa.group.position.clone().add(m.sofaSlotOffset);
+              m.homePosition.copy(seatPos);
+              if (m.cinemaPosition) m.cinemaPosition.copy(seatPos);
+              if (!draggedMochi && !draggedSofa) {
+                if (m.body) m.body.position.copy(seatPos);
+                if (m.rootGroup) m.rootGroup.position.copy(seatPos);
+              }
             }
-          } else {
-            const angle = (idx / count) * Math.PI * 2 + 0.4;
-            st.homePosition.set(
-              Math.cos(angle) * 3.15 - 0.1,
-              Math.sin(angle) * 1.68,
-              0.2
-            );
+          });
+        } else {
+          // Trạng thái lớp học bình thường: Các Mochi trôi nổi tự nhiên quanh Thầy giáo (chuẩn Hình 1)
+          const instructor = mochiEntities[0];
+          if (instructor) {
+            if (isMobilePortrait) {
+              instructor.homePosition.set(0, 0.22, 0.2);
+            } else {
+              instructor.homePosition.set(0, 0.18, 0.35);
+            }
           }
-        });
+
+          const students = mochiEntities.slice(1);
+          const count = students.length;
+          students.forEach((st, idx) => {
+            if (isMobilePortrait) {
+              if (count === 3) {
+                const mobileSlots = [
+                  new THREE.Vector3(-1.55, 0.30, 0.1),
+                  new THREE.Vector3(1.55, 0.30, 0.1),
+                  new THREE.Vector3(0, -1.85, 0.2)
+                ];
+                st.homePosition.copy(mobileSlots[idx]);
+              } else {
+                const angle = Math.PI + ((idx + 0.5) / count) * Math.PI;
+                st.homePosition.set(
+                  Math.cos(angle) * 1.75,
+                  -0.45 + Math.sin(angle) * 1.85,
+                  0.15
+                );
+              }
+            } else {
+              if (count === 3) {
+                const desktopSlots = [
+                  new THREE.Vector3(-2.35, 0.30, 0.15),
+                  new THREE.Vector3(2.35, 0.30, 0.15),
+                  new THREE.Vector3(0, -1.85, 0.25)
+                ];
+                st.homePosition.copy(desktopSlots[idx]);
+              } else {
+                const angle = (idx / count) * Math.PI * 2 + 0.4;
+                st.homePosition.set(
+                  Math.cos(angle) * 3.15 - 0.1,
+                  Math.sin(angle) * 1.68,
+                  0.2
+                );
+              }
+            }
+          });
+        }
       }
     }
 
@@ -2961,6 +3074,280 @@
     }
 
     // =========================================================================
+    // 5.5. HỆ THỐNG GHẾ SOFA LỚP HỌC 3D (CLASSROOM SOFA & SEATING SYSTEM)
+    // =========================================================================
+    let classroomSofa = null;
+    let draggedSofa = null;
+    const sofaDragStartPoint = new THREE.Vector3();
+    const sofaDragStartPos = new THREE.Vector3();
+
+    function createDropShadowTexture() {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 128;
+      const ctx = canvas.getContext("2d");
+      const grad = ctx.createRadialGradient(128, 64, 8, 128, 64, 120);
+      grad.addColorStop(0, "rgba(15, 12, 28, 0.46)");
+      grad.addColorStop(0.35, "rgba(25, 20, 40, 0.26)");
+      grad.addColorStop(0.7, "rgba(45, 38, 60, 0.08)");
+      grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 256, 128);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.needsUpdate = true;
+      return tex;
+    }
+
+    function createPuffyBackPanelGeometry(width, height, depth) {
+      const geo = new THREE.BoxGeometry(width, height, depth, 14, 16, 6);
+      const pos = geo.attributes.position;
+      const v = new THREE.Vector3();
+      const halfW = width / 2;
+      const halfH = height / 2;
+      const halfD = depth / 2;
+
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i);
+        const nx = Math.min(1, Math.abs(v.x) / halfW);
+        const ny = Math.min(1, Math.abs(v.y) / halfH);
+        const nz = Math.min(1, Math.abs(v.z) / halfD);
+
+        // Bo phồng mặt lưng đệm hướng về phía camera (+Z) tạo dáng đệm phồng êm ái
+        if (v.z > 0) {
+          const puff = (1 - nx * nx) * (1 - ny * ny);
+          v.z += puff * (depth * 0.32);
+        }
+        // Bo tròn đỉnh đệm tựa lưng (+Y)
+        if (v.y > halfH * 0.45) {
+          const topFactor = (v.y - halfH * 0.45) / (halfH * 0.55);
+          v.y += (1 - nx * nx) * (1 - nz * nz) * (height * 0.10);
+          v.z -= topFactor * topFactor * (depth * 0.14);
+        }
+        // Bo cong viền 2 bên
+        if (nx > 0.72) {
+          v.x -= Math.sign(v.x) * Math.pow(nx - 0.72, 2) * (width * 0.12);
+        }
+        pos.setXYZ(i, v.x, v.y, v.z);
+      }
+      geo.computeVertexNormals();
+      return geo;
+    }
+
+    function createPuffyArmrestGeometry(width, height, depth) {
+      const geo = new THREE.BoxGeometry(width, height, depth, 10, 14, 14);
+      const pos = geo.attributes.position;
+      const v = new THREE.Vector3();
+      const halfW = width / 2;
+      const halfH = height / 2;
+      const halfD = depth / 2;
+
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i);
+        const nx = Math.min(1, Math.abs(v.x) / halfW);
+        const nz = Math.min(1, Math.abs(v.z) / halfD);
+        const ny = Math.min(1, Math.abs(v.y) / halfH);
+
+        // Bo tròn vòm tay vịn (+Y)
+        if (v.y > 0) {
+          v.y += (1 - nx * nx) * (1 - nz * nz) * (height * 0.15);
+        }
+        // Bo tròn cạnh ngoài tay vịn
+        if (Math.abs(v.x) > halfW * 0.5) {
+          v.x += Math.sign(v.x) * (1 - ny * ny) * (1 - nz * nz) * (width * 0.08);
+        }
+        // Bo tròn phần đuôi hướng về camera (+Z)
+        if (v.z > halfD * 0.5) {
+          v.z += (1 - nx * nx) * (1 - ny * ny) * (depth * 0.10);
+        }
+        pos.setXYZ(i, v.x, v.y, v.z);
+      }
+      geo.computeVertexNormals();
+      return geo;
+    }
+
+    function createClassroomSofa(mochiCount = 4) {
+      const sofaGroup = new THREE.Group();
+      sofaGroup.name = "classroomSofaGroup";
+      const hitMeshes = [];
+
+      // Màu vải nỉ cao cấp phong cách Scandinavian (be xám ấm áp rõ nét không lóa sáng)
+      const fabricMat = new THREE.MeshStandardMaterial({
+        color: 0xbcb5aa,
+        roughness: 0.90,
+        metalness: 0.0
+      });
+      const cushionMat = new THREE.MeshStandardMaterial({
+        color: 0xc4bdb2,
+        roughness: 0.88,
+        metalness: 0.0
+      });
+      const creaseMat = new THREE.MeshStandardMaterial({
+        color: 0x766d63,
+        roughness: 0.96,
+        metalness: 0.0
+      });
+      const legMat = new THREE.MeshStandardMaterial({
+        color: 0x1f1d1c,
+        roughness: 0.4,
+        metalness: 0.3
+      });
+
+      // Kích thước ghế sofa với THÀNH GHẾ THẤP HƠN ĐỂ THẤY RÕ TOÀN THÂN CÁC BÉ MOCHI!
+      const innerWidth = isMobilePortrait ? 4.6 : 6.6;
+      const armWidth = 0.44;
+      const totalWidth = innerWidth + armWidth * 2;
+      const sofaDepth = 1.45;
+      const armHeight = 0.48;
+      const backHeight = 0.58; // Thành ghế hạ thấp chuẩn để lộ rõ đầu, thân và biểu cảm nhân vật
+      const backDepth = 0.38;
+
+      // 1. Đế sofa chịu lực (Base Platform - nằm bên dưới)
+      const baseGeo = new THREE.BoxGeometry(totalWidth - 0.06, 0.24, sofaDepth, 4, 2, 4);
+      const baseMesh = new THREE.Mesh(baseGeo, fabricMat);
+      baseMesh.position.set(0, -0.34, -0.52);
+      sofaGroup.add(baseMesh);
+      hitMeshes.push(baseMesh);
+
+      // 2. 3 Tấm đệm tựa lưng phồng quay lưng ra phía người xem (+Z) - THÀNH GHẾ THẤP XINH XẮN!
+      const cushionCount = 3;
+      const cushionW = (innerWidth - 0.08) / cushionCount;
+
+      for (let i = 0; i < cushionCount; i++) {
+        const cX = (i - (cushionCount - 1) / 2) * cushionW;
+
+        // Đệm tựa lưng phồng đứng hướng về phía camera (+Z)
+        const panelGeo = createPuffyBackPanelGeometry(cushionW - 0.05, backHeight, backDepth);
+        const panelMesh = new THREE.Mesh(panelGeo, cushionMat);
+        panelMesh.position.set(cX, 0.10, 0.16);
+        sofaGroup.add(panelMesh);
+        hitMeshes.push(panelMesh);
+
+        // Đường chỉ rãnh dọc giữa 3 đệm (Creases)
+        if (i < cushionCount - 1) {
+          const creaseSepX = cX + cushionW / 2;
+          const creaseGeo = new THREE.BoxGeometry(0.03, backHeight * 0.98, backDepth * 0.92);
+          const creaseMesh = new THREE.Mesh(creaseGeo, creaseMat);
+          creaseMesh.position.set(creaseSepX, 0.10, 0.15);
+          sofaGroup.add(creaseMesh);
+        }
+      }
+
+      // 3. Đệm ngồi phía sau tựa lưng (hướng vào TV, trong tọa độ -Z)
+      const seatGeo = new THREE.BoxGeometry(innerWidth - 0.06, 0.28, sofaDepth * 0.72, 6, 2, 6);
+      const seatMesh = new THREE.Mesh(seatGeo, cushionMat);
+      seatMesh.position.set(0, -0.14, -0.58);
+      sofaGroup.add(seatMesh);
+      hitMeshes.push(seatMesh);
+
+      // 4. Hai tay vịn (Armrests) ở 2 bên kéo dài từ sau ra trước hướng vào TV
+      const leftArmGeo = createPuffyArmrestGeometry(armWidth, armHeight, sofaDepth);
+      const leftArmMesh = new THREE.Mesh(leftArmGeo, fabricMat);
+      leftArmMesh.position.set(-totalWidth / 2 + armWidth / 2, -0.06, -0.52);
+      sofaGroup.add(leftArmMesh);
+      hitMeshes.push(leftArmMesh);
+
+      const rightArmGeo = createPuffyArmrestGeometry(armWidth, armHeight, sofaDepth);
+      const rightArmMesh = new THREE.Mesh(rightArmGeo, fabricMat);
+      rightArmMesh.position.set(totalWidth / 2 - armWidth / 2, -0.06, -0.52);
+      sofaGroup.add(rightArmMesh);
+      hitMeshes.push(rightArmMesh);
+
+      // 5. 4 Chân ghế trụ tròn kín đáo
+      const legGeo = new THREE.CylinderGeometry(0.055, 0.04, 0.20, 16);
+      const legPositions = [
+        [-totalWidth / 2 + 0.45, -0.48, 0.10],
+        [totalWidth / 2 - 0.45, -0.48, 0.10],
+        [-totalWidth / 2 + 0.45, -0.48, -1.15],
+        [totalWidth / 2 - 0.45, -0.48, -1.15]
+      ];
+      legPositions.forEach((pos) => {
+        const legMesh = new THREE.Mesh(legGeo, legMat);
+        legMesh.position.set(pos[0], pos[1], pos[2]);
+        sofaGroup.add(legMesh);
+      });
+
+      // 6. Bóng đổ tiếp xúc êm ái trên sàn (Soft Contact Drop Shadow)
+      const shadowTex = createDropShadowTexture();
+      const shadowGeo = new THREE.PlaneGeometry(totalWidth * 1.15, sofaDepth * 1.5);
+      const shadowMat = new THREE.MeshBasicMaterial({
+        map: shadowTex,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0.82
+      });
+      const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+      shadowMesh.rotation.x = -Math.PI / 2;
+      shadowMesh.position.set(0, -0.58, -0.52);
+      sofaGroup.add(shadowMesh);
+
+      // 7. Hộp bắt điểm tương tác kích thước tối ưu (Invisible Hit Box)
+      const hitBoxGeo = new THREE.BoxGeometry(totalWidth + 0.35, backHeight + 0.65, sofaDepth + 0.3);
+      const hitBoxMat = new THREE.MeshBasicMaterial({ visible: false });
+      const hitBoxMesh = new THREE.Mesh(hitBoxGeo, hitBoxMat);
+      hitBoxMesh.position.set(0, 0.05, -0.52);
+      sofaGroup.add(hitBoxMesh);
+      hitMeshes.push(hitBoxMesh);
+
+      // Đánh dấu userData cho tất cả hitMeshes
+      hitMeshes.forEach((mesh) => {
+        mesh.userData = { isSofa: true, sofaGroup: sofaGroup };
+      });
+
+      const baseScale = isMobilePortrait ? new THREE.Vector3(0.68, 0.68, 0.68) : new THREE.Vector3(1, 1, 1);
+      sofaGroup.scale.copy(baseScale);
+
+      return {
+        group: sofaGroup,
+        hitMeshes: hitMeshes,
+        baseScale: baseScale,
+        basePosition: new THREE.Vector3(),
+        seatedMochis: [],
+        getSeatOffset: function (index, count) {
+          if (count === 4) {
+            const xs = isMobilePortrait
+              ? [-1.45, -0.48, 0.48, 1.45]
+              : [-2.15, -0.72, 0.72, 2.15];
+            const ys = [0.65, 0.55, 0.55, 0.55]; // Nhân vật ngồi cao ráo, lộ rõ hơn 75% thân trên trên thành ghế
+            return new THREE.Vector3(xs[index] || 0, ys[index] || 0.55, -0.18);
+          }
+          const span = Math.min(innerWidth * 0.85, (count - 1) * 1.4);
+          const startX = -span / 2;
+          const x = count === 1 ? 0 : startX + index * (span / (count - 1));
+          return new THREE.Vector3(x, index === 0 ? 0.65 : 0.55, -0.18);
+        }
+      };
+    }
+
+    window.recallAllMochisToSofa = function () {
+      if (!classroomSofa) return;
+      mochiEntities.forEach((m, idx) => {
+        m.isSeatedOnSofa = true;
+        if (!classroomSofa.seatedMochis.includes(m)) {
+          classroomSofa.seatedMochis.push(m);
+        }
+        const seatWorldPos = classroomSofa.group.position.clone().add(m.sofaSlotOffset);
+        if (m.body) {
+          gsap.killTweensOf(m.body.position);
+          gsap.to(m.body.position, {
+            x: seatWorldPos.x,
+            y: seatWorldPos.y,
+            z: seatWorldPos.z,
+            duration: 0.6,
+            delay: idx * 0.08,
+            ease: "back.out(1.4)",
+            onUpdate: () => {
+              m.rootGroup.position.copy(m.body.position);
+              if (isCinemaWatchingMode) m.cinemaPosition.copy(m.body.position);
+              else m.homePosition.copy(m.body.position);
+            }
+          });
+        }
+        applyEmotionToMochi(m, "happy", false);
+      });
+      showGameToast("🛋️ Cả lớp Mochi đã tập hợp ngồi ngay ngắn trên ghế sofa! 🥰");
+    };
+
+    // =========================================================================
     // 6. KÉO THẢ (DRAG & DROP) VỚI THREE.RAYCASTER & CANNON.POINTTOPOINTCONSTRAINT
     // =========================================================================
     const raycaster = new THREE.Raycaster();
@@ -2981,17 +3368,80 @@
       getPointerNDC(clientX, clientY);
       raycaster.setFromCamera(pointerNDC, camera);
 
+      // 1. Kiểm tra va chạm với các nhân vật Mochi
       const meshes = mochiEntities.map((m) => m.bodyMesh);
-      const intersects = raycaster.intersectObjects(meshes, false);
+      const mochiIntersects = raycaster.intersectObjects(meshes, false);
 
-      if (intersects.length > 0) {
-        const hit = intersects[0];
+      // 2. Kiểm tra va chạm với ghế sofa
+      let sofaIntersects = [];
+      if (classroomSofa && classroomSofa.hitMeshes.length > 0) {
+        sofaIntersects = raycaster.intersectObjects(classroomSofa.hitMeshes, true);
+      }
+
+      // 3. Phân định kéo ghế sofa hay kéo riêng từng nhân vật
+      let shouldDragSofa = false;
+      let shouldDragMochi = false;
+
+      if (sofaIntersects.length > 0 && mochiIntersects.length > 0) {
+        // Cả 2 đều trúng: nếu click trực tiếp vào đỉnh nhân vật thì ưu tiên nhân vật, ngược lại ưu tiên ghế sofa
+        if (sofaIntersects[0].distance < mochiIntersects[0].distance - 0.15) {
+          shouldDragSofa = true;
+        } else {
+          shouldDragMochi = true;
+        }
+      } else if (sofaIntersects.length > 0) {
+        shouldDragSofa = true;
+      } else if (mochiIntersects.length > 0) {
+        shouldDragMochi = true;
+      }
+
+      if (shouldDragSofa) {
+        // KÍCH HOẠT KÉO GHẾ SOFA VÀ TẤT CẢ CÁC NHÂN VẬT ĐANG NGỒI TRÊN ĐÓ ĐI CHUNG
+        draggedSofa = classroomSofa;
+        container.classList.add("is-dragging-sofa");
+
+        const camDir = new THREE.Vector3();
+        camera.getWorldDirection(camDir);
+        dragPlane.setFromNormalAndCoplanarPoint(camDir.negate(), sofaIntersects[0].point);
+
+        sofaDragStartPoint.copy(sofaIntersects[0].point);
+        sofaDragStartPos.copy(classroomSofa.group.position);
+
+        // Lưu offset tương đối của tất cả nhân vật đang ngồi trên ghế
+        classroomSofa.seatedMochis.forEach((m) => {
+          m._sofaDragStartOffset = m.rootGroup.position.clone().sub(classroomSofa.group.position);
+        });
+
+        // Nhún nhẹ đệm ghế sofa tạo hiệu ứng tương tác vật lý chân thực
+        gsap.to(classroomSofa.group.scale, {
+          x: classroomSofa.baseScale.x * 0.98,
+          y: classroomSofa.baseScale.y * 0.96,
+          z: classroomSofa.baseScale.z * 0.98,
+          duration: 0.12,
+          ease: "power2.out"
+        });
+
+        updateHudStatus(`🛋️ Đang di chuyển ghế sofa cùng cả lớp Mochi đi chung nè! ✨`);
+        return;
+      }
+
+      if (shouldDragMochi) {
+        const hit = mochiIntersects[0];
         const mochi = hit.object.userData.mochiRef;
         if (!mochi) return;
 
         selectActiveMochi(mochi);
         draggedMochi = mochi;
         container.classList.add("is-dragging");
+
+        // Nhấc Mochi ra khỏi ghế sofa nếu đang ngồi
+        if (mochi.isSeatedOnSofa) {
+          mochi.isSeatedOnSofa = false;
+          if (classroomSofa) {
+            const sIdx = classroomSofa.seatedMochis.indexOf(mochi);
+            if (sIdx > -1) classroomSofa.seatedMochis.splice(sIdx, 1);
+          }
+        }
 
         if (recoveryTimeout) {
           clearTimeout(recoveryTimeout);
@@ -3035,6 +3485,67 @@
         m.targetGazeY = Math.max(-1, Math.min(1, -pointerNDC.y * 1.1));
       });
 
+      // 1. XỬ LÝ KÉO GHẾ SOFA (ĐỒNG THỜI DI CHUYỂN TẤT CẢ NHÂN VẬT TRÊN GHẾ)
+      if (draggedSofa) {
+        raycaster.setFromCamera(pointerNDC, camera);
+        if (raycaster.ray.intersectPlane(dragPlane, dragIntersectPoint)) {
+          const offsetX = dragIntersectPoint.x - sofaDragStartPoint.x;
+          const offsetY = dragIntersectPoint.y - sofaDragStartPoint.y;
+          const offsetZ = dragIntersectPoint.z - sofaDragStartPoint.z;
+
+          const clampedX = Math.max(-sceneBounds.x * 0.92, Math.min(sceneBounds.x * 0.92, sofaDragStartPos.x + offsetX));
+          const clampedY = isCinemaWatchingMode
+            ? Math.min(-0.8, Math.max(-sceneBounds.y * 1.15, sofaDragStartPos.y + offsetY))
+            : Math.max(-sceneBounds.y * 1.15, Math.min(sceneBounds.y * 0.85, sofaDragStartPos.y + offsetY));
+          const clampedZ = Math.max(-sceneBounds.z * 0.8, Math.min(sceneBounds.z * 1.2, sofaDragStartPos.z + offsetZ));
+
+          const newSofaPos = new THREE.Vector3(clampedX, clampedY, clampedZ);
+          classroomSofa.group.position.copy(newSofaPos);
+          classroomSofa.basePosition.copy(newSofaPos);
+
+          // CÙNG DI CHUYỂN TẤT CẢ CÁC NHÂN VẬT ĐANG NGỒI TRÊN GHẾ ĐI CHUNG!
+          classroomSofa.seatedMochis.forEach((m) => {
+            const targetMochiPos = newSofaPos.clone().add(m._sofaDragStartOffset);
+            if (m.body) {
+              m.body.position.copy(targetMochiPos);
+              m.body.velocity.set(0, 0, 0);
+              m.body.angularVelocity.set(0, 0, 0);
+            }
+            if (m.rootGroup) {
+              m.rootGroup.position.copy(targetMochiPos);
+            }
+            if (isCinemaWatchingMode) {
+              m.cinemaPosition.copy(targetMochiPos);
+            } else {
+              m.homePosition.copy(targetMochiPos);
+            }
+          });
+        }
+        return;
+      }
+
+      // 2. Kiểm tra hover & bật tắt pointerEvents thông minh trong chế độ xem TV
+      raycaster.setFromCamera(pointerNDC, camera);
+      const isMochiHover = !draggedSofa && raycaster.intersectObjects(mochiEntities.map((m) => m.bodyMesh), false).length > 0;
+      const isSofaHover = !draggedMochi && classroomSofa && raycaster.intersectObjects(classroomSofa.hitMeshes, true).length > 0;
+
+      if (isCinemaWatchingMode) {
+        if (draggedSofa || draggedMochi || isMochiHover || isSofaHover) {
+          container.style.pointerEvents = "auto";
+        } else {
+          container.style.pointerEvents = "none";
+        }
+      }
+
+      if (!draggedMochi && !draggedSofa) {
+        if (isSofaHover || isMochiHover) {
+          container.style.cursor = "grab";
+        } else {
+          container.style.cursor = "";
+        }
+      }
+
+      // 3. XỬ LÝ KÉO TỪNG NHÂN VẬT MOCHI RIÊNG LẺ
       if (mouseConstraint && draggedMochi) {
         raycaster.setFromCamera(pointerNDC, camera);
         if (raycaster.ray.intersectPlane(dragPlane, dragIntersectPoint)) {
@@ -3058,6 +3569,52 @@
     }
 
     function onPointerUp() {
+      // 1. Thả ghế sofa
+      if (draggedSofa) {
+        gsap.to(classroomSofa.group.scale, {
+          x: classroomSofa.baseScale.x,
+          y: classroomSofa.baseScale.y,
+          z: classroomSofa.baseScale.z,
+          duration: 0.35,
+          ease: "elastic.out(1.2, 0.4)"
+        });
+
+        classroomSofa.seatedMochis.forEach((m) => {
+          if (m.body) {
+            m.body.position.copy(m.rootGroup.position);
+            m.body.velocity.set(0, 0, 0);
+            m.body.angularVelocity.set(0, 0, 0);
+          }
+          if (isCinemaWatchingMode) {
+            m.cinemaPosition.copy(m.rootGroup.position);
+          } else {
+            m.homePosition.copy(m.rootGroup.position);
+          }
+          // Nhún nảy vui nhộn khi ghế hạ cánh
+          gsap.killTweensOf(m.visualGroup.scale);
+          gsap.to(m.visualGroup.scale, {
+            y: 0.88,
+            x: 1.08,
+            duration: 0.1,
+            yoyo: true,
+            repeat: 1,
+            ease: "power2.out",
+            onComplete: () => {
+              m.visualGroup.scale.set(1, 1, 1);
+            }
+          });
+        });
+
+        draggedSofa = null;
+        container.classList.remove("is-dragging-sofa");
+        if (isCinemaWatchingMode) {
+          container.style.pointerEvents = "none";
+        }
+        updateHudStatus("🛋️ Ghế sofa và cả lớp Mochi đã đến chỗ ngồi mới xinh xắn! 🥰");
+        return;
+      }
+
+      // 2. Thả Mochi
       if (mouseConstraint) {
         world.removeConstraint(mouseConstraint);
         mouseConstraint = null;
@@ -3067,6 +3624,36 @@
         draggedMochi = null;
         container.classList.remove("is-dragging");
 
+        // Kiểm tra xem có thả gần ghế sofa không để tự động ngồi lại
+        if (classroomSofa && releasedMochi.sofaSlotOffset) {
+          const seatWorldPos = classroomSofa.group.position.clone().add(releasedMochi.sofaSlotOffset);
+          const dist = releasedMochi.rootGroup.position.distanceTo(seatWorldPos);
+          if (dist < 2.2) {
+            // Nhảy lại vào ghế ngồi
+            releasedMochi.isSeatedOnSofa = true;
+            if (!classroomSofa.seatedMochis.includes(releasedMochi)) {
+              classroomSofa.seatedMochis.push(releasedMochi);
+            }
+            gsap.to(releasedMochi.body.position, {
+              x: seatWorldPos.x,
+              y: seatWorldPos.y,
+              z: seatWorldPos.z,
+              duration: 0.45,
+              ease: "back.out(1.5)",
+              onUpdate: () => {
+                releasedMochi.rootGroup.position.copy(releasedMochi.body.position);
+                if (isCinemaWatchingMode) releasedMochi.cinemaPosition.copy(releasedMochi.body.position);
+                else releasedMochi.homePosition.copy(releasedMochi.body.position);
+              }
+            });
+            showGameToast(`🥰 ${releasedMochi.name} đã nhảy lại vào ghế ngồi cùng lớp!`);
+          } else {
+            releasedMochi.isSeatedOnSofa = false;
+            const idx = classroomSofa.seatedMochis.indexOf(releasedMochi);
+            if (idx > -1) classroomSofa.seatedMochis.splice(idx, 1);
+          }
+        }
+
         if (isCinemaWatchingMode) {
           // Lưu lại vị trí người dùng vừa kéo / chỉnh nhân vật để tiện xem video
           releasedMochi.cinemaPosition.copy(releasedMochi.rootGroup.position);
@@ -3075,6 +3662,7 @@
             releasedMochi.body.velocity.set(0, 0, 0);
             releasedMochi.body.angularVelocity.set(0, 0, 0);
           }
+          container.style.pointerEvents = "none";
         } else {
           releasedMochi.cryUntil = Date.now() + 1400;
           recoveryTimeout = setTimeout(() => {
@@ -3086,9 +3674,34 @@
       }
     }
 
+    function handlePointerDownCheck(clientX, clientY) {
+      getPointerNDC(clientX, clientY);
+      raycaster.setFromCamera(pointerNDC, camera);
+      const meshes = mochiEntities.map((m) => m.bodyMesh);
+      const mochiIntersects = raycaster.intersectObjects(meshes, false);
+      let sofaIntersects = [];
+      if (classroomSofa && classroomSofa.hitMeshes.length > 0) {
+        sofaIntersects = raycaster.intersectObjects(classroomSofa.hitMeshes, true);
+      }
+      if (mochiIntersects.length > 0 || sofaIntersects.length > 0) {
+        if (isCinemaWatchingMode) {
+          container.style.pointerEvents = "auto";
+        }
+        onPointerDown(clientX, clientY);
+        return true;
+      }
+      return false;
+    }
+
     container.addEventListener("mousedown", (e) => {
       if (e.button === 0) onPointerDown(e.clientX, e.clientY);
     });
+    window.addEventListener("mousedown", (e) => {
+      if (e.button === 0 && isCinemaWatchingMode) {
+        handlePointerDownCheck(e.clientX, e.clientY);
+      }
+    }, { capture: true });
+
     window.addEventListener("mousemove", (e) => {
       onPointerMove(e.clientX, e.clientY);
     });
@@ -3102,6 +3715,14 @@
         onPointerDown(t.clientX, t.clientY);
       }
     }, { passive: true });
+    window.addEventListener("touchstart", (e) => {
+      if (e.touches.length > 0 && isCinemaWatchingMode) {
+        const t = e.touches[0];
+        if (handlePointerDownCheck(t.clientX, t.clientY)) {
+          e.preventDefault();
+        }
+      }
+    }, { passive: false });
 
     window.addEventListener("touchmove", (e) => {
       if (e.touches.length > 0) {
@@ -3204,6 +3825,11 @@
         world.removeConstraint(mouseConstraint);
         mouseConstraint = null;
       }
+      if (classroomSofa) {
+        scene.remove(classroomSofa.group);
+        classroomSofa = null;
+      }
+      draggedSofa = null;
       mochiEntities.forEach((m) => {
         scene.remove(m.rootGroup);
         world.removeBody(m.body);
@@ -3310,10 +3936,10 @@
 
       isMobilePortrait = (window.innerWidth / Math.max(window.innerHeight, 1)) < 0.85;
 
-      // 1. Sinh ra 1 "Mochi Giảng Viên" (Màu trắng giống hệt Trang Chủ)
+      // 1. Sinh ra 1 "Mochi Giảng Viên" (Màu trắng ở trung tâm như Hình 1)
       const instructorPos = isMobilePortrait
         ? new THREE.Vector3(0, 0.22, 0.2)
-        : new THREE.Vector3(-0.2, 0.25, 0.4);
+        : new THREE.Vector3(0, 0.18, 0.35);
 
       const instructorMochi = createMochiCharacter({
         id: "mochi-instructor",
@@ -3327,21 +3953,25 @@
       });
       mochiEntities.push(instructorMochi);
 
-      // 2. Sinh ra 3 "Mochi Học Viên" (Màu sắc Pastel chuẩn Trang Chủ)
+      // 2. Sinh ra 3 "Mochi Học Viên" (Trôi nổi tự nhiên quanh Thầy như Hình 1: Xanh lam bên trái, Hồng bên phải, Mint ở dưới)
       const count = Math.max(3, parseInt(classroom.studentCount || 3, 10));
-      const shuffledFlavors = [...STUDENT_FLAVOR_KEYS].sort(() => Math.random() - 0.5);
+      const fixedPaletteOrder = ["sky", "pink", "matcha", "yellow", "lavender"];
       const studentAnchorsContainer = document.getElementById("studentAnchorsContainer");
       studentAnchorsContainer.innerHTML = "";
 
       for (let i = 0; i < count; i++) {
         let studentPos;
-        if (isMobilePortrait && count === 3) {
-          const mobileSlots = [
-            new THREE.Vector3(-1.55, -1.35, 0.1),
-            new THREE.Vector3(1.55, -1.35, 0.1),
-            new THREE.Vector3(0, -2.45, 0.25)
+        if (count === 3) {
+          const defaultSlots = isMobilePortrait ? [
+            new THREE.Vector3(-1.55, 0.30, 0.1),  // Xanh lam bên trái
+            new THREE.Vector3(1.55, 0.30, 0.1),   // Hồng bên phải
+            new THREE.Vector3(0, -1.85, 0.2)      // Xanh mint ở dưới
+          ] : [
+            new THREE.Vector3(-2.35, 0.30, 0.15), // Xanh lam bên trái
+            new THREE.Vector3(2.35, 0.30, 0.15),  // Hồng bên phải
+            new THREE.Vector3(0, -1.85, 0.25)     // Xanh mint ở dưới
           ];
-          studentPos = mobileSlots[i];
+          studentPos = defaultSlots[i];
         } else if (isMobilePortrait) {
           const angle = Math.PI + ((i + 0.5) / count) * Math.PI;
           studentPos = new THREE.Vector3(
@@ -3360,7 +3990,7 @@
 
         const customNames = Array.isArray(classroom.studentNames) ? classroom.studentNames : [];
         const studentName = customNames[i] || RANDOM_STUDENT_NAMES[(i + variationSeed) % RANDOM_STUDENT_NAMES.length];
-        const flavorKey = shuffledFlavors[i % shuffledFlavors.length];
+        const flavorKey = fixedPaletteOrder[i % fixedPaletteOrder.length];
 
         const studentMochi = createMochiCharacter({
           id: `mochi-student-${i}`,
@@ -3372,6 +4002,61 @@
         });
         mochiEntities.push(studentMochi);
       }
+
+      // 3. Khởi tạo Ghế Sofa Lớp Học (Mặc định ẩn, chỉ hiển thị khi bấm xem TV/Cinema mode)
+      classroomSofa = createClassroomSofa(mochiEntities.length);
+      const isMobile = isMobilePortrait;
+      const cinemaSofaPos = new THREE.Vector3(0, isMobile ? -3.15 : -2.85, 0.65);
+      classroomSofa.group.position.copy(cinemaSofaPos);
+      classroomSofa.basePosition.copy(cinemaSofaPos);
+      classroomSofa.group.visible = isCinemaWatchingMode; // MẶC ĐỊNH ẨN KHI VÀO GAME NHƯ HÌNH 1!
+      scene.add(classroomSofa.group);
+
+      mochiEntities.forEach((m, idx) => {
+        m.sofaSlotIndex = idx;
+        m.sofaSlotOffset = classroomSofa.getSeatOffset(idx, mochiEntities.length);
+        m.homePosition.copy(m.rootGroup.position);
+        if (!m.cinemaPosition) m.cinemaPosition = new THREE.Vector3();
+        m.cinemaPosition.copy(cinemaSofaPos.clone().add(m.sofaSlotOffset));
+
+        if (isCinemaWatchingMode) {
+          m.isSeatedOnSofa = true;
+          m.isWatchingVideo = true;
+          if (!classroomSofa.seatedMochis.includes(m)) {
+            classroomSofa.seatedMochis.push(m);
+          }
+          if (m.body) {
+            m.body.position.copy(m.cinemaPosition);
+            m.body.velocity.set(0, 0, 0);
+            m.body.angularVelocity.set(0, 0, 0);
+          }
+          if (m.rootGroup) {
+            m.rootGroup.position.copy(m.cinemaPosition);
+          }
+        } else {
+          // Khi vào game như Hình 1: Các Mochi trôi nổi tự do tại vị trí lớp học
+          m.isSeatedOnSofa = false;
+          m.isWatchingVideo = false;
+          if (m.body) {
+            m.body.position.copy(m.homePosition);
+            m.body.velocity.set(0, 0, 0);
+            m.body.angularVelocity.set(0, 0, 0);
+          }
+          if (m.rootGroup) {
+            m.rootGroup.position.copy(m.homePosition);
+          }
+        }
+      });
+
+      // Hiệu ứng xuất hiện đàn hồi cho ghế sofa
+      classroomSofa.group.scale.set(0.01, 0.01, 0.01);
+      gsap.to(classroomSofa.group.scale, {
+        x: classroomSofa.baseScale.x,
+        y: classroomSofa.baseScale.y,
+        z: classroomSofa.baseScale.z,
+        duration: 0.8,
+        ease: "elastic.out(1.1, 0.42)"
+      });
 
       updateResponsiveCameraAndLayout();
       selectActiveMochi(instructorMochi);
@@ -3468,40 +4153,62 @@
       isCinemaWatchingMode = true;
       document.body.classList.add("cinema-mode");
 
-      // Xếp tất cả nhân vật ngồi thẳng hàng theo chiều ngang (giữ nguyên kích thước 1.0 như lúc chưa xem video)
-      const N = mochiEntities.length;
-      const startY = isMobilePortrait ? -2.45 : -2.25;
-      const depthZ = 0.55;
-      const totalSpan = isMobilePortrait ? 3.0 : 4.4;
-      const step = N > 1 ? totalSpan / (N - 1) : 0;
-      const startX = -(totalSpan / 2);
+      const tvBtn = document.getElementById("btnToggleTvScreen");
+      if (tvBtn) tvBtn.textContent = "📺 Đang Bật TV";
 
-      let xSlots = [];
-      if (N === 4) {
-        xSlots = isMobilePortrait
-          ? [-1.35, -0.45, 0.45, 1.35]
-          : [-2.1, -0.7, 0.7, 2.1];
-      } else {
-        for (let i = 0; i < N; i++) xSlots.push(N === 1 ? 0 : startX + i * step);
+      // HIỆN GHẾ SOFA VÀ DI CHUYỂN ĐẾN PHÍA TRƯỚC MÀN HÌNH TV (NHƯ HÌNH 2)
+      if (classroomSofa) {
+        classroomSofa.group.visible = true;
+        const cinemaSofaPos = new THREE.Vector3(0, isMobilePortrait ? -3.15 : -2.85, 0.65);
+        gsap.to(classroomSofa.group.position, {
+          x: cinemaSofaPos.x,
+          y: cinemaSofaPos.y,
+          z: cinemaSofaPos.z,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+        classroomSofa.basePosition.copy(cinemaSofaPos);
       }
 
-      // Giữ nguyên kích thước nhân vật như lúc chưa xem video (scale = 1.0), xoay lưng ngồi xem video
+      // TẬP HỢP CÁC BÉ MOCHI NGỒI LÊN GHẾ SOFA, LỘ RÕ THÂN VÀ NÓN TRÊN THÀNH GHẾ (NHƯ HÌNH 2)
+      const N = mochiEntities.length;
       mochiEntities.forEach((m, idx) => {
-        const posX = xSlots[idx] !== undefined ? xSlots[idx] : (startX + idx * step);
-        m.cinemaPosition.set(posX, startY, depthZ);
         m.isWatchingVideo = true;
 
+        if (classroomSofa) {
+          m.isSeatedOnSofa = true;
+          m.sofaSlotIndex = idx;
+          m.sofaSlotOffset = classroomSofa.getSeatOffset(idx, N);
+          if (!classroomSofa.seatedMochis.includes(m)) {
+            classroomSofa.seatedMochis.push(m);
+          }
+          const cinemaSofaPos = new THREE.Vector3(0, isMobilePortrait ? -3.15 : -2.85, 0.65);
+          const seatWorldPos = cinemaSofaPos.clone().add(m.sofaSlotOffset);
+          m.cinemaPosition.copy(seatWorldPos);
+        }
+
         if (m.body) {
-          m.body.position.copy(m.cinemaPosition);
+          gsap.killTweensOf(m.body.position);
+          gsap.to(m.body.position, {
+            x: m.cinemaPosition.x,
+            y: m.cinemaPosition.y,
+            z: m.cinemaPosition.z,
+            duration: 0.55,
+            ease: "back.out(1.2)",
+            onUpdate: () => {
+              m.rootGroup.position.copy(m.body.position);
+            }
+          });
           m.body.velocity.set(0, 0, 0);
           m.body.angularVelocity.set(0, 0, 0);
+        } else if (m.rootGroup) {
+          m.rootGroup.position.copy(m.cinemaPosition);
         }
         if (m.rootGroup) {
-          m.rootGroup.position.copy(m.cinemaPosition);
           m.rootGroup.rotation.set(0, 0, 0);
         }
 
-        // Kích thước các nhân vật như lúc chưa xem video không thay đổi kích thước (scale = 1.0)
+        // Giữ kích thước tự nhiên
         gsap.killTweensOf(m.visualGroup.scale);
         gsap.to(m.visualGroup.scale, {
           x: 1.0,
@@ -3536,15 +4243,24 @@
       isCinemaWatchingMode = false;
       document.body.classList.remove("cinema-mode");
 
+      const tvBtn = document.getElementById("btnToggleTvScreen");
+      if (tvBtn) tvBtn.textContent = "📺 Bật Khung TV";
+
       const overlay = document.getElementById("mochiCinemaOverlay");
       const iframe = document.getElementById("cinemaVideoIframe");
       if (iframe) iframe.src = "";
       if (overlay) overlay.classList.remove("active");
 
-      // Mochi quay lại mỉm cười với học viên & giữ nguyên kích thước 1.0
+      // ẨN GHẾ SOFA VÀ ĐƯA CÁC MOCHI TRỞ VỀ VỊ TRÍ BAY TRÔI NỔI TRONG LỚP HỌC (NHƯ HÌNH 1)
+      if (classroomSofa) {
+        classroomSofa.group.visible = false;
+        classroomSofa.seatedMochis = [];
+      }
+
       mochiEntities.forEach((m, idx) => {
         gsap.killTweensOf(m.visualGroup.scale);
         m.isWatchingVideo = false;
+        m.isSeatedOnSofa = false;
         applyEmotionToMochi(m, "happy", false);
         gsap.to(m.visualGroup.scale, {
           x: 1.0,
@@ -3553,6 +4269,25 @@
           duration: 0.35,
           ease: "power2.out"
         });
+
+        // Đưa các Mochi bay về vị trí lớp học tự do như Hình 1
+        if (m.body) {
+          gsap.killTweensOf(m.body.position);
+          gsap.to(m.body.position, {
+            x: m.homePosition.x,
+            y: m.homePosition.y,
+            z: m.homePosition.z,
+            duration: 0.6,
+            ease: "back.out(1.2)",
+            onUpdate: () => {
+              m.rootGroup.position.copy(m.body.position);
+            }
+          });
+          m.body.velocity.set(0, 0, 0);
+          m.body.angularVelocity.set(0, 0, 0);
+        } else if (m.rootGroup) {
+          m.rootGroup.position.copy(m.homePosition);
+        }
       });
 
       updateClassroomUIElements(currentClassroom);
@@ -3561,6 +4296,14 @@
         speechEl.textContent = "Video hay quá phải không các bạn! Cần hỏi gì cứ nhắn Thầy nhé! 🥰✨";
       }
       showGameToast("✨ Mochi đã quay lại và mỉm cười với bạn!");
+    };
+
+    window.toggleTvScreenMode = function () {
+      if (isCinemaWatchingMode) {
+        closeCinemaVideo();
+      } else {
+        openCinemaVideo(currentClassroom);
+      }
     };
 
     window.promptChangeCinemaVideo = function () {
@@ -3834,16 +4577,11 @@
     window.switchClassroomById = function (classId) {
       const found = classroomsList.find((c) => c.id === classId);
       if (!found) return;
-      const wasWatching = isCinemaWatchingMode;
       setupClassroomScene(found, false);
       populateClassroomUI();
       showGameToast(`🏫 Đã vào: ${found.name}`);
-      if (wasWatching) {
-        if (isClassroomVideoAction(found)) {
-          openCinemaVideo(found);
-        } else {
-          closeCinemaVideo();
-        }
+      if (isCinemaWatchingMode) {
+        openCinemaVideo(found);
       }
     };
 
@@ -3880,6 +4618,9 @@
       };
 
       setupClassroomScene(uniqueRandomClass, true);
+      if (isCinemaWatchingMode) {
+        openCinemaVideo(uniqueRandomClass);
+      }
       showGameToast(`🎲 Đã đổi sang Không Gian Lớp Học 3D mới!`);
     };
 
@@ -3997,13 +4738,21 @@
           });
         }
 
-        // Lực trôi lơ lửng Không Trọng Lực & chuyển động khi xem video
+        // Lực trôi lơ lửng Không Trọng Lực & chuyển động khi xem video / ngồi ghế sofa
         if (mochi !== draggedMochi) {
           if (isCinemaWatchingMode) {
-            // Khi xem video: Ngồi yên bất động thẳng hàng theo chiều ngang, không trôi dạt
+            // Khi xem video: Ngồi yên bất động trên ghế sofa phía trước màn hình
             body.velocity.set(0, 0, 0);
             body.angularVelocity.set(0, 0, 0);
             body.position.copy(mochi.cinemaPosition || mochi.homePosition);
+          } else if (mochi.isSeatedOnSofa && classroomSofa) {
+            // Đang ngồi trên ghế sofa: Giữ vị trí trên ghế với nhịp thở nhẹ nhàng êm ái
+            body.velocity.set(0, 0, 0);
+            body.angularVelocity.set(0, 0, 0);
+            const breath = Math.sin(timeSec * 2.2 + mochi.sofaSlotIndex * 0.9) * 0.02;
+            const targetPos = classroomSofa.group.position.clone().add(mochi.sofaSlotOffset);
+            body.position.set(targetPos.x, targetPos.y + breath, targetPos.z);
+            mochi.homePosition.copy(body.position);
           } else {
             const driftX = Math.sin(timeSec * 1.1 + mochi.floatPhase) * 0.25;
             const driftY = Math.cos(timeSec * 1.3 + mochi.floatPhase) * 0.25;
@@ -4074,6 +4823,9 @@
         p.mesh.rotation.y += p.rotSpeedY;
       });
 
+      if (bgRenderer && bgScene) {
+        bgRenderer.render(bgScene, camera);
+      }
       renderer.render(scene, camera);
     }
 
@@ -4094,6 +4846,7 @@
 
       setupClassroomScene(initialClass, false);
       populateClassroomUI();
+      // Khởi tạo phòng học 3D chuẩn Hình 1 (chỉ bật TV và hiện ghế khi bấm Xem Video)
       requestAnimationFrame(animate);
     }
 
